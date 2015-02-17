@@ -1,12 +1,8 @@
-
-
-
-
-
 #include <stdlib.h>
 #include "SDL.h"
 #include "SDL_image.h"
 #include "graphics.h"
+#include "entity.h"
 
 extern SDL_Surface *screen;
 extern SDL_Surface *buffer; /*pointer to the draw buffer*/
@@ -33,6 +29,8 @@ int main(int argc, char *argv[])
   int tx = 0,ty = 0;
   Uint8 *keys;
   char imagepath[512];
+  int frame = 0;
+
   Init_All();
   if (getImagePathFromFile(imagepath,"config.ini") == 0)
   {
@@ -43,7 +41,7 @@ int main(int argc, char *argv[])
   SDL_FreeSurface(temp);
   if(bg != NULL)
     SDL_BlitSurface(bg,NULL,buffer,NULL);
-  tile = LoadSprite("images/32_32_16_2sprite.png",32,32);
+  tile = LoadSprite("images/testsprite2.png",32,32);
   getCoordinatesFromFile(&tx, &ty,"config.ini");
   fprintf(stdout,"x and y: (%i, %i)\n",tx,ty);
   addCoordinateToFile("config.ini",7,11);
@@ -51,9 +49,11 @@ int main(int argc, char *argv[])
   {
         for(i = 0;i < 12;i++)
         {
-            DrawSprite(tile,buffer,(i * tile->w) + tx,ty,0);
+			DrawSprite(tile,buffer,(i * tile->w) + tx,ty,0);
         }
   }
+  
+  //Game Loop
   done = 0;
   do
   {
@@ -64,7 +64,9 @@ int main(int argc, char *argv[])
     keys = SDL_GetKeyState(&keyn);
     if(SDL_GetMouseState(&mx,&my))
     {
-      DrawSprite(tile,buffer,(mx /32) * 32,(my /32) * 32,0); 
+		if ((frame+1)%32 == 0) frame = 0;
+		else frame++;
+		DrawSprite(tile,buffer,(mx /32) * 32,(my /32) * 32,frame); 
     }
     if(keys[SDLK_ESCAPE])done = 1;
   }while(!done);
