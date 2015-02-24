@@ -1,6 +1,10 @@
 #ifndef __SPRITE__
 #define __SPRITE__
 
+#define MaxSprites    255
+
+int NumSprites;
+
 typedef struct Sprite_T
 {
   SDL_Surface *image;		/*pointer to the actual image in memory*/
@@ -11,6 +15,9 @@ typedef struct Sprite_T
   int used;					/*used by the maintanenc functions to keep track of how many times a single sprite is being used*/
 }Sprite;
 
+
+Sprite SpriteList[MaxSprites];
+Sprite *Msprite;
 void SwapSprite(SDL_Surface *sprite,int color1,int color2,int color3);
 void InitSpriteList();
 void FreeSprite(Sprite *img);

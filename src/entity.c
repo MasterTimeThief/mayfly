@@ -1,6 +1,6 @@
 #include "entity.h"
 
-Entity *CreateEntity(Sprite *spr, int intx, int inty)
+Entity *CreateEntity(Sprite *spr, int intx, int inty, Ent_Type className)
 {
 	Entity *temp;
 
@@ -14,6 +14,38 @@ Entity *CreateEntity(Sprite *spr, int intx, int inty)
 			temp->ey = inty;
 			temp->filled = 1;
 			entityList[i] = temp;
+
+			//Check className
+			if (className == MAYFLY)
+			{
+				temp->health = (rand() % 10) + 11;	//10-20
+				temp->speed = (rand() % 10) + 1;	//1-10
+				temp->strength = (rand() % 10) + 1;	//1-10
+				temp->luck = (rand() % 10) + 1;		//1-10
+
+				temp->age = 0;
+
+				temp->soldierExp = 0;
+				temp->archerExp = 0;
+				temp->believerExp = 0;
+			}
+			else if (className == ENEMY)
+			{
+				temp->health = (rand() % 10) + 11;	//10-20
+				temp->speed = (rand() % 10) + 1;	//1-10
+				temp->strength = (rand() % 10) + 1;	//1-10
+				temp->luck = (rand() % 10) + 1;		//1-10
+			}
+			else if (className == BUTTON)
+			{
+				//possible size variables
+				//Implement button function?
+			}
+			else if (className == GUI)
+			{
+				//possible size variables
+				temp->filledGui = 0;
+			}
 			break;
 		}
 	}

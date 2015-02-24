@@ -3,6 +3,7 @@
 #include "SDL_image.h"
 #include "graphics.h"
 #include "entity.h"
+#include "level.h"
 
 extern SDL_Surface *screen;
 extern SDL_Surface *buffer; /*pointer to the draw buffer*/
@@ -32,19 +33,23 @@ int main(int argc, char *argv[])
   int frame = 0;
 
   Init_All();
-  if (getImagePathFromFile(imagepath,"config.ini") == 0)
+  LoadLevel("levels/menu.txt");
+  DrawLevel();
+  /*if (getImagePathFromFile(imagepath,"config.ini") == 0)
   {
-    temp = IMG_Load(imagepath);/*notice that the path is part of the filename*/
+    temp = IMG_Load(imagepath);//notice that the path is part of the filename
   }
-  if(temp != NULL)						/*ALWAYS check your pointers before you use them*/
+  if(temp != NULL)						//ALWAYS check your pointers before you use them
     bg = SDL_DisplayFormat(temp);
   SDL_FreeSurface(temp);
   if(bg != NULL)
-    SDL_BlitSurface(bg,NULL,buffer,NULL);
+    SDL_BlitSurface(bg,NULL,buffer,NULL);*/
   tile = LoadSprite("images/testsprite2.png",32,32);
   getCoordinatesFromFile(&tx, &ty,"config.ini");
   fprintf(stdout,"x and y: (%i, %i)\n",tx,ty);
+
   addCoordinateToFile("config.ini",7,11);
+
   if(tile != NULL)
   {
         for(i = 0;i < 12;i++)
@@ -85,6 +90,7 @@ void Init_All()
   Init_Graphics();
 
   InitMouse();
+  InitLevelSystem();
   atexit(CleanUpAll);
 }
 
