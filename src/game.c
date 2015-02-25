@@ -1,184 +1,83 @@
-#include <stdlib.h>
 #include "SDL.h"
-#include "SDL_image.h"
 #include "graphics.h"
-#include "entity.h"
-#include "level.h"
 
-extern SDL_Surface *screen;
-extern SDL_Surface *buffer; /*pointer to the draw buffer*/
-extern SDL_Rect Camera;
+const int SCREEN_WIDTH = 1024;
+const int SCREEN_HEIGHT = 768;
+const int SCREEN_BPP = 32;
 
-void Init_All();
+//The surfaces that will be used
+SDL_Surface *buffer = NULL;
+SDL_Surface *screen = NULL;
 
-int getImagePathFromFile(char *filepath,char * filename);
-int getCoordinatesFromFile(int *x, int *y,char * filename);
-void addCoordinateToFile(char *filepath,int x, int y);
+//The event structure that will be used
+SDL_Event event;
 
-
-/*this program must be run from the directory directly below images and src, not from within src*/
-/*notice the default arguments for main.  SDL expects main to look like that, so don't change it*/
-int main(int argc, char *argv[])
+int init()
 {
-  SDL_Surface *temp = NULL;
-  SDL_Surface *bg;
-  Sprite *tile;
-  int done;
-  int keyn;
-  int i;
-  int mx,my;
-  int tx = 0,ty = 0;
-  Uint8 *keys;
-  char imagepath[512];
-  int frame = 0;
+	//Initialize all SDL subsystems
+    if( SDL_Init( SDL_INIT_EVERYTHING ) == -1 )
+    {
+        return -1;    
+    }
+    
+    //Set up the screen
+    screen = SDL_SetVideoMode( SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_BPP, SDL_SWSURFACE );
+    
+    //If there was an error in setting up the screen
+    if( screen == NULL )
+    {
+        return -1;    
+    }
+    
+    //Set the window caption
+    SDL_WM_SetCaption( "Mayfly Wars", NULL );
+    
+    //If everything initialized fine
+    return 1;
+}
 
-  Init_All();
-  LoadLevel("levels/menu.txt");
-  DrawLevel();
-  /*if (getImagePathFromFile(imagepath,"config.ini") == 0)
-  {
-    temp = IMG_Load(imagepath);//notice that the path is part of the filename
-  }
-  if(temp != NULL)						//ALWAYS check your pointers before you use them
-    bg = SDL_DisplayFormat(temp);
-  SDL_FreeSurface(temp);
-  if(bg != NULL)
-    SDL_BlitSurface(bg,NULL,buffer,NULL);*/
-  tile = LoadSprite("images/testsprite2.png",32,32);
-  getCoordinatesFromFile(&tx, &ty,"config.ini");
-  fprintf(stdout,"x and y: (%i, %i)\n",tx,ty);
+void clean_up()
+{
+	//Free the loaded image
+    SDL_FreeSurface( buffer );
+	
+	//Quit SDL
+	SDL_Quit();
+}
 
-  addCoordinateToFile("config.ini",7,11);
+int main( int argc, char* args[] )
+{
+	int done = 0;
+	
+	//Initialize
+    if( init() == -1 )
+    {
+        return 1;
+	}
 
-  if(tile != NULL)
-  {
-        for(i = 0;i < 12;i++)
+    //Load image
+    buffer = load_image( "images/battle2.png" );
+	apply_surface(0,0,buffer,screen);
+	//apply_surface(300,300,background,screen);
+
+    //Update Screen
+    SDL_Flip( screen );
+
+    //Game Loop
+	while(!done)
+	{
+		//While there's an event to handle
+        while( SDL_PollEvent( &event ) )
         {
-			DrawSprite(tile,buffer,(i * tile->w) + tx,ty,0);
-        }
-  }
-  
-  //Game Loop
-  done = 0;
-  do
-  {
-    ResetBuffer ();
-    DrawMouse();
-    NextFrame();
-    SDL_PumpEvents();
-    keys = SDL_GetKeyState(&keyn);
-    if(SDL_GetMouseState(&mx,&my))
-    {
-		if ((frame+1)%32 == 0) frame = 0;
-		else frame++;
-		DrawSprite(tile,buffer,(mx /32) * 32,(my /32) * 32,frame); 
-    }
-    if(keys[SDLK_ESCAPE])done = 1;
-  }while(!done);
-  exit(0);		/*technically this will end the program, but the compiler likes all functions that can return a value TO return a value*/
-  return 0;
-}
+			//If the user has Xed out the window
+            if( event.type == SDL_QUIT )
+            {
+                //Quit the program
+                done = 1;
+            }
+		}
+	}
+	clean_up();
 
-void CleanUpAll()
-{
-  CloseSprites();
-  /*any other cleanup functions can be added here*/ 
-}
-
-void Init_All()
-{
-  Init_Graphics();
-
-  InitMouse();
-  InitLevelSystem();
-  atexit(CleanUpAll);
-}
-
-int getImagePathFromFile(char *filepath,char * filename)
-{
-    FILE *fileptr = NULL;
-    char buf[255];
-    int returnValue = -1;
-    if (!filepath)
-    {
-        fprintf(stdout,"getImagePathFromFile: warning, no output parameter provided\n");
-        return -1;
-    }
-    if (!filename)
-    {
-        fprintf(stdout,"getImagePathFromFile: warning, no input file path provided\n");
-        return -1;
-    }
-    fileptr = fopen(filename,"r");
-    if (!fileptr)
-    {
-        fprintf(stderr,"unable to open file: %s\n",filename);
-        return -1;
-    }
-    if (fscanf(fileptr,"%s",buf))
-    {
-        if (strcmp(buf,"image:")==0)
-        {
-            fscanf(fileptr,"%s",filepath);
-            returnValue = 0;
-        }
-    }
-    fclose(fileptr);
-    return returnValue;
-}
-
-void addCoordinateToFile(char *filepath,int x, int y)
-{
-    FILE *fileptr = NULL;
-    if (!filepath)
-    {
-        fprintf(stdout,"addCoordinateToFile: warning, no input file path provided\n");
-        return;
-    }
-    fileptr = fopen(filepath,"a");
-    if (!fileptr)
-    {
-        fprintf(stderr,"unable to open file: %s\n",filepath);
-        return;
-    }
-    fprintf(fileptr,"newcoordinate: %i %i\n",x,y);
-    fclose(fileptr);
-}
-
-int getCoordinatesFromFile(int *x, int *y,char * filename)
-{
-    FILE *fileptr = NULL;
-    char buf[255];
-    int tx,ty;
-    int returnValue = -1;
-    if ((!x)&&(!y))
-    {
-        fprintf(stdout,"getCoordinatesFromFile: warning, no output parameter provided\n");
-        return -1;
-    }
-    if (!filename)
-    {
-        fprintf(stdout,"getCoordinatesFromFile: warning, no input file path provided\n");
-        return -1;
-    }
-    fileptr = fopen(filename,"r");
-    if (!fileptr)
-    {
-        fprintf(stderr,"unable to open file: %s\n",filename);
-        return -1;
-    }
-    while (fscanf(fileptr,"%s",buf) != EOF)
-    {
-        fprintf(stdout,"buf is: %s\n",buf);
-        if (strcmp(buf,"position:")==0)
-        {
-            fscanf(fileptr,"%i %i",&tx,&ty);
-            fprintf(stdout,"as read: %i, %i\n",tx,ty);
-            returnValue = 0;
-        }
-    }
-    fclose(fileptr);
-    if (x)*x = tx;
-    if (y)*y = ty;
-    return returnValue;
+	return 0;
 }
