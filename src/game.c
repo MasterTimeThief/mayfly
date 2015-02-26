@@ -1,16 +1,18 @@
 #include "SDL.h"
 #include "graphics.h"
+#include "menu.h"
 
 const int SCREEN_WIDTH = 1024;
-const int SCREEN_HEIGHT = 768;
+const int SCREEN_HEIGHT = 576;
 const int SCREEN_BPP = 32;
 
-//The surfaces that will be used
 SDL_Surface *buffer = NULL;
 SDL_Surface *screen = NULL;
 
-//The event structure that will be used
 SDL_Event event;
+
+Sprite *cursor;
+Menu *mainMenu;
 
 int init()
 {
@@ -28,6 +30,12 @@ int init()
     {
         return -1;    
     }
+
+	//Initialize SDL_ttf
+    if( TTF_Init() == -1 )
+    {
+        return -1;    
+    }
     
     //Set the window caption
     SDL_WM_SetCaption( "Mayfly Wars", NULL );
@@ -40,6 +48,9 @@ void clean_up()
 {
 	//Free the loaded image
     SDL_FreeSurface( buffer );
+
+	CloseSprites();
+	SDL_FreeSurface(mainMenu->message);
 	
 	//Quit SDL
 	SDL_Quit();
@@ -57,7 +68,13 @@ int main( int argc, char* args[] )
 
     //Load image
     buffer = load_image( "images/battle2.png" );
-	apply_surface(0,0,buffer,screen);
+	apply_surface(0,0,buffer,screen,NULL);
+
+	//Menu
+	cursor = LoadSprite("images/farmwife.png",32,32);
+	mainMenu = createMenu("fonts/font.ttf", 30, cursor);
+	displayMenu(mainMenu);
+
 	//apply_surface(300,300,background,screen);
 
     //Update Screen

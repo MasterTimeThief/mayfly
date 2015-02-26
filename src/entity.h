@@ -18,32 +18,13 @@ typedef struct Entity_T
   Sprite *image;		/*pointer to the actual image in memory*/
   int ex, ey;			/*keep track of where the entity is on screen*/
   int filled;			/*If 0, empty entity, else it exists*/
-  Ent_Type className;	/*Seperates entities by type, to allow different functions*/
-
-  /*Mayfly / Enemy variables*/
-  int	health;
-  int	speed;
-  int	strength;
-  int	luck;
-  
-  int	age;
-
-  int	soldierExp;
-  int	archerExp;
-  int	believerExp;
-
-  /*button / gui variables*/
-  int sizex,sizey; //Size of the button
-  //May use sprite size in future
-  int filledGui; //0 if empty, 1 if filled
-
+  int display;			/*Should it be on screen. 0 if no, 1 if yes*/
 }Entity;
 
 Entity *entityList[MAX_ENTITIES];
 
-Entity *CreateEntity();
-void FreeEntity(Entity e);
-
-
+Entity *createEntity(Sprite *spr, int intx, int inty, Ent_Type className);
+void loadEntity(Entity *e);
+void freeEntity(Entity *e);
 
 #endif
