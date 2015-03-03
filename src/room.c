@@ -1,5 +1,8 @@
 #include "room.h"
 
+extern int SCREEN_WIDTH;
+extern int SCREEN_HEIGHT;
+
 Room *createRoom()
 {
 	Room *temp = (Room*)malloc(sizeof(Room));
@@ -8,7 +11,7 @@ Room *createRoom()
 	return temp;
 }
 
-void changeBackground(Room *r, char *imageFile, SDL_Surface* final)
+void updateBackground(Room *r, char *imageFile, SDL_Surface* final)
 {
 	strncpy(r->filename,imageFile,30);
 	r->background = load_image(imageFile);

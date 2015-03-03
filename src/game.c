@@ -1,4 +1,25 @@
-#include "game.h"
+//#include "game.h"
+
+#include "SDL.h"
+#include "graphics.h"
+#include "menu.h"
+#include "room.h"
+
+int SCREEN_WIDTH = 1024;
+int SCREEN_HEIGHT = 576;
+int SCREEN_BPP = 32;
+
+Menu *mainMenu = NULL;
+Room *gameRoom = NULL;
+
+char *menuBack = "images/battle2.png";
+char *mainBack = "images/bgtest2.png";
+char *combatBack = "images/battle2.png";
+
+//SDL_Surface *buffer = NULL;
+SDL_Surface *screen = NULL;
+
+SDL_Event eventCheck;
 
 int init()
 {
@@ -46,22 +67,32 @@ void clean_up()
 
 void menuMove(int choice)
 {
-	if (choice == 1)
+	if (choice == 1) // UP
 	{
 		if		(mainMenu->choice == NEW) mainMenu->choice = EXIT;
 		else if (mainMenu->choice == LOAD) mainMenu->choice = NEW;
 		else if (mainMenu->choice == EXIT) mainMenu->choice = LOAD;
 	}
-	else if (choice == 2)
+	else if (choice == 2) // DOWN
 	{
 		if		(mainMenu->choice == NEW) mainMenu->choice = LOAD;
 		else if (mainMenu->choice == LOAD) mainMenu->choice = EXIT;
 		else if (mainMenu->choice == EXIT) mainMenu->choice = NEW;
 	}
-	/*else if (choice == "enter")
+	else if (choice == 3) // ENTER
 	{
-
-	}*/
+		if		(mainMenu->choice == NEW)
+		{
+			gameRoom->roomName = MAIN;
+			//new game script
+		}
+		else if (mainMenu->choice == LOAD) 
+		{
+			gameRoom->roomName = MAIN;
+			//load game script
+		}
+		else if (mainMenu->choice == EXIT) gameRoom->roomName = QUIT;
+	}
 	displayMenu(mainMenu);
 }
 
@@ -80,12 +111,11 @@ int main( int argc, char* args[] )
 	gameRoom = createRoom();
 
     //Load image
-    //buffer = load_image( "images/battle2.png" );
-	changeBackground(gameRoom, menuBack, screen);
+    //screen = load_image( "images/battle2.png" );
+	updateBackground(gameRoom, menuBack, screen);
 
 	//Menu
-	cursor = LoadSprite("images/testsprite2.png",32,32);
-	mainMenu = createMenu("fonts/font1.ttf", 30, cursor);
+	mainMenu = createMenu("fonts/font1.ttf", 30);
 	displayMenu(mainMenu);
 	//apply_surface(0,0,buffer,screen,NULL);
 	apply_surface(0,0,mainMenu->message,screen,NULL);
@@ -96,7 +126,7 @@ int main( int argc, char* args[] )
 		if (gameRoom->roomName == MENU)
 		{
 			//Update Screen
-			if (mainMenu->message != NULL)
+			if (mainMenu->message != NULL && mainMenu->changed == 1)
 			{
 				/*apply_surface(0,0,buffer,screen,NULL);
 				apply_surface(0,0,mainMenu->message,screen,NULL);
@@ -107,19 +137,27 @@ int main( int argc, char* args[] )
 				else if (mainMenu->choice == EXIT) choicePos = 500;
 
 				//apply_surface(0,0,buffer,screen,NULL);
-				//changeBackground(gameRoom, menuBack, screen);
+				updateBackground(gameRoom, menuBack, screen);
 				apply_surface(0,0,mainMenu->message,screen,NULL);
-				DrawSprite(mainMenu->cursor,screen,750,choicePos, 0);
+				DrawSprite(mainMenu->cursor,screen,750,choicePos, 1);
+				mainMenu->changed = 0;
 			}
 		}
 		else if (gameRoom->roomName == MAIN)
 		{
-			if (gameRoom->filename != mainBack) changeBackground(gameRoom, mainBack, screen);
+			if (gameRoom->filename != mainBack) updateBackground(gameRoom, mainBack, screen);
 		}
 		else if (gameRoom->roomName == COMBAT)
 		{
 
 		}
+		else if (gameRoom->roomName == QUIT)
+		{
+			//Quit the program
+            done = 1;
+		}
+		//screen = SDL_CreateRGBSurface(0, SCREEN_WIDTH, SCREEN_HEIGHT, 32, 0xFF000000, 0x00FF0000, 0x0000FF00, 0x000000FF);
+		//apply_surface(0,0,buffer,screen,NULL);
         if( SDL_Flip( screen ) == -1 )
         {
             return 1;    
@@ -135,7 +173,7 @@ int main( int argc, char* args[] )
 				{
 					case SDLK_UP: menuMove(1); break;
 					case SDLK_DOWN: menuMove(2); break;
-					//case SDLK_ : message = leftMessage; break;
+					case SDLK_RETURN : menuMove(3); break;
 				}
 			}
 			//If the user has Xed out the window

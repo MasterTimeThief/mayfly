@@ -1,5 +1,5 @@
-#ifndef __MENU__
-#define __MENU__
+#ifndef MENU__
+#define MENU__
 
 #include "SDL.h"
 #include "SDL_ttf.h"
@@ -20,9 +20,10 @@ typedef struct Menu_T
 	Sprite *cursor;
 	TTF_Font *font;
 	menuChoice choice;
+	int changed;  /*0 if same, 1 if changed*/
 }Menu;
 
-Menu *createMenu(char *fontFile, int fontSize, Sprite *spr);
+Menu *createMenu(char *fontFile, int fontSize);
 void displayMenu(Menu *m);
 
 #endif
