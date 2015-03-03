@@ -3,14 +3,6 @@
 
 #include "graphics.h"
 
-typedef enum  
-{ 
-    MAYFLY,
-	ENEMY,
-	BUTTON,
-    GUI 
-}Ent_Type;
-
 #define MAX_ENTITIES 100
 
 typedef struct Entity_T
@@ -18,14 +10,18 @@ typedef struct Entity_T
   Sprite *image;		/*pointer to the actual image in memory*/
   int ex, ey;			/*keep track of where the entity is on screen*/
   int restx, resty;		/*Where are they when they're resting*/
-  int filled;			/*If 0, empty entity, else it exists*/
+  int inUse;			/*If 0, empty entity, else it exists*/
   int display;			/*Should it be on screen. 0 if no, 1 if yes*/
+  int frame;
+  int currSpeed,maxSpeed;				/*animation*/
 }Entity;
 
-Entity *entityList[MAX_ENTITIES];
+extern Entity entityList[MAX_ENTITIES];
 
-Entity *createEntity(Sprite *spr, int intx, int inty, Ent_Type className);
-void loadEntity(Entity *e);
+void initEntityList();
+Entity *newEntity();
+void setupEntity(Entity *e, Sprite *spr, int intx, int inty);
+Entity *createEntity();
 void freeEntity(Entity *e);
 
 #endif

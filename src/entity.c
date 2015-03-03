@@ -1,37 +1,58 @@
 #include "entity.h"
 
-Entity *createEntity(Sprite *spr, int intx, int inty, Ent_Type className)
+Entity entityList[MAX_ENTITIES];
+int entityTotal;
+
+void initEntityList()
 {
-	Entity *temp;
-
-	int i = 0;
-	for (i = 0; i <= MAX_ENTITIES; i++)
-	{
-		if (entityList[i]->filled != 1)
-		{
-			temp->image = spr;
-			temp->ex = intx;
-			temp->ey = inty;
-			temp->filled = 1;
-			temp->display = 1;
-			entityList[i] = temp;
-
-			break;
-		}
+	int x;
+	entityTotal = 0;
+	memset(entityList,0,sizeof(Entity) * MAX_ENTITIES);
+	for(x = 0; x < MAX_ENTITIES; x++)
+	{ 
+		entityList[x].image = NULL;
 	}
-
-	return temp;
 }
 
-void loadEntity(Entity *e)
+Entity *newEntity()
 {
-	if (e->display)
+	int i;
+	if (entityTotal + 1 > MAX_ENTITIES)
 	{
-
+		fprintf(stderr, "Maximum Entities Reached.\n");
+        exit(1);	
 	}
+	for (i = 0;i < entityTotal; i++)
+	{
+		if (!entityList[i].inUse)
+		{
+			entityList[i].inUse = 1;
+			return &entityList[i];	
+		}
+	}
+	entityList[entityTotal].inUse = 1;
+	return &entityList[entityTotal++];
+}
+
+void setupEntity(Entity *e)
+{
+	e->image = NULL;
+	e->ex = 0;
+	e->ey = 0;
+	e->display = 1;
+	e->frame = 0;
+	e->currSpeed = 0;
+	e->maxSpeed = 0;
+}
+
+Entity *createEntity()
+{
+	Entity *e= newEntity();
+	setupEntity(e);
+	return e;
 }
 
 void freeEntity(Entity *e)
 {
-	e->filled = 0;
+	e->inUse = 0;
 }

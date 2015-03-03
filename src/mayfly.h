@@ -3,21 +3,53 @@
 
 #include "entity.h"
 
+#define MAX_MAYFLIES	40
+
+
+
+typedef enum
+{
+	BELIEVER,
+	SOLDIER,
+	ARCHER
+}className;
+
+//soldier beats archer
+//archer beats believer
+//believer beats soldier
+
 typedef struct Mayfly_T
 {
-  Entity *entity = CreateEntity();
-  int	health;
-  int	speed;
-  int	strength;
-  int	luck;
+	Entity *entity;
+	className currClass;
+	int		isFemale; //0 Male, 1 Female
+	
+	int	health;
+	int	speed;
+	int	strength;
+	int	luck;
 
-  int	soldierExp;
-  int	archerExp;
-  int	believerExp;
+	int	soldierExp;
+	int	archerExp;
+	int	believerExp;
 
-  //genetics flags or arrays
+	int	visible;
+	int inUse;
+	//genetics flags or arrays
 }Mayfly;
 
-void CreateMayfly
+extern Mayfly mayflyList[MAX_MAYFLIES];
+
+void initMayflyList();
+
+Mayfly *newMayfly();
+void setupMayfly(Mayfly *m);
+void createMayfly();
+void createMayflyOffspring(Mayfly *m1, Mayfly *m2);
+
+void newMayflies();
+void displayMayflies(SDL_Surface *screen);
+void freeMayfly(Mayfly *m);
+void closeMayflies();
 
 #endif

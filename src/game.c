@@ -1,13 +1,16 @@
 //#include "game.h"
 
+#include <time.h>
 #include "SDL.h"
 #include "graphics.h"
 #include "menu.h"
 #include "room.h"
+#include "mayfly.h"
 
 int SCREEN_WIDTH = 1024;
 int SCREEN_HEIGHT = 576;
 int SCREEN_BPP = 32;
+int STARTING_MAYFLY = 20;
 
 Menu *mainMenu = NULL;
 Room *gameRoom = NULL;
@@ -23,6 +26,9 @@ SDL_Event eventCheck;
 
 int init()
 {
+	/* initialize random seed: */
+	srand ( time(NULL) );
+	
 	//Initialize all SDL subsystems
     if( SDL_Init( SDL_INIT_EVERYTHING ) == -1 )
     {
@@ -67,6 +73,7 @@ void clean_up()
 
 void menuMove(int choice)
 {
+	int i;
 	if (choice == 1) // UP
 	{
 		if		(mainMenu->choice == NEW) mainMenu->choice = EXIT;
@@ -85,6 +92,11 @@ void menuMove(int choice)
 		{
 			gameRoom->roomName = MAIN;
 			//new game script
+			for (i = 0; i < STARTING_MAYFLY; i++)
+			{
+				createMayfly();
+			}
+			displayMayflies(screen);
 		}
 		else if (mainMenu->choice == LOAD) 
 		{
@@ -100,7 +112,7 @@ int main( int argc, char* args[] )
 {
 	int done = 0;
 	int choicePos;
-
+	int spriteLoop;
 	
 	//Initialize
     if( init() == -1 )
@@ -119,6 +131,9 @@ int main( int argc, char* args[] )
 	displayMenu(mainMenu);
 	//apply_surface(0,0,buffer,screen,NULL);
 	apply_surface(0,0,mainMenu->message,screen,NULL);
+
+	initMayflyList();
+	initEntityList();
 
     //Game Loop
 	while(!done)
@@ -145,7 +160,8 @@ int main( int argc, char* args[] )
 		}
 		else if (gameRoom->roomName == MAIN)
 		{
-			if (gameRoom->filename != mainBack) updateBackground(gameRoom, mainBack, screen);
+			updateBackground(gameRoom, mainBack, screen);
+			displayMayflies(screen);
 		}
 		else if (gameRoom->roomName == COMBAT)
 		{
@@ -156,24 +172,39 @@ int main( int argc, char* args[] )
 			//Quit the program
             done = 1;
 		}
-		//screen = SDL_CreateRGBSurface(0, SCREEN_WIDTH, SCREEN_HEIGHT, 32, 0xFF000000, 0x00FF0000, 0x0000FF00, 0x000000FF);
-		//apply_surface(0,0,buffer,screen,NULL);
         if( SDL_Flip( screen ) == -1 )
         {
             return 1;    
         }
 		
+		/*for (spriteLoop = 0;spriteLoop < MaxSprites; spriteLoop++)
+		{
+			updateSprite(&SpriteList[spriteLoop]);
+		}*/
+
 		//While there's an event to handle
         while( SDL_PollEvent( &eventCheck ) )
         {
 			//If a key was pressed
             if( eventCheck.type == SDL_KEYDOWN )
             {
-				switch( eventCheck.key.keysym.sym )
+				if (gameRoom->roomName == MENU)
 				{
-					case SDLK_UP: menuMove(1); break;
-					case SDLK_DOWN: menuMove(2); break;
-					case SDLK_RETURN : menuMove(3); break;
+					switch( eventCheck.key.keysym.sym )
+					{
+						case SDLK_UP:		menuMove(1); break;
+						case SDLK_DOWN:		menuMove(2); break;
+						case SDLK_RETURN :	menuMove(3); break;
+					}
+				}
+				else if (gameRoom->roomName == MAIN)
+				{
+					switch( eventCheck.key.keysym.sym )
+					{
+						/*case SDLK_UP: menuMove(1); break;
+						case SDLK_DOWN: menuMove(2); break;
+						case SDLK_RETURN : menuMove(3); break;*/
+					}
 				}
 			}
 			//If the user has Xed out the window

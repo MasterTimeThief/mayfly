@@ -2,6 +2,7 @@
 #include <stdlib.h>
 
 #include "graphics.h"
+#include "entity.h"
 #include "sprite.h"
 
 /*
@@ -109,4 +110,15 @@ void DrawSprite(Sprite *sprite,SDL_Surface *surface,int sx,int sy, int frame)
     dest.w = sprite->w;
     dest.h = sprite->h;
     SDL_BlitSurface(sprite->image, &src, surface, &dest);
+}
+
+void updateSprite(Entity *ent)
+{
+	if (ent->currSpeed == 0)
+	{
+		ent->currSpeed = ent->maxSpeed;
+		if (ent->frame + 1 <= ent->image->framesperline) ent->frame++;
+		else ent->frame = 0;
+	}
+	else ent->currSpeed--;
 }

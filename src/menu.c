@@ -11,7 +11,7 @@ Menu *createMenu(char *fontFile, int fontSize)
 	temp->message = SDL_CreateRGBSurface(0, SCREEN_WIDTH, SCREEN_HEIGHT, 32, 0xFF000000, 0x00FF0000, 0x0000FF00, 0x000000FF);
 	temp->font = TTF_OpenFont( fontFile, fontSize );
 	temp->choice = NEW;
-	temp->cursor = LoadSprite("images/believer.png",32,32);
+	temp->cursor = LoadSprite("images/cursor.png",32,32);
 	temp->changed = 0;
 	return temp;
 }
