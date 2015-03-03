@@ -4,6 +4,8 @@
 #include "SDL.h"
 #include "SDL_ttf.h"
 #include "sprite.h"
+#include "graphics.h"
+#include "game.h"
 
 typedef enum
 {

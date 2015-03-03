@@ -1,18 +1,4 @@
-#include "SDL.h"
-#include "graphics.h"
-#include "menu.h"
-
-const int SCREEN_WIDTH = 1024;
-const int SCREEN_HEIGHT = 576;
-const int SCREEN_BPP = 32;
-
-SDL_Surface *buffer = NULL;
-SDL_Surface *screen = NULL;
-
-SDL_Event event;
-
-Sprite *cursor;
-Menu *mainMenu;
+#include "game.h"
 
 int init()
 {
@@ -47,18 +33,43 @@ int init()
 void clean_up()
 {
 	//Free the loaded image
-    SDL_FreeSurface( buffer );
+	SDL_FreeSurface( gameRoom->background );
 
 	CloseSprites();
 	SDL_FreeSurface(mainMenu->message);
+
+	TTF_Quit();
 	
 	//Quit SDL
 	SDL_Quit();
 }
 
+void menuMove(int choice)
+{
+	if (choice == 1)
+	{
+		if		(mainMenu->choice == NEW) mainMenu->choice = EXIT;
+		else if (mainMenu->choice == LOAD) mainMenu->choice = NEW;
+		else if (mainMenu->choice == EXIT) mainMenu->choice = LOAD;
+	}
+	else if (choice == 2)
+	{
+		if		(mainMenu->choice == NEW) mainMenu->choice = LOAD;
+		else if (mainMenu->choice == LOAD) mainMenu->choice = EXIT;
+		else if (mainMenu->choice == EXIT) mainMenu->choice = NEW;
+	}
+	/*else if (choice == "enter")
+	{
+
+	}*/
+	displayMenu(mainMenu);
+}
+
 int main( int argc, char* args[] )
 {
 	int done = 0;
+	int choicePos;
+
 	
 	//Initialize
     if( init() == -1 )
@@ -66,28 +77,69 @@ int main( int argc, char* args[] )
         return 1;
 	}
 
+	gameRoom = createRoom();
+
     //Load image
-    buffer = load_image( "images/battle2.png" );
-	apply_surface(0,0,buffer,screen,NULL);
+    //buffer = load_image( "images/battle2.png" );
+	changeBackground(gameRoom, menuBack, screen);
 
 	//Menu
-	cursor = LoadSprite("images/farmwife.png",32,32);
-	mainMenu = createMenu("fonts/font.ttf", 30, cursor);
+	cursor = LoadSprite("images/testsprite2.png",32,32);
+	mainMenu = createMenu("fonts/font1.ttf", 30, cursor);
 	displayMenu(mainMenu);
-
-	//apply_surface(300,300,background,screen);
-
-    //Update Screen
-    SDL_Flip( screen );
+	//apply_surface(0,0,buffer,screen,NULL);
+	apply_surface(0,0,mainMenu->message,screen,NULL);
 
     //Game Loop
 	while(!done)
 	{
-		//While there's an event to handle
-        while( SDL_PollEvent( &event ) )
+		if (gameRoom->roomName == MENU)
+		{
+			//Update Screen
+			if (mainMenu->message != NULL)
+			{
+				/*apply_surface(0,0,buffer,screen,NULL);
+				apply_surface(0,0,mainMenu->message,screen,NULL);
+				mainMenu->message = NULL;*/
+
+				if (mainMenu->choice == NEW) choicePos = 400;
+				else if (mainMenu->choice == LOAD) choicePos = 450;
+				else if (mainMenu->choice == EXIT) choicePos = 500;
+
+				//apply_surface(0,0,buffer,screen,NULL);
+				//changeBackground(gameRoom, menuBack, screen);
+				apply_surface(0,0,mainMenu->message,screen,NULL);
+				DrawSprite(mainMenu->cursor,screen,750,choicePos, 0);
+			}
+		}
+		else if (gameRoom->roomName == MAIN)
+		{
+			if (gameRoom->filename != mainBack) changeBackground(gameRoom, mainBack, screen);
+		}
+		else if (gameRoom->roomName == COMBAT)
+		{
+
+		}
+        if( SDL_Flip( screen ) == -1 )
         {
+            return 1;    
+        }
+		
+		//While there's an event to handle
+        while( SDL_PollEvent( &eventCheck ) )
+        {
+			//If a key was pressed
+            if( eventCheck.type == SDL_KEYDOWN )
+            {
+				switch( eventCheck.key.keysym.sym )
+				{
+					case SDLK_UP: menuMove(1); break;
+					case SDLK_DOWN: menuMove(2); break;
+					//case SDLK_ : message = leftMessage; break;
+				}
+			}
 			//If the user has Xed out the window
-            if( event.type == SDL_QUIT )
+            else if( eventCheck.type == SDL_QUIT )
             {
                 //Quit the program
                 done = 1;

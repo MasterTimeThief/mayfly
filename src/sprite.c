@@ -14,7 +14,6 @@ void InitSpriteList()
 {
   int x;
   NumSprites = 0;
-  spriteFrames = 4;
   memset(SpriteList,0,sizeof(Sprite) * MaxSprites);
   for(x = 0;x < MaxSprites;x++)SpriteList[x].image = NULL;
 }
@@ -22,7 +21,7 @@ void InitSpriteList()
 
 /*Create a sprite from a file, the most common use for it.*/
 
-Sprite *LoadSprite(char *filename,int sizex, int sizey)
+Sprite *LoadSprite(char* filename,int sizex, int sizey)
 {
   int i;
   SDL_Surface *temp;
@@ -58,9 +57,9 @@ Sprite *LoadSprite(char *filename,int sizex, int sizey)
   /*sets a transparent color for blitting.*/
   SDL_SetColorKey(SpriteList[i].image, SDL_SRCCOLORKEY , SDL_MapRGB(SpriteList[i].image->format, 255,255,255));
    /*then copy the given information to the sprite*/
-  strncpy(SpriteList[i].filename,filename,20);
+  strncpy(SpriteList[i].filename,filename,30);
       /*now sprites don't have to be 16 frames per line, but most will be.*/
-  SpriteList[i].framesperline = spriteFrames;
+  SpriteList[i].framesperline = 4;
   SpriteList[i].w = sizex;
   SpriteList[i].h = sizey;
   SpriteList[i].used++;
