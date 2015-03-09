@@ -1,6 +1,6 @@
 #include "menu.h"
 
-SDL_Color textColor = { 255, 8, 255 };
+extern SDL_Color textColor;
 
 extern int SCREEN_WIDTH;
 extern int SCREEN_HEIGHT;

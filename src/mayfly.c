@@ -1,3 +1,4 @@
+#include "SDL_ttf.h"
 #include "mayfly.h"
 #include "graphics.h"
 #include "mouse.h"
@@ -6,12 +7,17 @@ extern int SCREEN_WIDTH;
 extern int SCREEN_HEIGHT;
 Mayfly mayflyList[MAX_MAYFLIES];
 
+extern	SDL_Color textColor;
+extern SDL_Surface *screen;
+
 int mayflyTotal;
 static int maxMayflies = 0;
 
 static Mayfly *mouseMayfly = NULL;
 extern int mx;
 extern int my;
+
+TTF_Font *mayFont;
 
 void initMayflyList()
 {
@@ -22,6 +28,7 @@ void initMayflyList()
 	{ 
 		mayflyList[x].entity = NULL;
 	}
+	mayFont = TTF_OpenFont("fonts/mayflyFont.ttf", 20);
 }
 
 Mayfly *newMayfly()
@@ -115,7 +122,7 @@ void createMayflyOffspring(Mayfly *m1, Mayfly *m2)
 	//genetic code
 }
 
-void displayMayflies(SDL_Surface *screen)
+void displayMayflies()
 {
 	int i;
 	for (i = 0;i < maxMayflies; i++)
@@ -125,6 +132,45 @@ void displayMayflies(SDL_Surface *screen)
 			DrawSprite(mayflyList[i].entity->image, screen, mayflyList[i].entity->ex, mayflyList[i].entity->ey, mayflyList[i].entity->frame);
 		}
 	}
+}
+
+void displayMayflyStats(Mayfly *m)
+{
+	SDL_Surface *temp;
+	char		tempString[2];
+
+	//Display Stat Names
+	temp = TTF_RenderText_Solid( mayFont, "Health: ", textColor );
+	apply_surface(20,20,temp,screen,NULL);
+
+	temp = TTF_RenderText_Solid( mayFont, "Speed: ", textColor );
+	apply_surface(20,70,temp,screen,NULL);
+
+	temp = TTF_RenderText_Solid( mayFont, "Strength: ", textColor );
+	apply_surface(20,120,temp,screen,NULL);
+
+	temp = TTF_RenderText_Solid( mayFont, "Luck: ", textColor );
+	apply_surface(20,170,temp,screen,NULL);
+
+
+	//Display Stat values
+	sprintf(tempString, "%i", m->health);
+	temp = TTF_RenderText_Solid( mayFont, tempString, textColor );
+	apply_surface(150,20,temp,screen,NULL);
+
+	sprintf(tempString, "%i", m->speed);
+	temp = TTF_RenderText_Solid( mayFont, tempString, textColor );
+	apply_surface(150,70,temp,screen,NULL);
+
+	sprintf(tempString, "%i", m->strength);
+	temp = TTF_RenderText_Solid( mayFont, tempString, textColor );
+	apply_surface(150,120,temp,screen,NULL);
+
+	sprintf(tempString, "%i", m->luck);
+	temp = TTF_RenderText_Solid( mayFont, tempString, textColor );
+	apply_surface(150,170,temp,screen,NULL);
+
+	SDL_FreeSurface(temp);
 }
 
 void freeMayfly(Mayfly *m)
@@ -161,14 +207,21 @@ void mayflyAllThink()
 
 void mayflyThink(Mayfly *m)
 {
-	if (mouseMayfly == NULL && clickLeft && mouseHover(m->entity->ex,  m->entity->ey,  m->entity->image->w,  m->entity->image->h))
+	//Check if mouse collides with Mayfly
+	if (mouseHover(m->entity->ex,  m->entity->ey,  m->entity->image->w,  m->entity->image->h))
 	{
-		mouseMayfly = m;
+		displayMayflyStats(m);
+		if (mouseMayfly == NULL && clickLeft)
+		{
+			mouseMayfly = m;
+		}
+		else if (!clickLeft) mouseMayfly = NULL;
+
 	}
-	else if (!clickLeft) mouseMayfly = NULL;
 
 	if (mouseMayfly != NULL)
 	{
+		
 		mouseMayfly->entity->ex = mx-16;
 		mouseMayfly->entity->ey = my-16;
 	}

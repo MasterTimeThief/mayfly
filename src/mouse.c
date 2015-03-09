@@ -31,24 +31,13 @@ void mouseThink()
 
 int mouseHover(int x, int y, int w, int h)
 {
-	//The mouse offsets
-	int tempx = 0, tempy = 0;
-
-	//If the mouse moved
-	if( clickLeft )
+	//If the mouse is over the button
+	if( ( mx > x ) && ( mx < x + w ) && ( my > y ) && ( my < y + h ) )
 	{
-		//Get the mouse offsets
-		tempx = mx;
-		tempy = my;
-
-		//If the mouse is over the button
-		if( ( tempx > x ) && ( tempx < x + w ) && ( tempy > y ) && ( tempy < y + h ) )
-		{
-			return 1;  
-		}
-		else
-		{
-			return 0;
-		}
+		return 1;  
+	}
+	else
+	{
+		return 0;
 	}
 }

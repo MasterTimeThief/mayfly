@@ -22,8 +22,9 @@ char *combatBack = "images/battle2.png";
 
 //SDL_Surface *buffer = NULL;
 SDL_Surface *screen = NULL;
-
+SDL_Color textColor = { 0, 0, 0 };
 SDL_Event eventCheck;
+
 int clickLeft, clickRight, mx, my;
 
 int init()
@@ -141,7 +142,7 @@ int main( int argc, char* args[] )
 	updateBackground(gameRoom, menuBack, screen);
 
 	//Menu
-	mainMenu = createMenu("fonts/font1.ttf", 30);
+	mainMenu = createMenu("fonts/menuFont.ttf", 30);
 	displayMenu(mainMenu);
 	//apply_surface(0,0,buffer,screen,NULL);
 	apply_surface(0,0,mainMenu->message,screen,NULL);
