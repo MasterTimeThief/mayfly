@@ -37,6 +37,7 @@ typedef struct Mayfly_T
 }Mayfly;
 
 extern Mayfly mayflyList[MAX_MAYFLIES];
+extern Mayfly mayflySelect[15];
 
 void initMayflyList();
 

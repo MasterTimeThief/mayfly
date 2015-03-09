@@ -34,14 +34,7 @@ void displayMenu(Menu *m)
 	temp = TTF_RenderText_Solid( m->font, "EXIT", textColor );
 	apply_surface(800,500,temp,m->message,NULL);
 
-	/*if (m->choice == NEW) choicePos = 400;
-	else if (m->choice == LOAD) choicePos = 450;
-	else if (m->choice == EXIT) choicePos = 500;*/
-	//DrawSprite(m->cursor,m->message,750,choicePos, 0);
-
 	m->changed = 1;
 
-	//m->message = curr;
 	SDL_FreeSurface(temp);
-	//SDL_FreeSurface(curr);
 }

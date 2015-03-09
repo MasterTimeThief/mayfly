@@ -35,5 +35,6 @@ typedef struct Room_T
 
 Room *createRoom();
 void updateBackground(Room *r, char *imageFile, SDL_Surface* final);
+void roomThink(Room *r);
 
 #endif

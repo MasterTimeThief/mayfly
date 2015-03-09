@@ -18,9 +18,9 @@ typedef struct Sprite_T
 Sprite SpriteList[MaxSprites];
 Sprite *Msprite;
 void InitSpriteList();
-void FreeSprite(Sprite *img);
+void FreeSprite(Sprite *sprite);
 Sprite *LoadSprite(char* filename,int sizex, int sizey);		/*simplest file to load*/
-void updateSprite(Sprite *img);
+//void updateSprite(Entity *ent);
 void DrawSprite(Sprite *sprite,SDL_Surface *surface,int sx,int sy, int frame);
 void closeSprites();	/*call this before you exit to make sure all the memory that your program used is given back to your OS*/
 

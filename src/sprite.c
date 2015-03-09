@@ -117,7 +117,7 @@ void updateSprite(Entity *ent)
 	if (ent->currSpeed == 0)
 	{
 		ent->currSpeed = ent->maxSpeed;
-		if (ent->frame + 1 <= ent->image->framesperline) ent->frame++;
+		if (ent->frame + 1 < ent->image->framesperline) ent->frame++;
 		else ent->frame = 0;
 	}
 	else ent->currSpeed--;

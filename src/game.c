@@ -16,9 +16,9 @@ int STARTING_MAYFLY = 20;
 Menu *mainMenu = NULL;
 Room *gameRoom = NULL;
 
-char *menuBack = "images/battle2.png";
-char *mainBack = "images/bgtest2.png";
-char *combatBack = "images/battle2.png";
+char *menuBack = "images/menu.png";
+char *mainBack = "images/main.png";
+char *combatBack = "images/battle.png";
 
 //SDL_Surface *buffer = NULL;
 SDL_Surface *screen = NULL;
@@ -68,6 +68,7 @@ void allThink()
 {
 	mouseThink();
 	mayflyAllThink();
+	roomThink(gameRoom);
 }
 
 void clean_up()

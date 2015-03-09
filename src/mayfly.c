@@ -6,9 +6,10 @@
 extern int SCREEN_WIDTH;
 extern int SCREEN_HEIGHT;
 Mayfly mayflyList[MAX_MAYFLIES];
+Mayfly mayflySelect[15];
 
 extern	SDL_Color textColor;
-extern SDL_Surface *screen;
+extern	SDL_Surface *screen;
 
 int mayflyTotal;
 static int maxMayflies = 0;
@@ -27,8 +28,9 @@ void initMayflyList()
 	for(x = 0; x < MAX_MAYFLIES; x++)
 	{ 
 		mayflyList[x].entity = NULL;
+		if (x < 15)	mayflySelect[x].entity = NULL;
 	}
-	mayFont = TTF_OpenFont("fonts/mayflyFont.ttf", 20);
+	mayFont = TTF_OpenFont("fonts/mayflyFont.ttf", 30);
 }
 
 Mayfly *newMayfly()
@@ -60,14 +62,14 @@ void setupMayfly(Mayfly *m)
 	int tempClass;
 
 	//Class and Gender
-	tempClass = rand() % 2;
-	m->isFemale = rand() % 1;
+	tempClass = rand() % 3;
+	m->isFemale = rand() % 2;
 
 	//Position
 	/*tempX = rand() % (0.8 * SCREEN_WIDTH) + (0.1 * SCREEN_WIDTH);
 	tempY = rand() % (0.8 * SCREEN_HEIGHT) + (0.1 * SCREEN_HEIGHT);*/
-	tempX = rand() % 800 + 100;
-	tempY = rand() % 400 + 50;
+	tempX = rand() % 700 + 256;
+	tempY = rand() % 220 + 288;
 
 	//Load proper sprite
 	if (tempClass == 0)
@@ -107,6 +109,7 @@ void setupMayfly(Mayfly *m)
 	m->entity->image = tempSprite;
 	m->entity->ex = tempX;
 	m->entity->ey = tempY;
+	m->entity->maxSpeed = 3;
 }
 
 void createMayfly()
@@ -137,38 +140,38 @@ void displayMayflies()
 void displayMayflyStats(Mayfly *m)
 {
 	SDL_Surface *temp;
-	char		tempString[2];
+	char		tempString[3];
 
 	//Display Stat Names
 	temp = TTF_RenderText_Solid( mayFont, "Health: ", textColor );
-	apply_surface(20,20,temp,screen,NULL);
+	apply_surface(20,50,temp,screen,NULL);
 
 	temp = TTF_RenderText_Solid( mayFont, "Speed: ", textColor );
-	apply_surface(20,70,temp,screen,NULL);
+	apply_surface(20,100,temp,screen,NULL);
 
 	temp = TTF_RenderText_Solid( mayFont, "Strength: ", textColor );
-	apply_surface(20,120,temp,screen,NULL);
+	apply_surface(20,150,temp,screen,NULL);
 
 	temp = TTF_RenderText_Solid( mayFont, "Luck: ", textColor );
-	apply_surface(20,170,temp,screen,NULL);
+	apply_surface(20,200,temp,screen,NULL);
 
 
 	//Display Stat values
 	sprintf(tempString, "%i", m->health);
 	temp = TTF_RenderText_Solid( mayFont, tempString, textColor );
-	apply_surface(150,20,temp,screen,NULL);
+	apply_surface(150,50,temp,screen,NULL);
 
 	sprintf(tempString, "%i", m->speed);
 	temp = TTF_RenderText_Solid( mayFont, tempString, textColor );
-	apply_surface(150,70,temp,screen,NULL);
+	apply_surface(150,100,temp,screen,NULL);
 
 	sprintf(tempString, "%i", m->strength);
 	temp = TTF_RenderText_Solid( mayFont, tempString, textColor );
-	apply_surface(150,120,temp,screen,NULL);
+	apply_surface(150,150,temp,screen,NULL);
 
 	sprintf(tempString, "%i", m->luck);
 	temp = TTF_RenderText_Solid( mayFont, tempString, textColor );
-	apply_surface(150,170,temp,screen,NULL);
+	apply_surface(150,200,temp,screen,NULL);
 
 	SDL_FreeSurface(temp);
 }
@@ -203,6 +206,13 @@ void mayflyAllThink()
 			mayflyThink(&mayflyList[i]);
 		}
 	}
+	
+	if (mouseMayfly != NULL)
+	{
+		
+		mouseMayfly->entity->ex = mx-16;
+		mouseMayfly->entity->ey = my-16;
+	}
 }
 
 void mayflyThink(Mayfly *m)
@@ -219,10 +229,5 @@ void mayflyThink(Mayfly *m)
 
 	}
 
-	if (mouseMayfly != NULL)
-	{
-		
-		mouseMayfly->entity->ex = mx-16;
-		mouseMayfly->entity->ey = my-16;
-	}
+	updateSprite(m->entity);
 }
