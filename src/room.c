@@ -8,6 +8,7 @@ Room *createRoom()
 	Room *temp = (Room*)malloc(sizeof(Room));
 	temp->background = SDL_CreateRGBSurface(0, SCREEN_WIDTH, SCREEN_HEIGHT, 32, 0xFF000000, 0x00FF0000, 0x0000FF00, 0x000000FF);
 	temp->roomName = MENU;
+	temp->mode = MOVE;
 	return temp;
 }
 

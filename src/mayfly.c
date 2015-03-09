@@ -1,5 +1,6 @@
 #include "mayfly.h"
 #include "graphics.h"
+#include "mouse.h"
 
 extern int SCREEN_WIDTH;
 extern int SCREEN_HEIGHT;
@@ -7,6 +8,11 @@ Mayfly mayflyList[MAX_MAYFLIES];
 
 int mayflyTotal;
 static int maxMayflies = 0;
+
+static Mayfly *mouseMayfly = NULL;
+extern int mx;
+extern int my;
+
 void initMayflyList()
 {
 	int x;
@@ -112,7 +118,7 @@ void createMayflyOffspring(Mayfly *m1, Mayfly *m2)
 void displayMayflies(SDL_Surface *screen)
 {
 	int i;
-	for (i = 0;i < 40; i++)
+	for (i = 0;i < maxMayflies; i++)
 	{
 		if (mayflyList[i].inUse && mayflyList[i].visible)
 		{
@@ -132,11 +138,38 @@ void freeMayfly(Mayfly *m)
 void closeMayflies()
 {
 	int i;
-	for (i = 0;i < 40; i++)
+	for (i = 0;i < maxMayflies; i++)
 	{
 		if (mayflyList[i].entity != NULL)
 		{
 			freeMayfly(&mayflyList[i]);
 		}
+	}
+}
+
+void mayflyAllThink()
+{
+	int i;
+	for (i = 0;i < maxMayflies; i++)
+	{
+		if (mayflyList[i].entity != NULL)
+		{
+			mayflyThink(&mayflyList[i]);
+		}
+	}
+}
+
+void mayflyThink(Mayfly *m)
+{
+	if (mouseMayfly == NULL && clickLeft && mouseHover(m->entity->ex,  m->entity->ey,  m->entity->image->w,  m->entity->image->h))
+	{
+		mouseMayfly = m;
+	}
+	else if (!clickLeft) mouseMayfly = NULL;
+
+	if (mouseMayfly != NULL)
+	{
+		mouseMayfly->entity->ex = mx-16;
+		mouseMayfly->entity->ey = my-16;
 	}
 }

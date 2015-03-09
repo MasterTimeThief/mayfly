@@ -23,5 +23,6 @@ Entity *newEntity();
 void setupEntity(Entity *e, Sprite *spr, int intx, int inty);
 Entity *createEntity();
 void freeEntity(Entity *e);
+void closeEntities();
 
 #endif

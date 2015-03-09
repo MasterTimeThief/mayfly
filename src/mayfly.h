@@ -5,8 +5,6 @@
 
 #define MAX_MAYFLIES	40
 
-
-
 typedef enum
 {
 	BELIEVER,
@@ -51,5 +49,8 @@ void newMayflies();
 void displayMayflies(SDL_Surface *screen);
 void freeMayfly(Mayfly *m);
 void closeMayflies();
+
+void mayflyAllThink();
+void mayflyThink(Mayfly *m);
 
 #endif

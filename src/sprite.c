@@ -87,15 +87,15 @@ void FreeSprite(Sprite *sprite)
   lying around*/
 }
 
-void CloseSprites()
+void closeSprites()
 {
-  int i;
-   for(i = 0;i < MaxSprites;i++)
-   {
-     /*it shouldn't matter if the sprite is already freed, 
-     FreeSprite checks for that*/
-      FreeSprite(&SpriteList[i]);
-   }
+	int i;
+	for(i = 0;i < MaxSprites;i++)
+	{
+		/*it shouldn't matter if the sprite is already freed, 
+		FreeSprite checks for that*/
+		FreeSprite(&SpriteList[i]);
+	}
 }
 
 void DrawSprite(Sprite *sprite,SDL_Surface *surface,int sx,int sy, int frame)

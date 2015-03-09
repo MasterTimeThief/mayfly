@@ -54,5 +54,16 @@ Entity *createEntity()
 
 void freeEntity(Entity *e)
 {
+	if (e->image != NULL)	FreeSprite(e->image);
 	e->inUse = 0;
+	entityTotal--;
+}
+
+void closeEntities()
+{
+	int x;
+	for(x = 0; x < MAX_ENTITIES; x++)
+	{ 
+		freeEntity(&entityList[x]);
+	}
 }

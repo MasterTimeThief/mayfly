@@ -6,6 +6,7 @@
 #include "menu.h"
 #include "room.h"
 #include "mayfly.h"
+#include "mouse.h"
 
 int SCREEN_WIDTH = 1024;
 int SCREEN_HEIGHT = 576;
@@ -23,6 +24,7 @@ char *combatBack = "images/battle2.png";
 SDL_Surface *screen = NULL;
 
 SDL_Event eventCheck;
+int clickLeft, clickRight, mx, my;
 
 int init()
 {
@@ -52,17 +54,29 @@ int init()
     
     //Set the window caption
     SDL_WM_SetCaption( "Mayfly Wars", NULL );
+
+	initMayflyList();
+	initEntityList();
+	mouseInit();
     
     //If everything initialized fine
     return 1;
+}
+
+void allThink()
+{
+	mouseThink();
+	mayflyAllThink();
 }
 
 void clean_up()
 {
 	//Free the loaded image
 	SDL_FreeSurface( gameRoom->background );
-
-	CloseSprites();
+	
+	closeEntities();
+	closeSprites();
+	
 	SDL_FreeSurface(mainMenu->message);
 
 	TTF_Quit();
@@ -132,9 +146,6 @@ int main( int argc, char* args[] )
 	//apply_surface(0,0,buffer,screen,NULL);
 	apply_surface(0,0,mainMenu->message,screen,NULL);
 
-	initMayflyList();
-	initEntityList();
-
     //Game Loop
 	while(!done)
 	{
@@ -172,6 +183,10 @@ int main( int argc, char* args[] )
 			//Quit the program
             done = 1;
 		}
+
+		//Run think functions
+		allThink();
+
         if( SDL_Flip( screen ) == -1 )
         {
             return 1;    

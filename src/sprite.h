@@ -22,6 +22,6 @@ void FreeSprite(Sprite *img);
 Sprite *LoadSprite(char* filename,int sizex, int sizey);		/*simplest file to load*/
 void updateSprite(Sprite *img);
 void DrawSprite(Sprite *sprite,SDL_Surface *surface,int sx,int sy, int frame);
-void CloseSprites();	/*call this before you exit to make sure all the memory that your program used is given back to your OS*/
+void closeSprites();	/*call this before you exit to make sure all the memory that your program used is given back to your OS*/
 
 #endif

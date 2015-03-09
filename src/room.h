@@ -14,11 +14,22 @@ typedef enum
 	QUIT
 }RoomType;
 
+typedef enum
+{
+	MOVE,
+	DRAFT,
+	HEAL,
+	TRAIN,
+	SCOUT,
+	BREED
+}RoomMode;
+
 typedef struct Room_T
 {
 	SDL_Surface *background;
-	char filename[30];
-	RoomType roomName;
+	char		filename[30];
+	RoomType	roomName;
+	RoomMode	mode;
 	//TTF_Font *font; //Optional
 }Room;
 
