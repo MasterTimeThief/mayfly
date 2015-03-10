@@ -7,6 +7,7 @@ extern int clickLeft;
 extern int clickRight;
 extern int mx;
 extern int my;
+extern int stopClick;
 
 void mouseInit();
 void mouseThink();

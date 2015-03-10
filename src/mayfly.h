@@ -2,6 +2,7 @@
 #define __MAYFLY__
 
 #include "entity.h"
+#include "room.h"
 
 #define MAX_MAYFLIES	40
 
@@ -20,8 +21,10 @@ typedef struct Mayfly_T
 {
 	Entity *entity;
 	className currClass;
-	int		isFemale; //0 Male, 1 Female
+	int	isFemale; //0 Male, 1 Female
 	
+	int age;
+
 	int	health;
 	int	speed;
 	int	strength;
@@ -34,7 +37,8 @@ typedef struct Mayfly_T
 	int	visible;
 	int inUse;
 	int selected;
-	//genetics flags or arrays
+
+	//void (*think)(Entity *e);
 }Mayfly;
 
 extern Mayfly mayflyList[MAX_MAYFLIES];
@@ -47,12 +51,15 @@ void setupMayfly(Mayfly *m);
 void createMayfly();
 void createMayflyOffspring(Mayfly *m1, Mayfly *m2);
 
+
 void newMayflies();
 void displayMayflies(SDL_Surface *screen);
 void freeMayfly(Mayfly *m);
 void closeMayflies();
 void clearMayflySelection();
-void mayflyAllThink();
+int	 checkSelected();
+void setupMayflyOffspring(Mayfly *child);
+void mayflyAllThink(Room *r);
 void mayflyThink(Mayfly *m);
 
 #endif

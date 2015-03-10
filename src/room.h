@@ -33,7 +33,8 @@ typedef struct Room_T
 }Room;
 
 Room *createRoom();
-void updateBackground(Room *r, char *imageFile, SDL_Surface* final);
+void updateBackground(Room *r, SDL_Surface* final);
+void changeBackground(Room *r, char *imageFile);
 void roomThink(Room *r);
 
 #endif

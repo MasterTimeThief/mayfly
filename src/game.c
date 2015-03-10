@@ -25,7 +25,7 @@ SDL_Surface *screen = NULL;
 SDL_Color textColor = { 0, 0, 0 };
 SDL_Event eventCheck;
 
-int clickLeft, clickRight, mx, my;
+int clickLeft, clickRight, mx, my, stopClick;
 
 int init()
 {
@@ -67,7 +67,7 @@ int init()
 void allThink()
 {
 	mouseThink();
-	mayflyAllThink();
+	mayflyAllThink(gameRoom);
 	roomThink(gameRoom);
 }
 
@@ -116,6 +116,7 @@ void menuMove(int choice)
 		if		(mainMenu->choice == NEW)
 		{
 			gameRoom->roomName = MAIN;
+			changeBackground(gameRoom, mainBack);
 			//new game script
 			for (i = 0; i < STARTING_MAYFLY; i++)
 			{
@@ -126,6 +127,7 @@ void menuMove(int choice)
 		else if (mainMenu->choice == LOAD) 
 		{
 			gameRoom->roomName = MAIN;
+			changeBackground(gameRoom, mainBack);
 			//load game script
 		}
 		else if (mainMenu->choice == EXIT) gameRoom->roomName = QUIT;
@@ -148,13 +150,11 @@ int main( int argc, char* args[] )
 	gameRoom = createRoom();
 
     //Load image
-    //screen = load_image( "images/battle2.png" );
-	updateBackground(gameRoom, menuBack, screen);
+	updateBackground(gameRoom, screen);
 
 	//Menu
 	mainMenu = createMenu("fonts/menuFont.ttf", 30);
 	displayMenu(mainMenu);
-	//apply_surface(0,0,buffer,screen,NULL);
 	apply_surface(0,0,mainMenu->message,screen,NULL);
 
     //Game Loop
@@ -165,16 +165,11 @@ int main( int argc, char* args[] )
 			//Update Screen
 			if (mainMenu->message != NULL && mainMenu->changed == 1)
 			{
-				/*apply_surface(0,0,buffer,screen,NULL);
-				apply_surface(0,0,mainMenu->message,screen,NULL);
-				mainMenu->message = NULL;*/
-
 				if (mainMenu->choice == NEW) choicePos = 400;
 				else if (mainMenu->choice == LOAD) choicePos = 450;
 				else if (mainMenu->choice == EXIT) choicePos = 500;
 
-				//apply_surface(0,0,buffer,screen,NULL);
-				updateBackground(gameRoom, menuBack, screen);
+				updateBackground(gameRoom, screen);
 				apply_surface(0,0,mainMenu->message,screen,NULL);
 				DrawSprite(mainMenu->cursor,screen,750,choicePos, 1);
 				mainMenu->changed = 0;
@@ -182,7 +177,7 @@ int main( int argc, char* args[] )
 		}
 		else if (gameRoom->roomName == MAIN)
 		{
-			updateBackground(gameRoom, mainBack, screen);
+			updateBackground(gameRoom, screen);
 			displayMayflies(screen);
 		}
 		else if (gameRoom->roomName == COMBAT)
@@ -202,11 +197,6 @@ int main( int argc, char* args[] )
         {
             return 1;    
         }
-		
-		/*for (spriteLoop = 0;spriteLoop < MaxSprites; spriteLoop++)
-		{
-			updateSprite(&SpriteList[spriteLoop]);
-		}*/
 
 		//While there's an event to handle
         while( SDL_PollEvent( &eventCheck ) )

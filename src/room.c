@@ -2,6 +2,7 @@
 
 extern int SCREEN_WIDTH;
 extern int SCREEN_HEIGHT;
+extern int SCREEN_BPP;
 
 extern TTF_Font *mayFont;
 extern int mayflyTotal;
@@ -12,17 +13,26 @@ extern SDL_Surface *screen;
 Room *createRoom()
 {
 	Room *temp = (Room*)malloc(sizeof(Room));
-	temp->background = SDL_CreateRGBSurface(0, SCREEN_WIDTH, SCREEN_HEIGHT, 32, 0xFF000000, 0x00FF0000, 0x0000FF00, 0x000000FF);
+	//temp->background = SDL_CreateRGBSurface(0, SCREEN_WIDTH, SCREEN_HEIGHT, 32, 0xFF000000, 0x00FF0000, 0x0000FF00, 0x000000FF);
+	temp->background = load_image("images/menu.png");
 	temp->roomName = MENU;
 	temp->mode = BREED;
 	return temp;
 }
 
-void updateBackground(Room *r, char *imageFile, SDL_Surface* final)
+void updateBackground(Room *r, SDL_Surface* final)
 {
-	strncpy(r->filename,imageFile,30);
-	r->background = load_image(imageFile);
 	apply_surface(0, 0, r->background, final, NULL);
+}
+
+void changeBackground(Room *r, char *imageFile)
+{
+	if (r->background != NULL)
+	{
+		SDL_FreeSurface(r->background);
+	}
+	strncpy(r->filename,imageFile,30);
+	r->background = load_image(r->filename);
 }
 
 void displayRoomInfo(Room *r)

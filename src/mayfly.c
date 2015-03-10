@@ -3,6 +3,8 @@
 #include "graphics.h"
 #include "mouse.h"
 
+extern int entityTotal;
+
 extern int SCREEN_WIDTH;
 extern int SCREEN_HEIGHT;
 Mayfly mayflyList[MAX_MAYFLIES];
@@ -43,7 +45,8 @@ Mayfly *newMayfly()
 	if (maxMayflies + 1 > MAX_MAYFLIES)
 	{
 		fprintf(stderr, "Maximum Mayflies Reached.\n");
-        exit(1);	
+		return NULL;
+        //exit(1);	
 	}
 	for (i = 0;i < maxMayflies; i++)
 	{
@@ -68,10 +71,8 @@ void setupMayfly(Mayfly *m)
 	//Class and Gender
 	tempClass = rand() % 3;
 	m->isFemale = rand() % 2;
-
+	//m->think = mayflyDoNothing;
 	//Position
-	/*tempX = rand() % (0.8 * SCREEN_WIDTH) + (0.1 * SCREEN_WIDTH);
-	tempY = rand() % (0.8 * SCREEN_HEIGHT) + (0.1 * SCREEN_HEIGHT);*/
 	tempX = rand() % 700 + 256;
 	tempY = rand() % 220 + 288;
 
@@ -105,6 +106,8 @@ void setupMayfly(Mayfly *m)
 		else				tempSprite =LoadSprite("images/soldier_m.png",32,32);
 	}
 
+	m->age = 1;
+
 	m->health =		rand() % 10 + 11;
 	m->strength =	rand() % 10 + 1;
 	m->speed =		rand() % 10 + 1;
@@ -124,21 +127,28 @@ void setupMayfly(Mayfly *m)
 	m->entity->image = tempSprite;
 	m->entity->ex = tempX;
 	m->entity->ey = tempY;
-	m->entity->maxSpeed = 5;
+	m->entity->maxSpeed = 45; //Bigger number means slower animation
 	m->entity->frame = rand() % 4;
 }
 
 void createMayfly()
 {
 	Mayfly *m = newMayfly();
-	setupMayfly(m);
+	if (m != NULL)
+	{
+		setupMayfly(m);
+	}
+	
 }
 
-void createMayflyOffspring(Mayfly *m1, Mayfly *m2)
+void createMayflyOffspring()
 {
 	Mayfly *m = newMayfly();
-	setupMayfly(m);
-	//genetic code
+	if (m != NULL)
+	{
+		setupMayfly(m);
+		setupMayflyOffspring(m);
+	}
 }
 
 void displayMayflies()
@@ -154,6 +164,17 @@ void displayMayflies()
 	}
 }
 
+/*void mayflyDoNothing(Entity *e)
+{
+	return;
+}
+void UpdateMayflies()
+{
+	int i;
+	for(i = 0;i < MAX_MAYFLIES;i++)
+
+		(*mayflyList[i].think)(mayflyList[i].entity);
+}*/
 void displayMayflyStats(Mayfly *m)
 {
 	SDL_Surface *temp;
@@ -171,6 +192,9 @@ void displayMayflyStats(Mayfly *m)
 
 	temp = TTF_RenderText_Solid( mayFont, "Luck: ", textColor );
 	apply_surface(20,200,temp,screen,NULL);
+
+	temp = TTF_RenderText_Solid( mayFont, "Age: ", textColor );
+	apply_surface(20,250,temp,screen,NULL);
 
 
 	//Display Stat values
@@ -190,7 +214,7 @@ void displayMayflyStats(Mayfly *m)
 	temp = TTF_RenderText_Solid( mayFont, tempString, textColor );
 	apply_surface(150,200,temp,screen,NULL);
 
-	sprintf(tempString, "%i", clickRight);
+	sprintf(tempString, "%i", m->age);
 	temp = TTF_RenderText_Solid( mayFont, tempString, textColor );
 	apply_surface(150,250,temp,screen,NULL);
 
@@ -226,7 +250,57 @@ void clearMayflySelection()
 	}
 }
 
-void mayflyAllThink()
+int checkSelected()
+{
+	int i,x;
+	x = 0;
+	for (i = 0;i < maxMayflies; i++)
+	{
+		if (mayflyList[i].selected == 1) x++;
+	}
+	return x;
+}
+
+void setupMayflyOffspring(Mayfly *child)
+{
+	int i;
+	Mayfly *p1, *p2;
+
+	p1 = NULL;
+	p2 = NULL;
+	for (i = 0;i < maxMayflies; i++)
+	{
+		if (mayflyList[i].selected == 1)
+		{
+			if (p1 == NULL) p1 = &mayflyList[i];
+			else if (p2 == NULL)
+			{
+				p2 = &mayflyList[i];
+				break;
+			}
+		}
+	}
+
+	if (p1->health > p2->health)		child->health =	(rand() % p1->health + p2->health) + 1;
+	else								child->health =	(rand() % p2->health + p1->health) + 1;
+
+	if (p1->strength > p2->strength)	child->strength =	(rand() % p1->strength + p2->strength) + 1;
+	else								child->strength =	(rand() % p2->strength + p1->strength) + 1;
+
+	if (p1->speed > p2->speed)			child->speed =	(rand() % p1->speed + p2->speed) + 1;
+	else								child->speed =	(rand() % p2->speed + p1->speed) + 1;
+
+	if (p1->luck > p2->luck)			child->luck =	(rand() % p1->luck + p2->luck) + 1;
+	else								child->luck =	(rand() % p2->luck + p1->luck) + 1;
+
+	child->age = 0;
+
+	child->archerExp	=	p1->archerExp + p2->archerExp;
+	child->believerExp	=	p1->believerExp + p2->believerExp;
+	child->soldierExp	=	p1->soldierExp + p2->soldierExp;
+}
+
+void mayflyAllThink(Room *r)
 {
 	int i;
 	for (i = 0;i < maxMayflies; i++)
@@ -247,6 +321,17 @@ void mayflyAllThink()
 		else if (my-16 > 508)	mouseMayfly->entity->ey = 508;
 		else					mouseMayfly->entity->ey = my-16;
 	}
+
+	if (r->mode == BREED && checkSelected() == 2) 
+	{
+		createMayflyOffspring();
+		clearMayflySelection();
+	}
+
+	if (r->mode == BREED && checkSelected() == 1) 
+	{
+		//trainMayfly
+	}
 }
 
 void mayflyThink(Mayfly *m)
@@ -262,9 +347,10 @@ void mayflyThink(Mayfly *m)
 		}
 		else if (!clickLeft) mouseMayfly = NULL;
 
-		if (clickRight && !m->selected)
+		if (clickRight && !m->selected && !stopClick)
 		{
 			m->selected = 1;
+			stopClick = 1;
 		}
 	}
 

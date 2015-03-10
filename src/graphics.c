@@ -18,9 +18,10 @@ SDL_Surface *load_image( char* filename )
         //Create an optimized image
         optimizedImage = SDL_DisplayFormatAlpha( loadedImage );
         
-        //Free the old image
-        SDL_FreeSurface( loadedImage );
+        
     }
+	//Free the old image
+    SDL_FreeSurface( loadedImage );
 
 	//Return the optimized image
     return optimizedImage;

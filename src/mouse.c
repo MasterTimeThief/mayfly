@@ -8,6 +8,7 @@ void mouseInit()
 	clickRight = 0;
 	mx = 0;
 	my = 0;
+	stopClick = 0;
 }
 
 void mouseThink()
@@ -27,6 +28,7 @@ void mouseThink()
 	{
 		clickLeft = 0;
 		clickRight = 0;
+		stopClick = 0;
 	}
 }
 
