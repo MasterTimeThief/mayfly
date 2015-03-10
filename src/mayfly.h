@@ -33,6 +33,7 @@ typedef struct Mayfly_T
 
 	int	visible;
 	int inUse;
+	int selected;
 	//genetics flags or arrays
 }Mayfly;
 
@@ -50,7 +51,7 @@ void newMayflies();
 void displayMayflies(SDL_Surface *screen);
 void freeMayfly(Mayfly *m);
 void closeMayflies();
-
+void clearMayflySelection();
 void mayflyAllThink();
 void mayflyThink(Mayfly *m);
 

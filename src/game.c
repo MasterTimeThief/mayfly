@@ -87,6 +87,15 @@ void clean_up()
 	SDL_Quit();
 }
 
+void modeChange(Room *r)
+{
+	if (r->mode == BREED)		r->mode = DRAFT;
+	else if (r->mode == DRAFT)	r->mode = HEAL;
+	else if (r->mode == HEAL)	r->mode = TRAIN;
+	else if (r->mode == TRAIN)	r->mode = SCOUT;
+	else if (r->mode == SCOUT)	r->mode = BREED;
+}
+
 void menuMove(int choice)
 {
 	int i;
@@ -218,9 +227,13 @@ int main( int argc, char* args[] )
 				{
 					switch( eventCheck.key.keysym.sym )
 					{
-						/*case SDLK_UP: menuMove(1); break;
-						case SDLK_DOWN: menuMove(2); break;
-						case SDLK_RETURN : menuMove(3); break;*/
+						case SDLK_SPACE:	
+							modeChange(gameRoom);
+							clearMayflySelection();
+							break;
+						/*case SDLK_1:		//menuMove(2); break;
+						case SDLK_2:		//menuMove(3); break;
+						case SDLK_3:		//menuMove(3); break;*/
 					}
 				}
 			}

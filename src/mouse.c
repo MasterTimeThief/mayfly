@@ -12,12 +12,13 @@ void mouseInit()
 
 void mouseThink()
 {
-	if(SDL_GetMouseState(&mx,&my) == 1) //if clicked 
+	SDL_GetMouseState(&mx,&my);
+	if(SDL_GetMouseState(NULL, NULL) & SDL_BUTTON(SDL_BUTTON_LEFT)) //if clicked 
 	{
 		clickLeft = 1;
 		clickRight = 0;
 	}
-	else if (SDL_GetMouseState(&mx,&my) == 3)
+	else if (SDL_GetMouseState(NULL, NULL) & SDL_BUTTON(SDL_BUTTON_RIGHT))
 	{
 		clickLeft = 0;
 		clickRight = 1;

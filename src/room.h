@@ -16,7 +16,6 @@ typedef enum
 
 typedef enum
 {
-	MOVE,
 	DRAFT,
 	HEAL,
 	TRAIN,
