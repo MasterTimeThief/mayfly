@@ -10,7 +10,8 @@ extern int SCREEN_HEIGHT;
 Mayfly mayflyList[MAX_MAYFLIES];
 Mayfly mayflySelect[15];
 
-extern	SDL_Color textColor;
+extern	SDL_Color c_Black;
+extern  SDL_Color c_White;
 extern	SDL_Surface *screen;
 
 int mayflyTotal;
@@ -181,43 +182,78 @@ void displayMayflyStats(Mayfly *m)
 	char		tempString[3];
 
 	//Display Stat Names
-	temp = TTF_RenderText_Solid( mayFont, "Health: ", textColor );
+	temp = renderText( mayFont, "Health: ", c_Black );
 	apply_surface(20,50,temp,screen,NULL);
+	SDL_FreeSurface(temp);
 
-	temp = TTF_RenderText_Solid( mayFont, "Speed: ", textColor );
+	temp = renderText( mayFont, "Speed: ", c_Black );
 	apply_surface(20,100,temp,screen,NULL);
+	SDL_FreeSurface(temp);
 
-	temp = TTF_RenderText_Solid( mayFont, "Strength: ", textColor );
+	temp = renderText( mayFont, "Strength: ", c_Black );
 	apply_surface(20,150,temp,screen,NULL);
+	SDL_FreeSurface(temp);
 
-	temp = TTF_RenderText_Solid( mayFont, "Luck: ", textColor );
+	temp = renderText( mayFont, "Luck: ", c_Black );
 	apply_surface(20,200,temp,screen,NULL);
+	SDL_FreeSurface(temp);
 
-	temp = TTF_RenderText_Solid( mayFont, "Age: ", textColor );
+	temp = renderText( mayFont, "Age: ", c_Black );
 	apply_surface(20,250,temp,screen,NULL);
+	SDL_FreeSurface(temp);
+
+	temp = renderText( mayFont, "Believer: ", c_Black );
+	apply_surface(20,350,temp,screen,NULL);
+	SDL_FreeSurface(temp);
+
+	temp = renderText( mayFont, "Archer: ", c_Black );
+	apply_surface(20,400,temp,screen,NULL);
+	SDL_FreeSurface(temp);
+
+	temp = renderText( mayFont, "Soldier: ", c_Black );
+	apply_surface(20,450,temp,screen,NULL);
+	SDL_FreeSurface(temp);
 
 
 	//Display Stat values
 	sprintf(tempString, "%i", m->health);
-	temp = TTF_RenderText_Solid( mayFont, tempString, textColor );
+	temp = renderText( mayFont, tempString, c_Black );
 	apply_surface(150,50,temp,screen,NULL);
+	SDL_FreeSurface(temp);
 
 	sprintf(tempString, "%i", m->speed);
-	temp = TTF_RenderText_Solid( mayFont, tempString, textColor );
+	temp = renderText( mayFont, tempString, c_Black );
 	apply_surface(150,100,temp,screen,NULL);
+	SDL_FreeSurface(temp);
 
 	sprintf(tempString, "%i", m->strength);
-	temp = TTF_RenderText_Solid( mayFont, tempString, textColor );
+	temp = renderText( mayFont, tempString, c_Black );
 	apply_surface(150,150,temp,screen,NULL);
+	SDL_FreeSurface(temp);
 
 	sprintf(tempString, "%i", m->luck);
-	temp = TTF_RenderText_Solid( mayFont, tempString, textColor );
+	temp = renderText( mayFont, tempString, c_Black );
 	apply_surface(150,200,temp,screen,NULL);
+	SDL_FreeSurface(temp);
 
 	sprintf(tempString, "%i", m->age);
-	temp = TTF_RenderText_Solid( mayFont, tempString, textColor );
+	temp = renderText( mayFont, tempString, c_Black );
 	apply_surface(150,250,temp,screen,NULL);
+	SDL_FreeSurface(temp);
 
+	sprintf(tempString, "%i", m->believerExp);
+	temp = renderText( mayFont, tempString, c_Black );
+	apply_surface(150,350,temp,screen,NULL);
+	SDL_FreeSurface(temp);
+
+	sprintf(tempString, "%i", m->archerExp);
+	temp = renderText( mayFont, tempString, c_Black );
+	apply_surface(150,400,temp,screen,NULL);
+	SDL_FreeSurface(temp);
+
+	sprintf(tempString, "%i", m->soldierExp);
+	temp = renderText( mayFont, tempString, c_Black );
+	apply_surface(150,450,temp,screen,NULL);
 	SDL_FreeSurface(temp);
 }
 
@@ -259,6 +295,53 @@ int checkSelected()
 		if (mayflyList[i].selected == 1) x++;
 	}
 	return x;
+}
+
+void trainMayfly()
+{
+	int i, numkeys;
+	Mayfly *trainee;
+	SDL_Surface *temp;
+
+	Uint8 *keys = SDL_GetKeyState(&numkeys);
+	trainee = NULL;
+	for (i = 0;i < maxMayflies; i++)
+	{
+		if (mayflyList[i].selected == 1)
+		{
+			trainee = &mayflyList[i];
+			break;
+		}
+	}
+
+	temp = renderText( mayFont, "Train in Believer (1)", c_White );
+	apply_surface(250,50,temp,screen,NULL);
+	SDL_FreeSurface(temp);
+
+	temp = renderText( mayFont, "Train in Archer  (2)",  c_White );
+	apply_surface(250,100,temp,screen,NULL);
+	SDL_FreeSurface(temp);
+
+	temp = renderText( mayFont, "Train in Soldier  (3)", c_White );
+	apply_surface(250,150,temp,screen,NULL);
+	SDL_FreeSurface(temp);
+
+	//check which key is pressed
+	if (keys[SDLK_1])
+	{
+		trainee->believerExp += rand() % 10 + 1;
+		clearMayflySelection();
+	}
+	else if (keys[SDLK_2])
+	{
+		trainee->archerExp += rand() % 10 + 1;
+		clearMayflySelection();
+	}
+	else if (keys[SDLK_3])
+	{
+		trainee->soldierExp += rand() % 10 + 1;
+		clearMayflySelection();
+	}
 }
 
 void setupMayflyOffspring(Mayfly *child)
@@ -328,9 +411,9 @@ void mayflyAllThink(Room *r)
 		clearMayflySelection();
 	}
 
-	if (r->mode == BREED && checkSelected() == 1) 
+	if (r->mode == TRAIN && checkSelected() == 1)
 	{
-		//trainMayfly
+		trainMayfly();
 	}
 }
 

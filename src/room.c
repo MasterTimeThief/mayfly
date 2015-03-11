@@ -7,7 +7,7 @@ extern int SCREEN_BPP;
 extern TTF_Font *mayFont;
 extern int mayflyTotal;
 
-extern	SDL_Color textColor;
+extern	SDL_Color c_Black;
 extern SDL_Surface *screen;
 
 Room *createRoom()
@@ -41,22 +41,25 @@ void displayRoomInfo(Room *r)
 	char		tempString[3];
 
 	//Display Stat Names
-	temp = TTF_RenderText_Solid( mayFont, "Mayflies: ", textColor );
+	temp = renderText( mayFont, "Mayflies: ", c_Black );
 	apply_surface(700,50,temp,screen,NULL);
+	SDL_FreeSurface(temp);
 
-	temp = TTF_RenderText_Solid( mayFont, "    Mode: ", textColor );
+	temp = renderText( mayFont, "    Mode: ", c_Black );
 	apply_surface(700,100,temp,screen,NULL);
+	SDL_FreeSurface(temp);
 
 	//Display Stat values
 	sprintf(tempString, "%i", mayflyTotal);
-	temp = TTF_RenderText_Solid( mayFont, tempString, textColor );
+	temp = renderText( mayFont, tempString, c_Black );
 	apply_surface(825,50,temp,screen,NULL);
+	SDL_FreeSurface(temp);
 
-	if (r->mode == DRAFT)		temp = TTF_RenderText_Solid( mayFont, "Draft", textColor );
-	else if (r->mode == HEAL)	temp = TTF_RenderText_Solid( mayFont, "Heal", textColor );
-	else if (r->mode == TRAIN)	temp = TTF_RenderText_Solid( mayFont, "Train", textColor );
-	else if (r->mode == SCOUT)	temp = TTF_RenderText_Solid( mayFont, "Scout", textColor );
-	else if (r->mode == BREED)	temp = TTF_RenderText_Solid( mayFont, "Breed", textColor );
+	if (r->mode == DRAFT)		temp = renderText( mayFont, "Draft", c_Black );
+	else if (r->mode == HEAL)	temp = renderText( mayFont, "Heal", c_Black );
+	else if (r->mode == TRAIN)	temp = renderText( mayFont, "Train", c_Black );
+	else if (r->mode == SCOUT)	temp = renderText( mayFont, "Scout", c_Black );
+	else if (r->mode == BREED)	temp = renderText( mayFont, "Breed", c_Black );
 
 	apply_surface(825,100,temp,screen,NULL);
 

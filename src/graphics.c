@@ -27,6 +27,11 @@ SDL_Surface *load_image( char* filename )
     return optimizedImage;
 }
 
+SDL_Surface *renderText(TTF_Font *font, char *message, SDL_Color color)
+{
+	return TTF_RenderText_Blended( font, message, color );
+}
+
 void apply_surface(int x, int y, SDL_Surface* source, SDL_Surface* destination, SDL_Rect* clip)
 {
     //Make a temporary rectangle to hold the offsets

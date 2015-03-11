@@ -1,6 +1,6 @@
 #include "menu.h"
 
-extern SDL_Color textColor;
+extern SDL_Color c_Black;
 
 extern int SCREEN_WIDTH;
 extern int SCREEN_HEIGHT;
@@ -25,13 +25,13 @@ void displayMenu(Menu *m)
 	if (m->message == NULL) return;
 
 	m->message = SDL_CreateRGBSurface(0, SCREEN_WIDTH, SCREEN_HEIGHT, 32, 0xFF000000, 0x00FF0000, 0x0000FF00, 0x000000FF);
-	temp = TTF_RenderText_Solid( m->font, "NEW", textColor );
+	temp = TTF_RenderText_Solid( m->font, "NEW", c_Black );
 	apply_surface(800,400,temp,m->message,NULL);
 
-	temp = TTF_RenderText_Solid( m->font, "LOAD", textColor );
+	temp = TTF_RenderText_Solid( m->font, "LOAD", c_Black );
 	apply_surface(800,450,temp,m->message,NULL);
 
-	temp = TTF_RenderText_Solid( m->font, "EXIT", textColor );
+	temp = TTF_RenderText_Solid( m->font, "EXIT", c_Black );
 	apply_surface(800,500,temp,m->message,NULL);
 
 	m->changed = 1;
