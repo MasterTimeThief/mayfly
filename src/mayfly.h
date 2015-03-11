@@ -34,9 +34,11 @@ typedef struct Mayfly_T
 	int	archerExp;
 	int	believerExp;
 
-	int	visible;
+	int	visible; //Turn invisible on combat
 	int inUse;
 	int selected;
+
+	int action; //0 if action is used up
 
 	//void (*think)(Entity *e);
 }Mayfly;
