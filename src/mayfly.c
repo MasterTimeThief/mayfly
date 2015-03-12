@@ -371,17 +371,21 @@ void setupMayflyOffspring(Mayfly *child)
 		}
 	}
 
-	if (p1->health > p2->health)		child->health =	(rand() % p1->health + p2->health) + 1;
-	else								child->health =	(rand() % p2->health + p1->health) + 1;
+	if (p1->health == p2->health)			child->health =		p1->health;
+	else if (p1->health > p2->health)		child->health =		(rand() % (p1->health - p2->health)) + p2->health + 1;
+	else									child->health =		(rand() % (p2->health - p1->health)) + p1->health + 1;
 
-	if (p1->strength > p2->strength)	child->strength =	(rand() % p1->strength + p2->strength) + 1;
-	else								child->strength =	(rand() % p2->strength + p1->strength) + 1;
+	if (p1->strength == p2->strength)		child->strength =	p1->health;
+	else if (p1->strength > p2->strength)	child->strength =	(rand() % (p1->strength - p2->strength)) + p2->strength + 1;
+	else									child->strength =	(rand() % (p2->strength - p1->strength)) + p1->strength + 1;
 
-	if (p1->speed > p2->speed)			child->speed =	(rand() % p1->speed + p2->speed) + 1;
-	else								child->speed =	(rand() % p2->speed + p1->speed) + 1;
+	if (p1->speed == p2->speed)				child->speed =		p1->health;
+	else if (p1->speed > p2->speed)			child->speed =		(rand() % (p1->speed - p2->speed)) + p2->speed + 1;
+	else									child->speed =		(rand() % (p2->speed - p1->speed)) + p1->speed + 1;
 
-	if (p1->luck > p2->luck)			child->luck =	(rand() % p1->luck + p2->luck) + 1;
-	else								child->luck =	(rand() % p2->luck + p1->luck) + 1;
+	if (p1->luck == p2->luck)				child->luck =		p1->health;
+	else if (p1->luck > p2->luck)			child->luck =		(rand() % (p1->luck - p2->luck)) + p2->luck + 1;
+	else									child->luck =		(rand() % (p2->luck - p1->luck)) + p1->luck + 1;
 
 	child->age = 0;
 

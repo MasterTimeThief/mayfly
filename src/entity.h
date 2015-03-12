@@ -3,7 +3,7 @@
 
 #include "graphics.h"
 
-#define MAX_ENTITIES 100
+#define MAX_ENTITIES 200
 
 typedef struct Entity_T
 {
