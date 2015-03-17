@@ -7,6 +7,8 @@
 #include "room.h"
 #include "mayfly.h"
 #include "mouse.h"
+#include "button.h"
+#include "combat.h"
 
 int SCREEN_WIDTH = 1024;
 int SCREEN_HEIGHT = 576;
@@ -17,7 +19,7 @@ Menu *mainMenu = NULL;
 Room *gameRoom = NULL;
 
 char *menuBack = "images/menu.png";
-char *mainBack = "images/main.png";
+char *mainBack = "images/main2.png";
 char *combatBack = "images/battle.png";
 
 //SDL_Surface *buffer = NULL;
@@ -59,6 +61,7 @@ int init()
 
 	initMayflyList();
 	initEntityList();
+	initEnemyList();
 	mouseInit();
     
     //If everything initialized fine
@@ -69,7 +72,9 @@ void allThink()
 {
 	mouseThink();
 	mayflyAllThink(gameRoom);
+	enemyThinkAll(gameRoom);
 	roomThink(gameRoom);
+	buttonThink();
 }
 
 void clean_up()
@@ -117,6 +122,7 @@ void menuMove(int choice)
 		if		(mainMenu->choice == NEW)
 		{
 			gameRoom->roomName = MAIN;
+			createButton();
 			changeBackground(gameRoom, mainBack);
 			//new game script
 			for (i = 0; i < STARTING_MAYFLY; i++)
@@ -128,6 +134,7 @@ void menuMove(int choice)
 		else if (mainMenu->choice == LOAD) 
 		{
 			gameRoom->roomName = MAIN;
+			createButton();
 			changeBackground(gameRoom, mainBack);
 			//load game script
 		}
@@ -158,6 +165,8 @@ int main( int argc, char* args[] )
 	displayMenu(mainMenu);
 	apply_surface(0,0,mainMenu->message,screen,NULL);
 
+	createButton();
+
     //Game Loop
 	while(!done)
 	{
@@ -179,11 +188,13 @@ int main( int argc, char* args[] )
 		else if (gameRoom->roomName == MAIN)
 		{
 			updateBackground(gameRoom, screen);
-			displayMayflies(screen);
+			displayMayflies();
 		}
 		else if (gameRoom->roomName == COMBAT)
 		{
-
+			updateBackground(gameRoom, screen);
+			displayMayflies();
+			displayEnemies();
 		}
 		else if (gameRoom->roomName == QUIT)
 		{
@@ -211,6 +222,7 @@ int main( int argc, char* args[] )
 					{
 						case SDLK_UP:		menuMove(1); break;
 						case SDLK_DOWN:		menuMove(2); break;
+						case SDLK_SPACE:
 						case SDLK_RETURN :	menuMove(3); break;
 					}
 				}

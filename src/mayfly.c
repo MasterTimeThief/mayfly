@@ -8,11 +8,12 @@ extern int entityTotal;
 extern int SCREEN_WIDTH;
 extern int SCREEN_HEIGHT;
 Mayfly mayflyList[MAX_MAYFLIES];
-Mayfly mayflySelect[15];
+int mayflyPositions[15][2];
 
 extern	SDL_Color c_Black;
 extern  SDL_Color c_White;
 extern	SDL_Surface *screen;
+extern Room *gameRoom;
 
 int mayflyTotal;
 static int maxMayflies = 0;
@@ -30,15 +31,33 @@ void initMayflyList()
 	int x;
 	mayflyTotal = 0;
 	memset(mayflyList,0,sizeof(Mayfly) * MAX_MAYFLIES);
-	memset(mayflySelect,0,sizeof(Mayfly) * 15);
 	for(x = 0; x < MAX_MAYFLIES; x++)
 	{ 
 		mayflyList[x].entity = NULL;
-		if (x < 15)	mayflySelect[x].entity = NULL;
 	}
+
+	setupMayflyCombatPositions();
+
 	mayFont = TTF_OpenFont("fonts/mayflyFont.ttf", 30);
 	selectSpr = LoadSprite("images/select.png",32,32);
 	inactiveSpr = LoadSprite("images/inactive.png",32,32);
+}
+
+void setupMayflyCombatPositions()
+{
+	int i;
+	for (i = 0;i < 15; i++)
+	{
+		if		(i < 5)		mayflyPositions[i][0] = 96;
+		else if (i < 10)	mayflyPositions[i][0] = 192;
+		else if (i < 15)	mayflyPositions[i][0] = 288;
+
+		if		(i % 5 == 0)	mayflyPositions[i][1] = 96;
+		else if (i % 5 == 1)	mayflyPositions[i][1] = 192;
+		else if (i % 5 == 2)	mayflyPositions[i][1] = 288;
+		else if (i % 5 == 3)	mayflyPositions[i][1] = 384;
+		else if (i % 5 == 4)	mayflyPositions[i][1] = 480;
+	}
 }
 
 Mayfly *newMayfly()
@@ -124,6 +143,8 @@ void setupMayfly(Mayfly *m)
 	m->visible	= 1;
 	m->selected = 0;
 	m->action	= 1;
+	m->cx		= 0;
+	m->cy		= 0;
 	mayflyTotal++;
 
 	//Sprite and position
@@ -162,9 +183,16 @@ void displayMayflies()
 	{
 		if (mayflyList[i].inUse && mayflyList[i].visible)
 		{
-			DrawSprite(mayflyList[i].entity->image, screen, mayflyList[i].entity->ex, mayflyList[i].entity->ey, mayflyList[i].entity->frame);
-			if (mayflyList[i].selected) DrawSprite(selectSpr, screen, mayflyList[i].entity->ex, mayflyList[i].entity->ey, mayflyList[i].entity->frame);
-			else if (!mayflyList[i].action) DrawSprite(inactiveSpr, screen, mayflyList[i].entity->ex, mayflyList[i].entity->ey, mayflyList[i].entity->frame);
+			if (gameRoom->roomName == MAIN)
+			{
+				DrawSprite(mayflyList[i].entity->image, screen, mayflyList[i].entity->ex, mayflyList[i].entity->ey, mayflyList[i].entity->frame);
+				if (mayflyList[i].selected) DrawSprite(selectSpr, screen, mayflyList[i].entity->ex, mayflyList[i].entity->ey, mayflyList[i].entity->frame);
+				else if (!mayflyList[i].action) DrawSprite(inactiveSpr, screen, mayflyList[i].entity->ex, mayflyList[i].entity->ey, mayflyList[i].entity->frame);
+			}
+			if (gameRoom->roomName == COMBAT)
+			{
+				if (mayflyList[i].selected) DrawSprite(mayflyList[i].entity->image, screen, mayflyList[i].cx, mayflyList[i].cy, mayflyList[i].entity->frame);
+			}
 		}
 	}
 }
@@ -180,6 +208,30 @@ void UpdateMayflies()
 
 		(*mayflyList[i].think)(mayflyList[i].entity);
 }*/
+
+
+
+void mayflyCombatPosition(Mayfly *m, int index)
+{
+	m->cx = mayflyPositions[index][0];
+	m->cy = mayflyPositions[index][1];
+}
+
+void setupMayflyCombat()
+{
+	int i,j;
+	for (i = 0, j = 0;i < maxMayflies; i++)
+	{
+		if (!mayflyList[i].selected)
+		{
+			mayflyList[i].visible = 0;
+			continue;
+		}
+		mayflyCombatPosition(&mayflyList[i], j);
+		j++;
+	}
+}
+
 void displayMayflyStats(Mayfly *m)
 {
 	SDL_Surface *temp;
@@ -445,9 +497,10 @@ void mayflyThink(Mayfly *m)
 		}
 		else if (!clickLeft) mouseMayfly = NULL;
 
-		if (clickRight && !m->selected && !stopClick && m->action)
+		if (clickRight && !stopClick && m->action)
 		{
-			m->selected = 1;
+			if		(!m->selected && checkSelected() < 15)	m->selected = 1;
+			else if (m->selected)	m->selected = 0;
 			stopClick = 1;
 		}
 		else if (!m->action)

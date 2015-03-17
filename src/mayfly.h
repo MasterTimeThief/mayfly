@@ -39,23 +39,27 @@ typedef struct Mayfly_T
 	int selected;
 
 	int action; //0 if action is used up
+	int cx, cy;	//combat positions
 
 	//void (*think)(Entity *e);
 }Mayfly;
 
 extern Mayfly mayflyList[MAX_MAYFLIES];
-extern Mayfly mayflySelect[15];
+extern int mayflyPositions[15][2];
 
 void initMayflyList();
+void setupMayflyCombatPositions();
 
 Mayfly *newMayfly();
 void setupMayfly(Mayfly *m);
 void createMayfly();
 void createMayflyOffspring(Mayfly *m1, Mayfly *m2);
 
+void mayflyCombatPosition(Mayfly *m, int index);
+void setupMayflyCombat();
 
 void newMayflies();
-void displayMayflies(SDL_Surface *screen);
+void displayMayflies();
 void freeMayfly(Mayfly *m);
 void closeMayflies();
 void clearMayflySelection();
