@@ -38,6 +38,7 @@ typedef struct Mayfly_T
 	int inUse;
 	int selected;
 
+	int fighting;
 	int action; //0 if action is used up
 	int cx, cy;	//combat positions
 

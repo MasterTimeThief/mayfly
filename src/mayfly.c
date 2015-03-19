@@ -2,6 +2,7 @@
 #include "mayfly.h"
 #include "graphics.h"
 #include "mouse.h"
+#include "combat.h"
 
 extern int entityTotal;
 
@@ -9,6 +10,7 @@ extern int SCREEN_WIDTH;
 extern int SCREEN_HEIGHT;
 Mayfly mayflyList[MAX_MAYFLIES];
 int mayflyPositions[15][2];
+int mayflySelected;
 
 extern	SDL_Color c_Black;
 extern  SDL_Color c_White;
@@ -139,7 +141,7 @@ void setupMayfly(Mayfly *m)
 	m->believerExp = 0;
 	m->soldierExp =	0;
 
-
+	m->fighting = 0;
 	m->visible	= 1;
 	m->selected = 0;
 	m->action	= 1;
@@ -191,7 +193,12 @@ void displayMayflies()
 			}
 			if (gameRoom->roomName == COMBAT)
 			{
-				if (mayflyList[i].selected) DrawSprite(mayflyList[i].entity->image, screen, mayflyList[i].cx, mayflyList[i].cy, mayflyList[i].entity->frame);
+				if (enemyList[i].fighting)
+				{
+					//change to fighting sprite, and fixed location
+					DrawSprite(enemyList[i].entity->image, screen, 450, 200, enemyList[i].entity->frame);
+				}
+				else if (mayflyList[i].selected) DrawSprite(mayflyList[i].entity->image, screen, mayflyList[i].cx, mayflyList[i].cy, mayflyList[i].entity->frame);
 			}
 		}
 	}
@@ -227,7 +234,9 @@ void setupMayflyCombat()
 			mayflyList[i].visible = 0;
 			continue;
 		}
+		mayflyList[i].selected = 0;
 		mayflyCombatPosition(&mayflyList[i], j);
+		mayflyFighters[j] = &mayflyList[i];
 		j++;
 	}
 }
@@ -350,6 +359,7 @@ int checkSelected()
 	{
 		if (mayflyList[i].selected == 1) x++;
 	}
+	mayflySelected = x;
 	return x;
 }
 

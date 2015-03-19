@@ -3,6 +3,7 @@
 #include "room.h"
 #include "mayfly.h"
 #include "combat.h"
+#include "event.h"
 
 Button *combatButton;
 extern Room *gameRoom;
@@ -46,4 +47,10 @@ void toCombat()
 	setupEnemyCombat();
 	setupMayflyCombat();
 	changeBackground(gameRoom, combatBack);
+
+	currentCombat = 0;
+
+	Event *combatStart = newEvent();
+	combatStart->timer = 1;
+	combatStart->end = chooseFighters;
 }

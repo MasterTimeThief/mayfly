@@ -9,6 +9,7 @@
 #include "mouse.h"
 #include "button.h"
 #include "combat.h"
+#include "event.h"
 
 int SCREEN_WIDTH = 1024;
 int SCREEN_HEIGHT = 576;
@@ -75,6 +76,7 @@ void allThink()
 	enemyThinkAll(gameRoom);
 	roomThink(gameRoom);
 	buttonThink();
+	runEvents();
 }
 
 void clean_up()
