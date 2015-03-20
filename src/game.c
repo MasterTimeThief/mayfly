@@ -60,6 +60,7 @@ int init()
     //Set the window caption
     SDL_WM_SetCaption( "Mayfly Wars", NULL );
 
+	initEventList();
 	initMayflyList();
 	initEntityList();
 	initEnemyList();

@@ -33,7 +33,10 @@ void buttonThink()
 			if (clickLeft)
 			{
 				combatButton->entity->frame = 1;
-				if (gameRoom->mode == DRAFT && checkSelected() > 1) (combatButton->effect)();
+				if (gameRoom->mode == DRAFT && checkSelected() > 1)
+				{
+					(combatButton->effect)();
+				}
 			}
 			else if (!clickLeft) combatButton->entity->frame = 0;
 		}
@@ -43,6 +46,8 @@ void buttonThink()
 
 void toCombat()
 {
+	Event *combatStart = newEvent();
+	
 	gameRoom->roomName = COMBAT;
 	setupEnemyCombat();
 	setupMayflyCombat();
@@ -50,7 +55,6 @@ void toCombat()
 
 	currentCombat = 0;
 
-	Event *combatStart = newEvent();
 	combatStart->timer = 1;
 	combatStart->end = chooseFighters;
 }

@@ -193,14 +193,24 @@ void displayMayflies()
 			}
 			if (gameRoom->roomName == COMBAT)
 			{
-				if (enemyList[i].fighting)
+				if (mayflyList[i].fighting)
 				{
 					//change to fighting sprite, and fixed location
-					DrawSprite(enemyList[i].entity->image, screen, 450, 200, enemyList[i].entity->frame);
+					DrawSprite(mayflyList[i].entity->image, screen, 450, 200, mayflyList[i].entity->frame);
 				}
 				else if (mayflyList[i].selected) DrawSprite(mayflyList[i].entity->image, screen, mayflyList[i].cx, mayflyList[i].cy, mayflyList[i].entity->frame);
 			}
 		}
+	}
+}
+
+void mayflyAfterCombat()
+{
+	int i;
+	for (i = 0;i < maxMayflies; i++)
+	{
+		mayflyList[i].visible = 1;
+		mayflyList[i].age++;
 	}
 }
 
@@ -234,7 +244,7 @@ void setupMayflyCombat()
 			mayflyList[i].visible = 0;
 			continue;
 		}
-		mayflyList[i].selected = 0;
+		//mayflyList[i].selected = 0;
 		mayflyCombatPosition(&mayflyList[i], j);
 		mayflyFighters[j] = &mayflyList[i];
 		j++;

@@ -61,6 +61,7 @@ void setupMayflyCombat();
 
 void newMayflies();
 void displayMayflies();
+void mayflyAfterCombat();
 void freeMayfly(Mayfly *m);
 void closeMayflies();
 void clearMayflySelection();
