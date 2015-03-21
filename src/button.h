@@ -14,6 +14,5 @@ extern Button *combatButton;
 
 void createButton();
 void buttonThink();
-void toCombat();
 
 #endif

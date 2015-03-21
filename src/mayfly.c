@@ -24,7 +24,6 @@ static Mayfly *mouseMayfly = NULL;
 extern int mx;
 extern int my;
 
-TTF_Font *mayFont;
 Sprite *selectSpr;
 Sprite *inactiveSpr;
 
@@ -74,13 +73,13 @@ Mayfly *newMayfly()
 	}
 	for (i = 0;i < maxMayflies; i++)
 	{
-		if (!mayflyList[i].inUse)
+		if (!mayflyList[i].alive)
 		{
-			mayflyList[i].inUse = 1;
+			mayflyList[i].alive = 1;
 			return &mayflyList[i];	
 		}
 	}
-	mayflyList[maxMayflies].inUse = 1;
+	mayflyList[maxMayflies].alive = 1;
 	return &mayflyList[maxMayflies++];
 }
 
@@ -183,7 +182,7 @@ void displayMayflies()
 	int i;
 	for (i = 0;i < maxMayflies; i++)
 	{
-		if (mayflyList[i].inUse && mayflyList[i].visible)
+		if (mayflyList[i].alive && mayflyList[i].visible)
 		{
 			if (gameRoom->roomName == MAIN)
 			{
@@ -336,7 +335,7 @@ void freeMayfly(Mayfly *m)
 {
 	FreeSprite(m->entity->image);
 	freeEntity(m->entity);
-	m->inUse = 0;
+	m->alive = 0;
 	mayflyTotal--;
 }
 

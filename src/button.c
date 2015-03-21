@@ -43,18 +43,3 @@ void buttonThink()
 	}
 	else combatButton->visible = 0;
 }
-
-void toCombat()
-{
-	Event *combatStart = newEvent();
-	
-	gameRoom->roomName = COMBAT;
-	setupEnemyCombat();
-	setupMayflyCombat();
-	changeBackground(gameRoom, combatBack);
-
-	currentCombat = 0;
-
-	combatStart->timer = 1;
-	combatStart->end = chooseFighters;
-}

@@ -1,9 +1,8 @@
 #include "menu.h"
 
-extern SDL_Color c_Black;
+Menu *mainMenu = NULL;
 
-extern int SCREEN_WIDTH;
-extern int SCREEN_HEIGHT;
+extern SDL_Color c_Black;
 
 Menu *createMenu(char *fontFile, int fontSize)
 {

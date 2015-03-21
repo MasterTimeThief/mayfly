@@ -1,11 +1,9 @@
 #include "room.h"
 
-extern int SCREEN_WIDTH;
-extern int SCREEN_HEIGHT;
-extern int SCREEN_BPP;
-
 extern TTF_Font *mayFont;
 extern int mayflyTotal;
+
+Room *gameRoom = NULL;
 
 extern	SDL_Color c_Black;
 extern SDL_Surface *screen;

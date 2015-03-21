@@ -1,6 +1,15 @@
 #include "SDL.h"
 #include "graphics.h"
 
+int SCREEN_WIDTH = 1024;
+int SCREEN_HEIGHT = 576;
+int SCREEN_BPP = 32;
+
+SDL_Color c_Black = { 0, 0, 0 };
+SDL_Color c_White = { 255, 255, 255 };
+
+TTF_Font *mayFont;
+
 SDL_Surface *load_image( char* filename ) 
 {
     //Temporary storage for the image that's loaded

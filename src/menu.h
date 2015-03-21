@@ -23,6 +23,8 @@ typedef struct Menu_T
 	int changed;  /*0 if same, 1 if changed*/
 }Menu;
 
+extern Menu *mainMenu;
+
 Menu *createMenu(char *fontFile, int fontSize);
 void displayMenu(Menu *m);
 

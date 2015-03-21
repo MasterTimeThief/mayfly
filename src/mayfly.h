@@ -35,7 +35,7 @@ typedef struct Mayfly_T
 	int	believerExp;
 
 	int	visible; //Turn invisible on combat
-	int inUse;
+	int alive;
 	int selected;
 
 	int fighting;
@@ -45,6 +45,7 @@ typedef struct Mayfly_T
 	//void (*think)(Entity *e);
 }Mayfly;
 
+extern int mayflyTotal;
 extern Mayfly mayflyList[MAX_MAYFLIES];
 extern int mayflyPositions[15][2];
 

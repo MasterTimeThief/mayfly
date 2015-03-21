@@ -11,22 +11,13 @@
 #include "combat.h"
 #include "event.h"
 
-int SCREEN_WIDTH = 1024;
-int SCREEN_HEIGHT = 576;
-int SCREEN_BPP = 32;
 int STARTING_MAYFLY = 20;
-
-Menu *mainMenu = NULL;
-Room *gameRoom = NULL;
 
 char *menuBack = "images/menu.png";
 char *mainBack = "images/main2.png";
 char *combatBack = "images/battle.png";
 
-//SDL_Surface *buffer = NULL;
 SDL_Surface *screen = NULL;
-SDL_Color c_Black = { 0, 0, 0 };
-SDL_Color c_White = { 255, 255, 255 };
 SDL_Event eventCheck;
 
 int clickLeft, clickRight, mx, my, stopClick;
