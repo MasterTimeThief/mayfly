@@ -12,8 +12,6 @@ Mayfly mayflyList[MAX_MAYFLIES];
 int mayflyPositions[15][2];
 int mayflySelected;
 
-extern	SDL_Color c_Black;
-extern  SDL_Color c_White;
 extern	SDL_Surface *screen;
 extern Room *gameRoom;
 
@@ -164,7 +162,6 @@ void createMayfly()
 	{
 		setupMayfly(m);
 	}
-	
 }
 
 void createMayflyOffspring()
@@ -209,6 +206,7 @@ void mayflyAfterCombat()
 	for (i = 0;i < maxMayflies; i++)
 	{
 		mayflyList[i].visible = 1;
+		mayflyList[i].action = 1;
 		mayflyList[i].age++;
 	}
 }
@@ -252,83 +250,33 @@ void setupMayflyCombat()
 
 void displayMayflyStats(Mayfly *m)
 {
-	SDL_Surface *temp;
-	char		tempString[3];
-
 	//Display Stat Names
-	temp = renderText( mayFont, "Health: ", c_Black );
-	apply_surface(50,75,temp,screen,NULL);
-	SDL_FreeSurface(temp);
+	printString("Health: ",		c_Black, screen, 50, 75);
+	printString("Speed: ",		c_Black, screen, 50, 100);
+	printString("Strength: ",	c_Black, screen, 50, 125);
+	printString("Luck: ",		c_Black, screen, 50, 150);
+	printString("Age: ",		c_Black, screen, 50, 175);
 
-	temp = renderText( mayFont, "Speed: ", c_Black );
-	apply_surface(50,100,temp,screen,NULL);
-	SDL_FreeSurface(temp);
-
-	temp = renderText( mayFont, "Strength: ", c_Black );
-	apply_surface(50,125,temp,screen,NULL);
-	SDL_FreeSurface(temp);
-
-	temp = renderText( mayFont, "Luck: ", c_Black );
-	apply_surface(50,150,temp,screen,NULL);
-	SDL_FreeSurface(temp);
-
-	temp = renderText( mayFont, "Age: ", c_Black );
-	apply_surface(50,175,temp,screen,NULL);
-	SDL_FreeSurface(temp);
-
-	temp = renderText( mayFont, "Believer: ", c_Black );
-	apply_surface(50,225,temp,screen,NULL);
-	SDL_FreeSurface(temp);
-
-	temp = renderText( mayFont, "Archer: ", c_Black );
-	apply_surface(50,250,temp,screen,NULL);
-	SDL_FreeSurface(temp);
-
-	temp = renderText( mayFont, "Soldier: ", c_Black );
-	apply_surface(50,275,temp,screen,NULL);
-	SDL_FreeSurface(temp);
-
+	printString("Believer: ",	c_Black, screen, 50, 225);
+	printString("Archer: ",		c_Black, screen, 50, 250);
+	printString("Soldier: ",	c_Black, screen, 50, 275);
 
 	//Display Stat values
-	sprintf(tempString, "%i", m->health);
-	temp = renderText( mayFont, tempString, c_Black );
-	apply_surface(150,75,temp,screen,NULL);
-	SDL_FreeSurface(temp);
+	if (m->health <= 5)		printInt(m->health,	c_Red, screen, 150, 75);
+	else					printInt(m->health,	c_Black, screen, 150, 75);
+	if (m->speed <= 3)		printInt(m->speed,	c_Red, screen, 150, 100);
+	else					printInt(m->speed,	c_Black, screen, 150, 100);
+	if (m->strength <= 3)	printInt(m->strength,c_Red, screen, 150, 125);
+	else					printInt(m->strength,c_Black, screen, 150, 125);
+	if (m->luck <= 3)		printInt(m->luck,	c_Red, screen, 150, 150);
+	else					printInt(m->luck,	c_Black, screen, 150, 150);
 
-	sprintf(tempString, "%i", m->speed);
-	temp = renderText( mayFont, tempString, c_Black );
-	apply_surface(150,100,temp,screen,NULL);
-	SDL_FreeSurface(temp);
+	if (m->age >= 5)		printInt(m->age,c_Red, screen, 150, 175);
+	else					printInt(m->age,c_Black, screen, 150, 175);
 
-	sprintf(tempString, "%i", m->strength);
-	temp = renderText( mayFont, tempString, c_Black );
-	apply_surface(150,125,temp,screen,NULL);
-	SDL_FreeSurface(temp);
-
-	sprintf(tempString, "%i", m->luck);
-	temp = renderText( mayFont, tempString, c_Black );
-	apply_surface(150,150,temp,screen,NULL);
-	SDL_FreeSurface(temp);
-
-	sprintf(tempString, "%i", m->age);
-	temp = renderText( mayFont, tempString, c_Black );
-	apply_surface(150,175,temp,screen,NULL);
-	SDL_FreeSurface(temp);
-
-	sprintf(tempString, "%i", m->believerExp);
-	temp = renderText( mayFont, tempString, c_Black );
-	apply_surface(150,225,temp,screen,NULL);
-	SDL_FreeSurface(temp);
-
-	sprintf(tempString, "%i", m->archerExp);
-	temp = renderText( mayFont, tempString, c_Black );
-	apply_surface(150,250,temp,screen,NULL);
-	SDL_FreeSurface(temp);
-
-	sprintf(tempString, "%i", m->soldierExp);
-	temp = renderText( mayFont, tempString, c_Black );
-	apply_surface(150,275,temp,screen,NULL);
-	SDL_FreeSurface(temp);
+	printInt(m->believerExp,c_Black, screen, 150, 225);
+	printInt(m->archerExp,	c_Black, screen, 150, 250);
+	printInt(m->soldierExp,	c_Black, screen, 150, 275);
 }
 
 void freeMayfly(Mayfly *m)
@@ -422,6 +370,12 @@ void trainMayfly()
 	}
 }
 
+void healMayfly(Mayfly *m)
+{
+	m->health += rand() % 5 + 3;
+	m->action = 0;
+}
+
 void setupMayflyOffspring(Mayfly *child)
 {
 	int i;
@@ -446,15 +400,15 @@ void setupMayflyOffspring(Mayfly *child)
 	else if (p1->health > p2->health)		child->health =		(rand() % (p1->health - p2->health)) + p2->health + 1;
 	else									child->health =		(rand() % (p2->health - p1->health)) + p1->health + 1;
 
-	if (p1->strength == p2->strength)		child->strength =	p1->health;
+	if (p1->strength == p2->strength)		child->strength =	p1->strength;
 	else if (p1->strength > p2->strength)	child->strength =	(rand() % (p1->strength - p2->strength)) + p2->strength + 1;
 	else									child->strength =	(rand() % (p2->strength - p1->strength)) + p1->strength + 1;
 
-	if (p1->speed == p2->speed)				child->speed =		p1->health;
+	if (p1->speed == p2->speed)				child->speed =		p1->speed;
 	else if (p1->speed > p2->speed)			child->speed =		(rand() % (p1->speed - p2->speed)) + p2->speed + 1;
 	else									child->speed =		(rand() % (p2->speed - p1->speed)) + p1->speed + 1;
 
-	if (p1->luck == p2->luck)				child->luck =		p1->health;
+	if (p1->luck == p2->luck)				child->luck =		p1->luck;
 	else if (p1->luck > p2->luck)			child->luck =		(rand() % (p1->luck - p2->luck)) + p2->luck + 1;
 	else									child->luck =		(rand() % (p2->luck - p1->luck)) + p1->luck + 1;
 
@@ -508,7 +462,7 @@ void mayflyThink(Mayfly *m)
 	//Check if mouse collides with Mayfly
 	if (mouseHover(m->entity->ex,  m->entity->ey,  m->entity->image->w,  m->entity->image->h))
 	{
-		displayMayflyStats(m);
+		if (gameRoom->roomName == MAIN) displayMayflyStats(m);
 		if (clickLeft)
 		{
 			if (mouseMayfly == NULL) mouseMayfly = m;
@@ -518,7 +472,8 @@ void mayflyThink(Mayfly *m)
 
 		if (clickRight && !stopClick && m->action)
 		{
-			if		(!m->selected && checkSelected() < 15)	m->selected = 1;
+			if (gameRoom->mode == HEAL) healMayfly(m);
+			else if	(!m->selected && checkSelected() < 15)	m->selected = 1;
 			else if (m->selected)	m->selected = 0;
 			stopClick = 1;
 		}

@@ -6,6 +6,7 @@
 
 #define MAX_MAYFLIES	40
 
+
 typedef enum
 {
 	BELIEVER,

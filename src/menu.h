@@ -20,12 +20,15 @@ typedef struct Menu_T
 	Sprite *cursor;
 	TTF_Font *font;
 	menuChoice choice;
-	int changed;  /*0 if same, 1 if changed*/
+	int changed;
 }Menu;
 
 extern Menu *mainMenu;
 
 Menu *createMenu(char *fontFile, int fontSize);
+void menuNew();
+void menuLoad();
+void menuExit();
 void displayMenu(Menu *m);
 
 #endif

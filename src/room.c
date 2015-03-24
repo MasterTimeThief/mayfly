@@ -2,17 +2,19 @@
 
 extern TTF_Font *mayFont;
 extern int mayflyTotal;
+extern int enemyTotal;
 
 Room *gameRoom = NULL;
 
 extern	SDL_Color c_Black;
 extern SDL_Surface *screen;
+extern char *menuBack;
 
 Room *createRoom()
 {
 	Room *temp = (Room*)malloc(sizeof(Room));
 	//temp->background = SDL_CreateRGBSurface(0, SCREEN_WIDTH, SCREEN_HEIGHT, 32, 0xFF000000, 0x00FF0000, 0x0000FF00, 0x000000FF);
-	temp->background = load_image("images/menu.png");
+	temp->background = load_image(menuBack);
 	temp->roomName = MENU;
 	temp->mode = DRAFT;
 	return temp;
@@ -35,34 +37,20 @@ void changeBackground(Room *r, char *imageFile)
 
 void displayRoomInfo(Room *r)
 {
-	SDL_Surface *temp;
-	char		tempString[3];
-
 	//Display Stat Names
-	temp = renderText( mayFont, "Mayflies: ", c_Black );
-	apply_surface(700,50,temp,screen,NULL);
-	SDL_FreeSurface(temp);
-
-	temp = renderText( mayFont, "    Mode: ", c_Black );
-	apply_surface(700,100,temp,screen,NULL);
-	SDL_FreeSurface(temp);
+	printString("Mayflies: ",	c_Black, screen, 700, 50);
+	printString("    Mode: ",	c_Black, screen, 700, 100);
+	printString(" Enemies: ",	c_Black, screen, 700, 150);
 
 	//Display Stat values
-	sprintf(tempString, "%i", mayflyTotal);
-	temp = renderText( mayFont, tempString, c_Black );
-	apply_surface(825,50,temp,screen,NULL);
-	SDL_FreeSurface(temp);
+	printInt(mayflyTotal,	c_Black, screen, 825, 50);
+	printInt(enemyTotal,	c_Black, screen, 825, 150);
 
-	if (r->mode == DRAFT)		temp = renderText( mayFont, "Draft", c_Black );
-	else if (r->mode == HEAL)	temp = renderText( mayFont, "Heal", c_Black );
-	else if (r->mode == TRAIN)	temp = renderText( mayFont, "Train", c_Black );
-	else if (r->mode == SCOUT)	temp = renderText( mayFont, "Scout", c_Black );
-	else if (r->mode == BREED)	temp = renderText( mayFont, "Breed", c_Black );
-
-	apply_surface(825,100,temp,screen,NULL);
-
-	//Add in enemy counter
-	SDL_FreeSurface(temp);
+	if (r->mode == DRAFT)		printString("Draft", c_Black, screen, 825, 100);
+	else if (r->mode == HEAL)	printString("Heal",  c_Black, screen, 825, 100);
+	else if (r->mode == TRAIN)	printString("Train", c_Black, screen, 825, 100);
+	else if (r->mode == SCOUT)	printString("Scout", c_Black, screen, 825, 100);
+	else if (r->mode == BREED)	printString("Breed", c_Black, screen, 825, 100);
 }
 
 void roomThink(Room *r)

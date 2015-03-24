@@ -7,6 +7,7 @@ int SCREEN_BPP = 32;
 
 SDL_Color c_Black = { 0, 0, 0 };
 SDL_Color c_White = { 255, 255, 255 };
+SDL_Color c_Red = { 255, 0, 0 };
 
 TTF_Font *mayFont;
 
@@ -39,6 +40,26 @@ SDL_Surface *load_image( char* filename )
 SDL_Surface *renderText(TTF_Font *font, char *message, SDL_Color color)
 {
 	return TTF_RenderText_Blended( font, message, color );
+}
+
+void printString(char *message, SDL_Color color, SDL_Surface *dest, int x, int y)
+{
+	SDL_Surface *temp;
+	
+	temp = renderText( mayFont, message, color );
+	apply_surface(x,y,temp,dest,NULL);
+	SDL_FreeSurface(temp);
+}
+
+void printInt(int message, SDL_Color color, SDL_Surface *dest, int x, int y)
+{
+	SDL_Surface *temp;
+	char		tempString[3];
+	
+	sprintf(tempString, "%i", message);
+	temp = renderText( mayFont, tempString, color );
+	apply_surface(x,y,temp,dest,NULL);
+	SDL_FreeSurface(temp);
 }
 
 void apply_surface(int x, int y, SDL_Surface* source, SDL_Surface* destination, SDL_Rect* clip)

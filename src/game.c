@@ -13,7 +13,7 @@
 
 int STARTING_MAYFLY = 20;
 
-char *menuBack = "images/menu.png";
+char *menuBack = "images/menu2.png";
 char *mainBack = "images/main2.png";
 char *combatBack = "images/battle.png";
 
@@ -116,19 +116,19 @@ void menuMove(int choice)
 		if		(mainMenu->choice == NEW)
 		{
 			gameRoom->roomName = MAIN;
-			createButton();
+			createButton(64, 416, 128, 64, "images/button.png", (*combatButtonThink), toCombat);
 			changeBackground(gameRoom, mainBack);
 			//new game script
 			for (i = 0; i < STARTING_MAYFLY; i++)
 			{
 				createMayfly();
 			}
-			displayMayflies(screen);
+			//displayMayflies(screen);
 		}
 		else if (mainMenu->choice == LOAD) 
 		{
 			gameRoom->roomName = MAIN;
-			createButton();
+			createButton(64, 416, 128, 64, "images/button.png", (*combatButtonThink), toCombat);
 			changeBackground(gameRoom, mainBack);
 			//load game script
 		}
@@ -158,8 +158,6 @@ int main( int argc, char* args[] )
 	mainMenu = createMenu("fonts/menuFont.ttf", 30);
 	displayMenu(mainMenu);
 	apply_surface(0,0,mainMenu->message,screen,NULL);
-
-	createButton();
 
     //Game Loop
 	while(!done)
