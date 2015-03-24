@@ -43,7 +43,7 @@ void initMayflyList()
 	mayFont = TTF_OpenFont("fonts/mayflyFont.ttf", 30);
 	selectSpr = LoadSprite("images/select.png",32,32);
 	inactiveSpr = LoadSprite("images/inactive.png",32,32);
-	trainFrame = LoadSprite("images/trainFrame.png",384,128);
+	trainFrame = LoadSprite("images/trainFrame.png",384,192);
 	trainee = NULL;
 }
 
@@ -63,6 +63,17 @@ void setupMayflyCombatPositions()
 		else if (i % 5 == 4)	mayflyPositions[i][1] = 480;
 	}
 }
+
+/**********************************************************************************************//**
+ * @fn	Mayfly *newMayfly()
+ *
+ * @brief	Returns an empty mayfly list entry.
+ *
+ * @author	Camilo
+ * @date	3/24/2015
+ *
+ * @return	null if it fails, else a Mayfly*.
+ **************************************************************************************************/
 
 Mayfly *newMayfly()
 {
@@ -85,6 +96,17 @@ Mayfly *newMayfly()
 	mayflyList[maxMayflies].alive = 1;
 	return &mayflyList[maxMayflies++];
 }
+
+/**********************************************************************************************//**
+ * @fn	void setupMayfly(Mayfly *m)
+ *
+ * @brief	Sets up the mayfly.
+ *
+ * @author	Camilo
+ * @date	3/24/2015
+ *
+ * @param [in,out]	m	If non-null, the Mayfly * to process.
+ **************************************************************************************************/
 
 void setupMayfly(Mayfly *m)
 {
@@ -179,6 +201,15 @@ void createMayflyOffspring()
 	}
 }
 
+/**********************************************************************************************//**
+ * @fn	void displayMayflies()
+ *
+ * @brief	Displays the mayflies.
+ *
+ * @author	Camilo
+ * @date	3/24/2015
+ **************************************************************************************************/
+
 void displayMayflies()
 {
 	int i;
@@ -218,28 +249,36 @@ void mayflyAfterCombat()
 		mayflyList[i].visible = 1;
 		mayflyList[i].action = 1;
 		mayflyList[i].age++;
+		if (mayflyList[i].age == 3) freeMayfly(&mayflyList[i]);
 	}
 }
 
-/*void mayflyDoNothing(Entity *e)
-{
-	return;
-}
-void UpdateMayflies()
-{
-	int i;
-	for(i = 0;i < MAX_MAYFLIES;i++)
-
-		(*mayflyList[i].think)(mayflyList[i].entity);
-}*/
-
-
+/**********************************************************************************************//**
+ * @fn	void mayflyCombatPosition(Mayfly *m, int index)
+ *
+ * @brief	Sets up Mayfly combat position.
+ *
+ * @author	Camilo
+ * @date	3/24/2015
+ *
+ * @param [in,out]	m	If non-null, the Mayfly * to process.
+ * @param	index	 	Zero-based index of the combat position to use.
+ **************************************************************************************************/
 
 void mayflyCombatPosition(Mayfly *m, int index)
 {
 	m->cx = mayflyPositions[index][0];
 	m->cy = mayflyPositions[index][1];
 }
+
+/**********************************************************************************************//**
+ * @fn	void setupMayflyCombat()
+ *
+ * @brief	Sets up the mayfly combat.
+ *
+ * @author	Camilo
+ * @date	3/24/2015
+ **************************************************************************************************/
 
 void setupMayflyCombat()
 {
@@ -257,6 +296,17 @@ void setupMayflyCombat()
 		j++;
 	}
 }
+
+/**********************************************************************************************//**
+ * @fn	void displayMayflyStats(Mayfly *m)
+ *
+ * @brief	Displays a mayfly statistics described by m.
+ *
+ * @author	Camilo
+ * @date	3/24/2015
+ *
+ * @param [in,out]	m	If non-null, the Mayfly * to process.
+ **************************************************************************************************/
 
 void displayMayflyStats(Mayfly *m)
 {
@@ -289,6 +339,17 @@ void displayMayflyStats(Mayfly *m)
 	printInt(m->soldierExp,	c_Black, screen, 150, 275);
 }
 
+/**********************************************************************************************//**
+ * @fn	void freeMayfly(Mayfly *m)
+ *
+ * @brief	Free mayfly.
+ *
+ * @author	Camilo
+ * @date	3/24/2015
+ *
+ * @param [in,out]	m	If non-null, the Mayfly * to process.
+ **************************************************************************************************/
+
 void freeMayfly(Mayfly *m)
 {
 	FreeSprite(m->entity->image);
@@ -318,6 +379,15 @@ void clearMayflySelection()
 	}
 }
 
+/**********************************************************************************************//**
+ * @fn	void checkSelected()
+ *
+ * @brief	Check how many Mayflies are selected.
+ *
+ * @author	Camilo
+ * @date	3/24/2015
+ **************************************************************************************************/
+
 void checkSelected()
 {
 	int i;
@@ -328,6 +398,15 @@ void checkSelected()
 	}
 }
 
+/**********************************************************************************************//**
+ * @fn	void trainBeliever()
+ *
+ * @brief	Train believer.
+ *
+ * @author	Camilo
+ * @date	3/24/2015
+ **************************************************************************************************/
+
 void trainBeliever()
 {
 	trainee->believerExp += rand() % 10 + 1;
@@ -336,6 +415,15 @@ void trainBeliever()
 	trainee = NULL;
 }
 
+/**********************************************************************************************//**
+ * @fn	void trainArcher()
+ *
+ * @brief	Train archer.
+ *
+ * @author	Camilo
+ * @date	3/24/2015
+ **************************************************************************************************/
+
 void trainArcher()
 {
 	trainee->archerExp += rand() % 10 + 1;
@@ -343,6 +431,15 @@ void trainArcher()
 	trainee->selected = 0;
 	trainee = NULL;
 }
+
+/**********************************************************************************************//**
+ * @fn	void trainSoldier()
+ *
+ * @brief	Train soldier.
+ *
+ * @author	Camilo
+ * @date	3/24/2015
+ **************************************************************************************************/
 
 void trainSoldier()
 {
@@ -370,6 +467,13 @@ void trainMayfly()
 	createButton(224, 160, 128, 64, "images/belButton.png", (*trainButtonThink), trainBeliever);
 	createButton(384, 192, 128, 64, "images/archButton.png", (*trainButtonThink), trainArcher);
 	createButton(544, 160, 128, 64, "images/solButton.png", (*trainButtonThink), trainSoldier);
+}
+
+void mayflyExperience(Mayfly *m)
+{
+	if (m->currClass == BELIEVER) m->believerExp += rand() % 10;
+	else if (m->currClass == ARCHER) m->archerExp += rand() % 10;
+	else if (m->currClass == SOLDIER) m->soldierExp += rand() % 10;
 }
 
 void healMayfly(Mayfly *m)
@@ -467,7 +571,7 @@ void mayflyThink(Mayfly *m)
 	//Check if mouse collides with Mayfly
 	if (mouseHover(m->entity->ex,  m->entity->ey,  m->entity->image->w,  m->entity->image->h))
 	{
-		if (gameRoom->roomName == MAIN) displayMayflyStats(m);
+		if (gameRoom->roomName == MAIN && m->alive) displayMayflyStats(m);
 		if (clickLeft)
 		{
 			if (mouseMayfly == NULL) mouseMayfly = m;

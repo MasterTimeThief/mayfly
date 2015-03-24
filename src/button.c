@@ -41,8 +41,8 @@ void createButton(int x, int y, int w, int h, char *filename, void (*think)(int 
 	Button *b = newButton();
 	if (b != NULL)
 	{
-		b->think = (*think);
-		b->effect = (*effect);
+		if ((*think) != NULL)  b->think = (*think);
+		if ((*effect) != NULL) b->effect = (*effect);
 
 		b->entity = createEntity();
 		b->entity->image = LoadSprite(filename,w,h);
@@ -59,6 +59,15 @@ void freeButton(Button *b)
 	b->think = NULL;
 }
 
+void mainButtons()
+{
+	createButton(64, 384, 128, 64,  "images/button.png",	  (*combatButtonThink), toCombat);
+	createButton(64, 448, 64, 64,   "images/healButton.png",  (*mainButtonThink), toHeal);
+	createButton(128, 448, 64, 64,  "images/trainButton.png", (*mainButtonThink), toTrain);
+	createButton(64, 512, 64, 64,   "images/breedButton.png", (*mainButtonThink), toBreed);
+	createButton(128, 512, 64, 64,  "images/scoutButton.png", (*mainButtonThink), toScout);
+}
+
 int checkClick(Button *b)
 {
 	if (mouseHover(b->entity->ex,  b->entity->ey,  b->entity->image->w,  b->entity->image->h))
@@ -72,14 +81,89 @@ void combatButtonThink(int index)
 {
 	if (gameRoom->roomName != MAIN)
 	{
+		freeButton(&buttonList[index]);
+	}
+
+	if (checkClick(&buttonList[index]))
+	{
+		if (gameRoom->mode == DRAFT && mayflySelected > 0)
+		{
+			(*buttonList[index].effect)();
+			freeButton(&buttonList[index]);
+		}
+		else
+		{
+			gameRoom->mode = DRAFT;
+			clearMayflySelection();
+		}
+	}
+}
+
+void mainButtonThink(int index)
+{
+	if (gameRoom->roomName != MAIN)
+	{
+		freeButton(&buttonList[index]);
+	}
+
+	if (checkClick(&buttonList[index]))
+	{
+		(*buttonList[index].effect)();
+	}
+}
+
+void toHeal()
+{
+	gameRoom->mode = HEAL;
+	clearMayflySelection();
+}
+
+void toTrain()
+{
+	gameRoom->mode = TRAIN;
+	clearMayflySelection();
+}
+
+void toBreed()
+{
+	gameRoom->mode = BREED;
+	clearMayflySelection();
+}
+
+void toScout()
+{
+	gameRoom->mode = SCOUT;
+	clearMayflySelection();
+}
+
+/**********************************************************************************************//**
+ * @fn	void modeButtonThink(int index)
+ *
+ * @brief	Mode button think.
+ *
+ * @author	Camilo
+ * @date	3/24/2015
+ *
+ * @param	index	Zero-based index of the.
+ **************************************************************************************************/
+
+void modeButtonThink(int index)
+{
+	if (gameRoom->roomName != MAIN)
+	{
 		buttonList[index].visible = 0;
+		freeButton(&buttonList[index]);
 	}
 	else buttonList[index].visible = 1;
 
-	if (checkClick(&buttonList[index]) && gameRoom->mode == DRAFT && mayflySelected > 0)
+	if (checkClick(&buttonList[index]))
 	{
-		(*buttonList[index].effect)();
-		freeButton(&buttonList[index]);
+		if (gameRoom->mode == DRAFT && mayflySelected > 0)
+		{
+			(*buttonList[index].effect)();
+			freeButton(&buttonList[index]);
+		}
+		else gameRoom->mode = DRAFT;
 	}
 }
 

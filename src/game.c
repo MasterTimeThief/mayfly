@@ -97,8 +97,6 @@ void clean_up()
 int main( int argc, char* args[] )
 {
 	int done = 0;
-	int choicePos;
-	int spriteLoop;
 	
 	//Initialize
     if( init() == -1 )
@@ -112,9 +110,9 @@ int main( int argc, char* args[] )
 	updateBackground(gameRoom, screen);
 
 	//Menu buttons
-	createButton(768, 384, 96, 32, "images/newButton.png", (*menuButtonThink), menuNew);
-	createButton(768, 448, 96, 32, "images/loadButton.png", (*menuButtonThink), menuLoad);
-	createButton(768, 512, 96, 32, "images/exitButton.png", (*menuButtonThink), menuExit);
+	createButton(768, 320, 192, 64, "images/newButton.png", (*menuButtonThink), menuNew);
+	createButton(768, 384, 192, 64, "images/loadButton.png", (*menuButtonThink), menuLoad);
+	createButton(768, 448, 192, 64, "images/exitButton.png", (*menuButtonThink), menuExit);
 
     //Game Loop
 	while(!done)
@@ -156,6 +154,5 @@ int main( int argc, char* args[] )
 		}
 	}
 	clean_up();
-
 	return 0;
 }

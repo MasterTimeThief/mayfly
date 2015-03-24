@@ -69,6 +69,7 @@ void freeMayfly(Mayfly *m);
 void closeMayflies();
 void clearMayflySelection();
 void checkSelected();
+void mayflyExperience(Mayfly *m);
 void setupMayflyOffspring(Mayfly *child);
 void mayflyAllThink(Room *r);
 void mayflyThink(Mayfly *m);

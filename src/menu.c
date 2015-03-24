@@ -13,7 +13,8 @@ void menuNew()
 	int i;
 	
 	gameRoom->roomName = MAIN;
-	createButton(64, 416, 128, 64, "images/button.png", (*combatButtonThink), toCombat);
+	//createButton(64, 416, 128, 64, "images/button.png", (*combatButtonThink), toCombat);
+	mainButtons();
 	changeBackground(gameRoom, mainBack);
 	//new game script
 	for (i = 0; i < STARTING_MAYFLY; i++)

@@ -18,6 +18,12 @@ extern Button buttonList[MAX_BUTTONS];
 void combatButtonThink(int index);
 void menuButtonThink(int index);
 void trainButtonThink(int index);
+void mainButtonThink(int index);
+void toHeal();
+void toTrain();
+void toBreed();
+void toScout();
+void mainButtons();
 void createButton(int x, int y, int w, int h, char *filename, void (*think)(), void (*effect)());
 void buttonThink();
 

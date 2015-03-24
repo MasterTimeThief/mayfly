@@ -165,7 +165,7 @@ void enemyThink(Enemy *e)
 void toCombat()
 {
 	Event *combatStart = newEvent();
-	if (gameRoom->mode == DRAFT && mayflySelected > 1)
+	if (gameRoom->mode == DRAFT && mayflySelected >= 1)
 	{
 		gameRoom->roomName = COMBAT;
 		setupEnemyCombat();
@@ -202,7 +202,8 @@ void endCombat()
 	}
 	mayflyAfterCombat();
 	gameRoom->roomName = MAIN;
-	createButton(64, 416, 128, 64, "images/button.png", (*combatButtonThink), toCombat);
+	//createButton(64, 416, 128, 64, "images/button.png", (*combatButtonThink), toCombat);
+	mainButtons();
 	changeBackground(gameRoom, mainBack);
 }
 
@@ -219,16 +220,36 @@ void resetFighters()
 	nextFight->end = chooseFighters;
 }
 
+/**********************************************************************************************//**
+ * @fn	void mayflyAttack()
+ *
+ * @brief	Mayfly attack.
+ *
+ * @author	Camilo
+ * @date	3/24/2015
+ **************************************************************************************************/
+
 void mayflyAttack()
 {
 	Event *nextAction = newEvent();
+	int tempCrit;
+	int myCrit = 0;
+	int myAdv = 0;
+
+	if		(mayflyFighters[currentCombat]->currClass == BELIEVER && enemyFighters[currentCombat]->currClass == SOLDIER) myAdv = rand() % 4;
+	else if (mayflyFighters[currentCombat]->currClass == SOLDIER && enemyFighters[currentCombat]->currClass == ARCHER)	 myAdv = rand() % 4;
+	else if (mayflyFighters[currentCombat]->currClass == ARCHER && enemyFighters[currentCombat]->currClass == BELIEVER)  myAdv = rand() % 4;
 	
-	enemyFighters[currentCombat]->health -= mayflyFighters[currentCombat]->strength;
+	tempCrit = rand() % 30;
+	if (tempCrit < mayflyFighters[currentCombat]->luck) myCrit = rand() % 5;
+
+	enemyFighters[currentCombat]->health -= ( mayflyFighters[currentCombat]->strength + myAdv + myCrit);
 	if (enemyFighters[currentCombat]->health <= 0)
 	{
 		enemyFighters[currentCombat]->alive = 0;
 		numKilled++;
 		enemyTotal--;
+		mayflyExperience(mayflyFighters[currentCombat]);
 		nextAction->end = resetFighters;
 	}
 	else
@@ -238,16 +259,34 @@ void mayflyAttack()
 	nextAction->timer = 1;
 }
 
+/**********************************************************************************************//**
+ * @fn	void enemyAttack()
+ *
+ * @brief	Enemy attack.
+ *
+ * @author	Camilo
+ * @date	3/24/2015
+ **************************************************************************************************/
+
 void enemyAttack()
 {
 	Event *nextAction = newEvent();
+	int tempCrit;
+	int enemyCrit = 0;
+	int enemyAdv = 0;
+
+	if		(enemyFighters[currentCombat]->currClass == BELIEVER && mayflyFighters[currentCombat]->currClass == SOLDIER) enemyAdv = rand() % 4;
+	else if (enemyFighters[currentCombat]->currClass == SOLDIER && mayflyFighters[currentCombat]->currClass == ARCHER)	 enemyAdv = rand() % 4;
+	else if (enemyFighters[currentCombat]->currClass == ARCHER && mayflyFighters[currentCombat]->currClass == BELIEVER)  enemyAdv = rand() % 4;
 	
-	mayflyFighters[currentCombat]->health -= enemyFighters[currentCombat]->strength;
+	tempCrit = rand() % 30;
+	if (tempCrit < enemyFighters[currentCombat]->luck) enemyCrit = rand() % 5;
+
+	mayflyFighters[currentCombat]->health -= ( enemyFighters[currentCombat]->strength + enemyAdv + enemyCrit );
 	if (mayflyFighters[currentCombat]->health <= 0)
 	{
-		mayflyFighters[currentCombat]->alive = 0;
+		freeMayfly(mayflyFighters[currentCombat]);
 		numLost++;
-		mayflyTotal--;
 		nextAction->end = resetFighters;
 	}
 	else

@@ -43,19 +43,39 @@ void changeBackground(Room *r, char *imageFile)
 void displayRoomInfo(Room *r)
 {
 	//Display Stat Names
-	printString("Mayflies: ",	c_Black, screen, 700, 50);
-	printString("    Mode: ",	c_Black, screen, 700, 100);
-	printString(" Enemies: ",	c_Black, screen, 700, 150);
+	printString("Mayflies: ",	c_Black, screen, 700, 100);
+	printString("   Mode: ",	c_Black, screen, 700, 150);
+	printString(" Enemies: ",	c_Black, screen, 700, 200);
 
 	//Display Stat values
-	printInt(mayflyTotal,	c_Black, screen, 825, 50);
-	printInt(enemyTotal,	c_Black, screen, 825, 150);
+	printInt(mayflyTotal,	c_Black, screen, 825, 100);
+	printInt(enemyTotal,	c_Black, screen, 825, 200);
 
-	if (r->mode == DRAFT)		printString("Draft", c_Black, screen, 825, 100);
-	else if (r->mode == HEAL)	printString("Heal",  c_Black, screen, 825, 100);
-	else if (r->mode == TRAIN)	printString("Train", c_Black, screen, 825, 100);
-	else if (r->mode == SCOUT)	printString("Scout", c_Black, screen, 825, 100);
-	else if (r->mode == BREED)	printString("Breed", c_Black, screen, 825, 100);
+	if (r->mode == DRAFT)
+	{
+		printString("Draft", c_Black, screen, 825, 150);
+		printString("Select Mayflies to fight for your cause!", c_White, screen, 256, 20);
+	}
+	else if (r->mode == HEAL)	
+	{
+		printString("Heal",  c_Black, screen, 825, 150);
+		printString("Replenish your Mayfly's health! (uses daily action)", c_White, screen, 256, 20);
+	}
+	else if (r->mode == TRAIN)	
+	{
+		printString("Train", c_Black, screen, 825, 150);
+		printString("Train up your Mayfly in class of your choice! (uses daily action)", c_White, screen, 256, 20);
+	}
+	else if (r->mode == SCOUT)	
+	{
+		printString("Scout", c_Black, screen, 825, 150);
+		printString("Send out Mayfly to return with enemy information! (uses daily action)", c_White, screen, 256, 20);
+	}
+	else if (r->mode == BREED)	
+	{
+		printString("Breed", c_Black, screen, 825, 150);
+		printString("Increase your army by selecting the best traits! (uses daily action)", c_White, screen, 256, 20);
+	}
 }
 
 void modeChange()
