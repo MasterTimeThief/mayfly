@@ -6,9 +6,9 @@
 #include "event.h"
 
 Button buttonList[MAX_BUTTONS];
-//Button *combatButton;
 extern	SDL_Surface *screen;
 extern char *combatBack;
+extern Mayfly *trainee;
 
 void initButtonList()
 {
@@ -49,22 +49,12 @@ void createButton(int x, int y, int w, int h, char *filename, void (*think)(int 
 		b->entity->ex = x;
 		b->entity->ey = y;
 	}
-	
-	/*
-	createButton(64, 416, 128, 64, "images/button.png", combatButtonThink, toCombat)
-	combatButton = (Button*)malloc(sizeof(Button));
-	combatButton->visible = 1;
-	combatButton->effect = toCombat;
-
-	combatButton->entity = createEntity();
-	combatButton->entity->image = LoadSprite("images/button.png",128,64);
-	combatButton->entity->ex = 64;
-	combatButton->entity->ey = 416;*/
 }
 
 void freeButton(Button *b)
 {
 	if (b->entity != NULL) freeEntity(b->entity);
+	b->visible = 0;
 	b->effect = NULL;
 	b->think = NULL;
 }
@@ -86,7 +76,7 @@ void combatButtonThink(int index)
 	}
 	else buttonList[index].visible = 1;
 
-	if (checkClick(&buttonList[index]) && gameRoom->mode == DRAFT && checkSelected() > 1)
+	if (checkClick(&buttonList[index]) && gameRoom->mode == DRAFT && mayflySelected > 0)
 	{
 		(*buttonList[index].effect)();
 		freeButton(&buttonList[index]);
@@ -102,14 +92,20 @@ void menuButtonThink(int index)
 	}
 }
 
+void trainButtonThink(int index)
+{
+	if (gameRoom->mode != TRAIN || trainee == NULL)	freeButton(&buttonList[index]);
+	if (checkClick(&buttonList[index]))
+	{
+		if (buttonList[index].effect != NULL) (*buttonList[index].effect)();
+	}
+}
+
 void buttonThink()
 {
 	int x;
 	for(x = 0; x < MAX_BUTTONS; x++)
-	{ 
-		/*if (!buttonList[x].visible) freeButton(&buttonList[x]);//delete button
-		else
-		{*/
+	{
 		if (buttonList[x].visible)
 		{
 			DrawSprite(buttonList[x].entity->image, screen, buttonList[x].entity->ex, buttonList[x].entity->ey, buttonList[x].entity->frame);
@@ -118,24 +114,4 @@ void buttonThink()
 			else							buttonList[x].entity->frame = 0;
 		}
 	}
-	
-	/*if (gameRoom->roomName == MAIN)
-	{
-		combatButton->visible = 1;
-		if (combatButton->visible) DrawSprite(combatButton->entity->image, screen, combatButton->entity->ex, combatButton->entity->ey, combatButton->entity->frame);
-		if (mouseHover(combatButton->entity->ex,  combatButton->entity->ey,  combatButton->entity->image->w,  combatButton->entity->image->h))
-		{
-			if (clickLeft)
-			{
-				combatButton->entity->frame = 1;
-				if (gameRoom->mode == DRAFT && checkSelected() > 1)
-				{
-					(combatButton->effect)();
-					combatButton->entity->frame = 0;
-				}
-			}
-			else if (!clickLeft) combatButton->entity->frame = 0;
-		}
-	}
-	else combatButton->visible = 0;*/
 }

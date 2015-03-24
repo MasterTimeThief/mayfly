@@ -1,8 +1,11 @@
 #include "room.h"
+#include "mayfly.h"
 
 extern TTF_Font *mayFont;
 extern int mayflyTotal;
 extern int enemyTotal;
+
+int spacePressed;
 
 Room *gameRoom = NULL;
 
@@ -17,6 +20,8 @@ Room *createRoom()
 	temp->background = load_image(menuBack);
 	temp->roomName = MENU;
 	temp->mode = DRAFT;
+
+	spacePressed = 0;
 	return temp;
 }
 
@@ -53,7 +58,29 @@ void displayRoomInfo(Room *r)
 	else if (r->mode == BREED)	printString("Breed", c_Black, screen, 825, 100);
 }
 
+void modeChange()
+{
+	if (gameRoom->mode == BREED)		gameRoom->mode = DRAFT;
+	else if (gameRoom->mode == DRAFT)	gameRoom->mode = HEAL;
+	else if (gameRoom->mode == HEAL)	gameRoom->mode = TRAIN;
+	else if (gameRoom->mode == TRAIN)	gameRoom->mode = SCOUT;
+	else if (gameRoom->mode == SCOUT)	gameRoom->mode = BREED;
+}
+
 void roomThink(Room *r)
 {
+	int numkeys;
+	Uint8 *keys = SDL_GetKeyState(&numkeys);
+
 	if (r->roomName == MAIN) displayRoomInfo(r);
+	if (keys[SDLK_SPACE])
+	{
+		if (!spacePressed)
+		{
+			modeChange();
+			clearMayflySelection();
+			spacePressed = 1;
+		}
+	}
+	else spacePressed = 0;
 }

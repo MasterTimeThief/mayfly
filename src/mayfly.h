@@ -47,6 +47,7 @@ typedef struct Mayfly_T
 }Mayfly;
 
 extern int mayflyTotal;
+extern int mayflySelected;
 extern Mayfly mayflyList[MAX_MAYFLIES];
 extern int mayflyPositions[15][2];
 
@@ -67,7 +68,7 @@ void mayflyAfterCombat();
 void freeMayfly(Mayfly *m);
 void closeMayflies();
 void clearMayflySelection();
-int	 checkSelected();
+void checkSelected();
 void setupMayflyOffspring(Mayfly *child);
 void mayflyAllThink(Room *r);
 void mayflyThink(Mayfly *m);

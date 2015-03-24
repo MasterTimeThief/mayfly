@@ -78,8 +78,6 @@ void clean_up()
 	
 	closeEntities();
 	closeSprites();
-	
-	SDL_FreeSurface(mainMenu->message);
 
 	TTF_Quit();
 	
@@ -87,55 +85,14 @@ void clean_up()
 	SDL_Quit();
 }
 
-void modeChange(Room *r)
+/*void modeChange(Room *r)
 {
 	if (r->mode == BREED)		r->mode = DRAFT;
 	else if (r->mode == DRAFT)	r->mode = HEAL;
 	else if (r->mode == HEAL)	r->mode = TRAIN;
 	else if (r->mode == TRAIN)	r->mode = SCOUT;
 	else if (r->mode == SCOUT)	r->mode = BREED;
-}
-
-void menuMove(int choice)
-{
-	int i;
-	if (choice == 1) // UP
-	{
-		if		(mainMenu->choice == NEW) mainMenu->choice = EXIT;
-		else if (mainMenu->choice == LOAD) mainMenu->choice = NEW;
-		else if (mainMenu->choice == EXIT) mainMenu->choice = LOAD;
-	}
-	else if (choice == 2) // DOWN
-	{
-		if		(mainMenu->choice == NEW) mainMenu->choice = LOAD;
-		else if (mainMenu->choice == LOAD) mainMenu->choice = EXIT;
-		else if (mainMenu->choice == EXIT) mainMenu->choice = NEW;
-	}
-	else if (choice == 3) // ENTER
-	{
-		if		(mainMenu->choice == NEW)
-		{
-			gameRoom->roomName = MAIN;
-			createButton(64, 416, 128, 64, "images/button.png", (*combatButtonThink), toCombat);
-			changeBackground(gameRoom, mainBack);
-			//new game script
-			for (i = 0; i < STARTING_MAYFLY; i++)
-			{
-				createMayfly();
-			}
-			//displayMayflies(screen);
-		}
-		else if (mainMenu->choice == LOAD) 
-		{
-			gameRoom->roomName = MAIN;
-			createButton(64, 416, 128, 64, "images/button.png", (*combatButtonThink), toCombat);
-			changeBackground(gameRoom, mainBack);
-			//load game script
-		}
-		else if (mainMenu->choice == EXIT) gameRoom->roomName = QUIT;
-	}
-	displayMenu(mainMenu);
-}
+}*/
 
 int main( int argc, char* args[] )
 {
@@ -154,30 +111,15 @@ int main( int argc, char* args[] )
     //Load image
 	updateBackground(gameRoom, screen);
 
-	//Menu
-	mainMenu = createMenu("fonts/menuFont.ttf", 30);
-	displayMenu(mainMenu);
-	apply_surface(0,0,mainMenu->message,screen,NULL);
+	//Menu buttons
+	createButton(768, 384, 96, 32, "images/newButton.png", (*menuButtonThink), menuNew);
+	createButton(768, 448, 96, 32, "images/loadButton.png", (*menuButtonThink), menuLoad);
+	createButton(768, 512, 96, 32, "images/exitButton.png", (*menuButtonThink), menuExit);
 
     //Game Loop
 	while(!done)
 	{
-		if (gameRoom->roomName == MENU)
-		{
-			//Update Screen
-			if (mainMenu->message != NULL && mainMenu->changed == 1)
-			{
-				if (mainMenu->choice == NEW) choicePos = 400;
-				else if (mainMenu->choice == LOAD) choicePos = 450;
-				else if (mainMenu->choice == EXIT) choicePos = 500;
-
-				updateBackground(gameRoom, screen);
-				apply_surface(0,0,mainMenu->message,screen,NULL);
-				DrawSprite(mainMenu->cursor,screen,750,choicePos, 1);
-				mainMenu->changed = 0;
-			}
-		}
-		else if (gameRoom->roomName == MAIN)
+		if (gameRoom->roomName == MAIN)
 		{
 			updateBackground(gameRoom, screen);
 			displayMayflies();
@@ -205,35 +147,8 @@ int main( int argc, char* args[] )
 		//While there's an event to handle
         while( SDL_PollEvent( &eventCheck ) )
         {
-			//If a key was pressed
-            if( eventCheck.type == SDL_KEYDOWN )
-            {
-				if (gameRoom->roomName == MENU)
-				{
-					switch( eventCheck.key.keysym.sym )
-					{
-						case SDLK_UP:		menuMove(1); break;
-						case SDLK_DOWN:		menuMove(2); break;
-						case SDLK_SPACE:
-						case SDLK_RETURN :	menuMove(3); break;
-					}
-				}
-				else if (gameRoom->roomName == MAIN)
-				{
-					switch( eventCheck.key.keysym.sym )
-					{
-						case SDLK_SPACE:	
-							modeChange(gameRoom);
-							clearMayflySelection();
-							break;
-						/*case SDLK_1:		//menuMove(2); break;
-						case SDLK_2:		//menuMove(3); break;
-						case SDLK_3:		//menuMove(3); break;*/
-					}
-				}
-			}
 			//If the user has Xed out the window
-            else if( eventCheck.type == SDL_QUIT )
+            if( eventCheck.type == SDL_QUIT )
             {
                 //Quit the program
                 done = 1;

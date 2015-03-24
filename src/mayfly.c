@@ -3,6 +3,7 @@
 #include "graphics.h"
 #include "mouse.h"
 #include "combat.h"
+#include "button.h"
 
 extern int entityTotal;
 
@@ -11,6 +12,7 @@ extern int SCREEN_HEIGHT;
 Mayfly mayflyList[MAX_MAYFLIES];
 int mayflyPositions[15][2];
 int mayflySelected;
+Mayfly *trainee;
 
 extern	SDL_Surface *screen;
 extern Room *gameRoom;
@@ -24,6 +26,7 @@ extern int my;
 
 Sprite *selectSpr;
 Sprite *inactiveSpr;
+Sprite *trainFrame;
 
 void initMayflyList()
 {
@@ -40,6 +43,8 @@ void initMayflyList()
 	mayFont = TTF_OpenFont("fonts/mayflyFont.ttf", 30);
 	selectSpr = LoadSprite("images/select.png",32,32);
 	inactiveSpr = LoadSprite("images/inactive.png",32,32);
+	trainFrame = LoadSprite("images/trainFrame.png",384,128);
+	trainee = NULL;
 }
 
 void setupMayflyCombatPositions()
@@ -198,6 +203,11 @@ void displayMayflies()
 			}
 		}
 	}
+	if (trainee != NULL)
+	{
+		DrawSprite(trainFrame, screen, 256, 64, 0);
+		DrawSprite(trainee->entity->image, screen, 432, 80, trainee->entity->frame);
+	} 
 }
 
 void mayflyAfterCombat()
@@ -308,26 +318,46 @@ void clearMayflySelection()
 	}
 }
 
-int checkSelected()
+void checkSelected()
 {
-	int i,x;
-	x = 0;
+	int i;
+	mayflySelected = 0;
 	for (i = 0;i < maxMayflies; i++)
 	{
-		if (mayflyList[i].selected == 1) x++;
+		if (mayflyList[i].selected == 1) mayflySelected++;
 	}
-	mayflySelected = x;
-	return x;
+}
+
+void trainBeliever()
+{
+	trainee->believerExp += rand() % 10 + 1;
+	trainee->action = 0;
+	trainee->selected = 0;
+	trainee = NULL;
+}
+
+void trainArcher()
+{
+	trainee->archerExp += rand() % 10 + 1;
+	trainee->action = 0;
+	trainee->selected = 0;
+	trainee = NULL;
+}
+
+void trainSoldier()
+{
+	trainee->soldierExp += rand() % 10 + 1;
+	trainee->action = 0;
+	trainee->selected = 0;
+	trainee = NULL;
 }
 
 void trainMayfly()
 {
 	int i, numkeys;
-	Mayfly *trainee;
-	SDL_Surface *temp;
 
 	Uint8 *keys = SDL_GetKeyState(&numkeys);
-	trainee = NULL;
+	//trainee = NULL;
 	for (i = 0;i < maxMayflies; i++)
 	{
 		if (mayflyList[i].selected == 1)
@@ -337,37 +367,9 @@ void trainMayfly()
 		}
 	}
 
-	temp = renderText( mayFont, "Train in Believer (1)", c_White );
-	apply_surface(250,50,temp,screen,NULL);
-	SDL_FreeSurface(temp);
-
-	temp = renderText( mayFont, "Train in Archer  (2)",  c_White );
-	apply_surface(250,100,temp,screen,NULL);
-	SDL_FreeSurface(temp);
-
-	temp = renderText( mayFont, "Train in Soldier  (3)", c_White );
-	apply_surface(250,150,temp,screen,NULL);
-	SDL_FreeSurface(temp);
-
-	//check which key is pressed
-	if (keys[SDLK_1])
-	{
-		trainee->believerExp += rand() % 10 + 1;
-		trainee->action = 0;
-		clearMayflySelection();
-	}
-	else if (keys[SDLK_2])
-	{
-		trainee->archerExp += rand() % 10 + 1;
-		trainee->action = 0;
-		clearMayflySelection();
-	}
-	else if (keys[SDLK_3])
-	{
-		trainee->soldierExp += rand() % 10 + 1;
-		trainee->action = 0;
-		clearMayflySelection();
-	}
+	createButton(224, 160, 128, 64, "images/belButton.png", (*trainButtonThink), trainBeliever);
+	createButton(384, 192, 128, 64, "images/archButton.png", (*trainButtonThink), trainArcher);
+	createButton(544, 160, 128, 64, "images/solButton.png", (*trainButtonThink), trainSoldier);
 }
 
 void healMayfly(Mayfly *m)
@@ -426,6 +428,8 @@ void setupMayflyOffspring(Mayfly *child)
 void mayflyAllThink(Room *r)
 {
 	int i;
+
+	checkSelected();
 	for (i = 0;i < maxMayflies; i++)
 	{
 		if (mayflyList[i].entity != NULL)
@@ -445,16 +449,17 @@ void mayflyAllThink(Room *r)
 		else					mouseMayfly->entity->ey = my-16;
 	}
 
-	if (r->mode == BREED && checkSelected() == 2) 
+	if (r->mode == BREED && mayflySelected == 2) 
 	{
 		createMayflyOffspring();
 		clearMayflySelection();
 	}
 
-	if (r->mode == TRAIN && checkSelected() == 1)
+	if (r->mode == TRAIN && mayflySelected == 1)
 	{
-		trainMayfly();
+		if (trainee == NULL) trainMayfly();
 	}
+	else trainee = NULL;
 }
 
 void mayflyThink(Mayfly *m)
@@ -473,9 +478,16 @@ void mayflyThink(Mayfly *m)
 		if (clickRight && !stopClick && m->action)
 		{
 			if (gameRoom->mode == HEAL) healMayfly(m);
-			else if	(!m->selected && checkSelected() < 15)	m->selected = 1;
-			else if (m->selected)	m->selected = 0;
-			stopClick = 1;
+			else
+			{
+				
+				if	(!m->selected && mayflySelected < 15)
+				{
+					if (gameRoom->mode != TRAIN || mayflySelected == 0) m->selected = 1;
+				}
+				else if (m->selected)	m->selected = 0;
+				stopClick = 1;
+			}
 		}
 		else if (!m->action)
 		{

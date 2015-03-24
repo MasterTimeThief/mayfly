@@ -6,7 +6,7 @@
 #include "sprite.h"
 #include "graphics.h"
 #include "game.h"
-
+/*
 typedef enum
 {
 	NEW,
@@ -22,13 +22,10 @@ typedef struct Menu_T
 	menuChoice choice;
 	int changed;
 }Menu;
+*/
 
-extern Menu *mainMenu;
-
-Menu *createMenu(char *fontFile, int fontSize);
 void menuNew();
 void menuLoad();
 void menuExit();
-void displayMenu(Menu *m);
 
 #endif
