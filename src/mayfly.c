@@ -178,8 +178,9 @@ void setupMayfly(Mayfly *m)
 	m->entity->image = tempSprite;
 	m->entity->ex = tempX;
 	m->entity->ey = tempY;
-	m->entity->maxSpeed = 45; //Bigger number means slower animation
-	m->entity->frame = rand() % 4;
+	m->entity->image->currSpeed = 0;
+	m->entity->image->maxSpeed = 405; //Bigger number means slower animation
+	m->entity->image->frame = rand() % 4;
 }
 
 void createMayfly()
@@ -219,25 +220,25 @@ void displayMayflies()
 		{
 			if (gameRoom->roomName == MAIN)
 			{
-				DrawSprite(mayflyList[i].entity->image, screen, mayflyList[i].entity->ex, mayflyList[i].entity->ey, mayflyList[i].entity->frame);
-				if (mayflyList[i].selected) DrawSprite(selectSpr, screen, mayflyList[i].entity->ex, mayflyList[i].entity->ey, mayflyList[i].entity->frame);
-				else if (!mayflyList[i].action) DrawSprite(inactiveSpr, screen, mayflyList[i].entity->ex, mayflyList[i].entity->ey, mayflyList[i].entity->frame);
+				DrawSprite(mayflyList[i].entity->image, screen, mayflyList[i].entity->ex, mayflyList[i].entity->ey, mayflyList[i].entity->image->frame);
+				if (mayflyList[i].selected) DrawSprite(selectSpr, screen, mayflyList[i].entity->ex, mayflyList[i].entity->ey, mayflyList[i].entity->image->frame);
+				else if (!mayflyList[i].action) DrawSprite(inactiveSpr, screen, mayflyList[i].entity->ex, mayflyList[i].entity->ey, mayflyList[i].entity->image->frame);
 			}
 			if (gameRoom->roomName == COMBAT)
 			{
 				if (mayflyList[i].fighting)
 				{
 					//change to fighting sprite, and fixed location
-					DrawSprite(mayflyList[i].entity->image, screen, 450, 200, mayflyList[i].entity->frame);
+					DrawSprite(mayflyList[i].entity->image, screen, 450, 200, mayflyList[i].entity->image->frame);
 				}
-				else if (mayflyList[i].selected) DrawSprite(mayflyList[i].entity->image, screen, mayflyList[i].cx, mayflyList[i].cy, mayflyList[i].entity->frame);
+				else if (mayflyList[i].selected) DrawSprite(mayflyList[i].entity->image, screen, mayflyList[i].cx, mayflyList[i].cy, mayflyList[i].entity->image->frame);
 			}
 		}
 	}
 	if (trainee != NULL)
 	{
 		DrawSprite(trainFrame, screen, 256, 64, 0);
-		DrawSprite(trainee->entity->image, screen, 432, 80, trainee->entity->frame);
+		DrawSprite(trainee->entity->image, screen, 432, 80, trainee->entity->image->frame);
 	} 
 }
 
@@ -464,6 +465,8 @@ void trainMayfly()
 		}
 	}
 
+	//if (keys[SDLK_s]) saveToList();
+
 	createButton(224, 160, 128, 64, "images/belButton.png", (*trainButtonThink), trainBeliever);
 	createButton(384, 192, 128, 64, "images/archButton.png", (*trainButtonThink), trainArcher);
 	createButton(544, 160, 128, 64, "images/solButton.png", (*trainButtonThink), trainSoldier);
@@ -575,7 +578,7 @@ void mayflyThink(Mayfly *m)
 		if (clickLeft)
 		{
 			if (mouseMayfly == NULL) mouseMayfly = m;
-			else if (mouseMayfly == m) mouseMayfly == NULL;
+			else if (mouseMayfly == m) mouseMayfly = NULL;
 		}
 		else if (!clickLeft) mouseMayfly = NULL;
 
@@ -599,5 +602,5 @@ void mayflyThink(Mayfly *m)
 		}
 	}
 
-	updateSprite(m->entity);
+	updateSprite(m->entity->image);
 }

@@ -112,13 +112,13 @@ void DrawSprite(Sprite *sprite,SDL_Surface *surface,int sx,int sy, int frame)
     SDL_BlitSurface(sprite->image, &src, surface, &dest);
 }
 
-void updateSprite(Entity *ent)
+void updateSprite(Sprite *s)
 {
-	if (ent->currSpeed == 0)
+	if (s->currSpeed == 0)
 	{
-		ent->currSpeed = ent->maxSpeed;
-		if (ent->frame + 1 < ent->image->framesperline) ent->frame++;
-		else ent->frame = 0;
+		s->currSpeed = s->maxSpeed;
+		if (s->frame + 1 < s->framesperline) s->frame++;
+		else s->frame = 0;
 	}
-	else ent->currSpeed--;
+	else s->currSpeed--;
 }

@@ -28,6 +28,7 @@ void menuLoad()
 	menuNew();
 	closeMayflies();
 	//Load in saved mayflies
+	loadFromList();
 }
 
 void menuExit()

@@ -9,8 +9,8 @@ int currFighters;
 int currentCombat;
 int numKilled, numLost;
 
-Mayfly *mayflyFighters[15];
-Enemy *enemyFighters[15];
+//Mayfly *mayflyFighters[15];
+//Enemy *enemyFighters[15];
 extern	SDL_Surface *screen;
 extern Room *gameRoom;
 extern char *mainBack;
@@ -43,12 +43,12 @@ Enemy *newEnemy()
 			return &enemyList[i];	
 		}
 	}
+	return NULL;
 }
 
 void setupEnemy(Enemy *m)
 {
 	Sprite *tempSprite = (Sprite*)malloc(sizeof(Sprite));
-	int i;
 
 	int tempClass;
 
@@ -60,19 +60,19 @@ void setupEnemy(Enemy *m)
 	//Load proper sprite
 	if (tempClass == 0)
 	{
-		m->currClass = BELIEVER;
+		strncpy(m->currClass,"believer",10);
 		if (m->isFemale) tempSprite = LoadSprite("images/believer_f.png",32,32);
 		else				tempSprite = LoadSprite("images/believer_m.png",32,32);
 	}
 	else if (tempClass == 1)
 	{
-		m->currClass = ARCHER;
+		strncpy(m->currClass,"archer",10);
 		if (m->isFemale) tempSprite = LoadSprite("images/archer_f.png",32,32);
 		else				tempSprite = LoadSprite("images/archer_m.png",32,32);
 	}
 	else if (tempClass == 2)
 	{
-		m->currClass = SOLDIER;
+		strncpy(m->currClass,"soldier",10);
 		if (m->isFemale) tempSprite = LoadSprite("images/soldier_f.png",32,32);
 		else				tempSprite =LoadSprite("images/soldier_m.png",32,32);
 	}
@@ -90,8 +90,9 @@ void setupEnemy(Enemy *m)
 	m->entity->image = tempSprite;
 	m->entity->ex = 0;
 	m->entity->ey = 0;
-	m->entity->maxSpeed = 60; //Bigger number means slower animation
-	m->entity->frame = rand() % 4;
+	m->entity->image->currSpeed = 0;
+	m->entity->image->maxSpeed = 60; //Bigger number means slower animation
+	m->entity->image->frame = rand() % 4;
 }
 
 void createEnemy()
@@ -114,11 +115,11 @@ void displayEnemies()
 			if (enemyList[i].fighting)
 			{
 				//change to fighting sprite, and fixed location
-				DrawSprite(enemyList[i].entity->image, screen, 550, 200, enemyList[i].entity->frame);
+				DrawSprite(enemyList[i].entity->image, screen, 550, 200, enemyList[i].entity->image->frame);
 			}
 			else if (enemyList[i].combat)
 			{
-				DrawSprite(enemyList[i].entity->image, screen, enemyList[i].entity->ex, enemyList[i].entity->ey, enemyList[i].entity->frame);
+				DrawSprite(enemyList[i].entity->image, screen, enemyList[i].entity->ex, enemyList[i].entity->ey, enemyList[i].entity->image->frame);
 			}
 		} 
 	}
@@ -159,7 +160,7 @@ void enemyThinkAll(Room *r)
 
 void enemyThink(Enemy *e)
 {
-	updateSprite(e->entity);
+	updateSprite(e->entity->image);
 }
 
 void toCombat()
@@ -236,9 +237,9 @@ void mayflyAttack()
 	int myCrit = 0;
 	int myAdv = 0;
 
-	if		(mayflyFighters[currentCombat]->currClass == BELIEVER && enemyFighters[currentCombat]->currClass == SOLDIER) myAdv = rand() % 4;
-	else if (mayflyFighters[currentCombat]->currClass == SOLDIER && enemyFighters[currentCombat]->currClass == ARCHER)	 myAdv = rand() % 4;
-	else if (mayflyFighters[currentCombat]->currClass == ARCHER && enemyFighters[currentCombat]->currClass == BELIEVER)  myAdv = rand() % 4;
+	if		(mayflyFighters[currentCombat]->currClass == BELIEVER && enemyFighters[currentCombat]->currClass == "soldier") myAdv = rand() % 4;
+	else if (mayflyFighters[currentCombat]->currClass == SOLDIER && enemyFighters[currentCombat]->currClass == "archer")	 myAdv = rand() % 4;
+	else if (mayflyFighters[currentCombat]->currClass == ARCHER && enemyFighters[currentCombat]->currClass == "believer")  myAdv = rand() % 4;
 	
 	tempCrit = rand() % 30;
 	if (tempCrit < mayflyFighters[currentCombat]->luck) myCrit = rand() % 5;
@@ -275,9 +276,9 @@ void enemyAttack()
 	int enemyCrit = 0;
 	int enemyAdv = 0;
 
-	if		(enemyFighters[currentCombat]->currClass == BELIEVER && mayflyFighters[currentCombat]->currClass == SOLDIER) enemyAdv = rand() % 4;
-	else if (enemyFighters[currentCombat]->currClass == SOLDIER && mayflyFighters[currentCombat]->currClass == ARCHER)	 enemyAdv = rand() % 4;
-	else if (enemyFighters[currentCombat]->currClass == ARCHER && mayflyFighters[currentCombat]->currClass == BELIEVER)  enemyAdv = rand() % 4;
+	if		(enemyFighters[currentCombat]->currClass == "believer" && mayflyFighters[currentCombat]->currClass == SOLDIER) enemyAdv = rand() % 4;
+	else if (enemyFighters[currentCombat]->currClass == "soldier" && mayflyFighters[currentCombat]->currClass == ARCHER)	 enemyAdv = rand() % 4;
+	else if (enemyFighters[currentCombat]->currClass == "archer" && mayflyFighters[currentCombat]->currClass == BELIEVER)  enemyAdv = rand() % 4;
 	
 	tempCrit = rand() % 30;
 	if (tempCrit < enemyFighters[currentCombat]->luck) enemyCrit = rand() % 5;
@@ -291,7 +292,7 @@ void enemyAttack()
 	}
 	else
 	{
-		nextAction->end = mayflyAttack;
+		nextAction->end = mayflyAttack; //changed the semicolon, greek question mark
 	}
 	nextAction->timer = 1;
 }

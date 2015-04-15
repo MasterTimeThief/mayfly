@@ -9,7 +9,8 @@
 typedef struct Enemy_T
 {
 	Entity *entity;
-	className currClass;
+	//className currClass;
+	char currClass[10];
 	int	isFemale; //0 Male, 1 Female
 
 	int	health;
@@ -24,9 +25,10 @@ typedef struct Enemy_T
 }Enemy;
 
 extern int currentCombat;
-extern Mayfly *mayflyFighters[15];
-extern Enemy *enemyFighters[15];
-
+//extern Mayfly *mayflyFighters[15];
+//extern Enemy *enemyFighters[15];
+Mayfly *mayflyFighters[15];
+Enemy *enemyFighters[15];
 extern Enemy enemyList[MAX_ENEMIES];
 void initEnemyList();
 Enemy *newEnemy();

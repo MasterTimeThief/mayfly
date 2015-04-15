@@ -1,9 +1,9 @@
 #include "button.h"
 #include "mouse.h"
 #include "room.h"
-#include "mayfly.h"
 #include "combat.h"
 #include "event.h"
+#include "save.h"
 
 Button buttonList[MAX_BUTTONS];
 extern	SDL_Surface *screen;
@@ -34,6 +34,7 @@ Button *newButton()
 			return &buttonList[i];	
 		}
 	}
+	return NULL;
 }
 
 void createButton(int x, int y, int w, int h, char *filename, void (*think)(int index), void (*effect)())
@@ -86,6 +87,7 @@ void combatButtonThink(int index)
 
 	if (checkClick(&buttonList[index]))
 	{
+		saveToList();
 		if (gameRoom->mode == DRAFT && mayflySelected > 0)
 		{
 			(*buttonList[index].effect)();
@@ -192,10 +194,13 @@ void buttonThink()
 	{
 		if (buttonList[x].visible)
 		{
-			DrawSprite(buttonList[x].entity->image, screen, buttonList[x].entity->ex, buttonList[x].entity->ey, buttonList[x].entity->frame);
+			DrawSprite(buttonList[x].entity->image, screen, buttonList[x].entity->ex, buttonList[x].entity->ey, buttonList[x].entity->image->frame);
 			if (buttonList[x].think != NULL) (*buttonList[x].think)(x);
-			if (checkClick(&buttonList[x])) buttonList[x].entity->frame = 1;
-			else							buttonList[x].entity->frame = 0;
+			if (checkClick(&buttonList[x]))
+			{
+				buttonList[x].entity->image->frame = 1;
+			}
+			else buttonList[x].entity->image->frame = 0;
 		}
 	}
 }

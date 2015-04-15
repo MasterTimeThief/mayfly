@@ -20,6 +20,7 @@ Event *newEvent()
 	{
 		if (eventList[i].timer == 0) return &eventList[i];
 	}
+	return NULL;
 }
 
 void runEvents()

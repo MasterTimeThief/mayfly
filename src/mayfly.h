@@ -3,9 +3,9 @@
 
 #include "entity.h"
 #include "room.h"
+#include "save.h"
 
 #define MAX_MAYFLIES	40
-
 
 typedef enum
 {

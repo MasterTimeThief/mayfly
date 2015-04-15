@@ -1,7 +1,7 @@
 //#include "game.h"
-
+#define NO_STDIO_REDIRECT
 #include <time.h>
-#include "SDL.h"
+#include <SDL.h>
 #include "graphics.h"
 #include "menu.h"
 #include "room.h"
@@ -25,7 +25,7 @@ int clickLeft, clickRight, mx, my, stopClick;
 int init()
 {
 	/* initialize random seed: */
-	srand ( time(NULL) );
+	srand ( (unsigned int) time(NULL) );
 	
 	//Initialize all SDL subsystems
     if( SDL_Init( SDL_INIT_EVERYTHING ) == -1 )
@@ -52,11 +52,11 @@ int init()
     SDL_WM_SetCaption( "Mayfly Wars", NULL );
 
 	initEventList();
-	initMayflyList();
 	initEntityList();
+	initMayflyList();
 	initEnemyList();
 	mouseInit();
-    
+    fclose(stdout);
     //If everything initialized fine
     return 1;
 }
@@ -97,7 +97,8 @@ void clean_up()
 int main( int argc, char* args[] )
 {
 	int done = 0;
-	
+		printf("got here!\n");
+
 	//Initialize
     if( init() == -1 )
     {

@@ -1,6 +1,6 @@
 #ifndef __EVENT__
 #define __EVENT__
-
+#include <stdlib.h>
 typedef struct Event_T
 {
   void (*think)();
@@ -9,7 +9,6 @@ typedef struct Event_T
   int timer;
 }Event;
 
-extern Event eventList[10];
 
 void initEventList();
 Event *newEvent();

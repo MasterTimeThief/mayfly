@@ -40,9 +40,9 @@ void setupEntity(Entity *e)
 	e->ex = 0;
 	e->ey = 0;
 	e->display = 1;
-	e->frame = 0;
-	e->currSpeed = 0;
-	e->maxSpeed = 0;
+	/*e->image->frame = 0;
+	e->image->currSpeed = 0;
+	e->image->maxSpeed = 0;*/
 }
 
 Entity *createEntity()

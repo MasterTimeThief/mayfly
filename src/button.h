@@ -24,7 +24,7 @@ void toTrain();
 void toBreed();
 void toScout();
 void mainButtons();
-void createButton(int x, int y, int w, int h, char *filename, void (*think)(), void (*effect)());
+void createButton(int x, int y, int w, int h, char *filename, void (*think)(int index), void (*effect)());
 void buttonThink();
 
 #endif
