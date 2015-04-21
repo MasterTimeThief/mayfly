@@ -25,8 +25,10 @@ void menuNew()
 
 void menuLoad()
 {
-	menuNew();
-	closeMayflies();
+	gameRoom->roomName = MAIN;
+	//createButton(64, 416, 128, 64, "images/button.png", (*combatButtonThink), toCombat);
+	mainButtons();
+	changeBackground(gameRoom, mainBack);
 	//Load in saved mayflies
 	loadFromList();
 }

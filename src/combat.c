@@ -125,6 +125,26 @@ void displayEnemies()
 	}
 }
 
+void freeEnemy(Enemy *e)
+{
+	FreeSprite(e->entity->image);
+	freeEntity(e->entity);
+	e->alive = 0;
+	enemyTotal--;
+}
+
+void closeEnemies()
+{
+	int i;
+	for (i = 0;i < MAX_ENEMIES; i++)
+	{
+		if (enemyList[i].entity != NULL)
+		{
+			freeEnemy(&enemyList[i]);
+		}
+	}
+}
+
 void setupEnemyCombat()
 {
 	int i,j;
@@ -247,9 +267,8 @@ void mayflyAttack()
 	enemyFighters[currentCombat]->health -= ( mayflyFighters[currentCombat]->strength + myAdv + myCrit);
 	if (enemyFighters[currentCombat]->health <= 0)
 	{
-		enemyFighters[currentCombat]->alive = 0;
+		freeEnemy(enemyFighters[currentCombat]);
 		numKilled++;
-		enemyTotal--;
 		mayflyExperience(mayflyFighters[currentCombat]);
 		nextAction->end = resetFighters;
 	}

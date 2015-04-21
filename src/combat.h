@@ -37,6 +37,8 @@ void createEnemy();
 
 void displayEnemies();
 
+void closeEnemies();
+
 void toCombat();
 void resetCombat();
 void setupEnemyCombat();

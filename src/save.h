@@ -7,7 +7,7 @@
 
 typedef struct SaveData_S
 {
-	char  className[50];
+	char  className[10];
 	int	isFemale; //0 Male, 1 Female
 	
 	int age;

@@ -171,7 +171,7 @@ void setupMayfly(Mayfly *m)
 	m->action	= 1;
 	m->cx		= 0;
 	m->cy		= 0;
-	mayflyTotal++;
+	//mayflyTotal++;
 
 	//Sprite and position
 	m->entity = createEntity();
@@ -356,7 +356,23 @@ void freeMayfly(Mayfly *m)
 	FreeSprite(m->entity->image);
 	freeEntity(m->entity);
 	m->alive = 0;
-	mayflyTotal--;
+	m->age = 0;
+
+	m->health =	0;
+	m->strength = 0;
+	m->speed = 0;
+	m->luck = 0;
+
+	m->archerExp =	0;
+	m->believerExp = 0;
+	m->soldierExp =	0;
+
+	m->fighting = 0;
+	m->visible	= 0;
+	m->selected = 0;
+	m->action	= 0;
+	m->cx		= 0;
+	m->cy		= 0;
 }
 
 void closeMayflies()
@@ -536,11 +552,14 @@ void mayflyAllThink(Room *r)
 {
 	int i;
 
+	mayflyTotal = 0;
+	
 	checkSelected();
 	for (i = 0;i < maxMayflies; i++)
 	{
-		if (mayflyList[i].entity != NULL)
+		if (mayflyList[i].entity != NULL && mayflyList[i].alive)
 		{
+			mayflyTotal++;
 			mayflyThink(&mayflyList[i]);
 		}
 	}

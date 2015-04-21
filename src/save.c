@@ -7,9 +7,9 @@ static SaveData saveList[MAX_SAVE];
 
 void saveMayfly(SaveData *temp, Mayfly *m)
 {
-	if (m->currClass == BELIEVER)		strncpy(temp->className,"believer",50);
-	else if (m->currClass == ARCHER)	strncpy(temp->className,"archer",50);
-	else if (m->currClass == SOLDIER)	strncpy(temp->className,"soldier",50);
+	if (m->currClass == BELIEVER)		strncpy(temp->className,"believer",10);
+	else if (m->currClass == ARCHER)	strncpy(temp->className,"archer",10);
+	else if (m->currClass == SOLDIER)	strncpy(temp->className,"soldier",10);
 
 	temp->isFemale = m->isFemale;
 	temp->age = m->age;
@@ -32,9 +32,9 @@ void saveMayfly(SaveData *temp, Mayfly *m)
 
 void saveEnemy(SaveData *temp, Enemy *e)
 {
-	if (strcmp(e->currClass, "believer"))		strncpy(temp->className,"believer",50);
-	else if (strcmp(e->currClass, "archer"))			strncpy(temp->className,"archer",50);
-	else if (strcmp(e->currClass, "soldier"))			strncpy(temp->className,"soldier",50);
+	if (strcmp(e->currClass, "believer"))		strncpy(temp->className,"believer",10);
+	else if (strcmp(e->currClass, "archer"))			strncpy(temp->className,"archer",10);
+	else if (strcmp(e->currClass, "soldier"))			strncpy(temp->className,"soldier",10);
 
 	temp->isFemale = e->isFemale;
 	temp->age = 0;
@@ -65,10 +65,10 @@ void saveToList()
 		count++;
 	}
 
-	if (count < MAX_MAYFLIES)
+	/*if (count < MAX_MAYFLIES)
 	{
 		saveList[count].alive = -1;
-	}
+	}*/
 
 	count = 0;
 
@@ -78,27 +78,15 @@ void saveToList()
 		count++;
 	}
 
-	if (count < MAX_ENEMIES)
+	/*if (count < MAX_ENEMIES)
 	{
 		saveList[count].alive = -1;
-	}
+	}*/
 
 	save_my_data("saves/savefile.dat");
 }
 
-void save_my_data(char *filepath)
-{
-	int i;
-	FILE *savefile;
-	printf("SAVING!!!\n");
-	savefile = fopen(filepath, "wb");
-	fwrite(saveList,sizeof(saveList),1,savefile);
-	fclose(savefile);
-	for (i = 0;i < MAX_MAYFLIES;i++)
-	{
-		fprintf(stdout,"mayfly name: %s\n",saveList[i].className);
-	}
-}
+
 
 void loadMayfly(SaveData *temp, Mayfly *m)
 {
@@ -138,6 +126,7 @@ void loadMayfly(SaveData *temp, Mayfly *m)
 	m->believerExp = temp->believerExp;
 
 	m->alive = temp->alive;
+	m->visible = temp->alive;
 
 	//Sprite and position
 	m->entity = createEntity();
@@ -184,6 +173,7 @@ void loadEnemy(SaveData *temp, Enemy *e)
 	e->alive = temp->alive;
 
 	//Sprite and position
+	e->entity = createEntity();
 	e->entity->image = tempSprite;
 	e->entity->ex = temp->x;
 	e->entity->ey = temp->y;
@@ -200,13 +190,27 @@ void loadFromList()
 	for (i = 0;i < MAX_MAYFLIES; i++)
 	{
 		if (saveList[i].alive == -1) break;
-		loadMayfly(&saveList[i], &mayflyList[i]);
+		else if (saveList[i].alive)	loadMayfly(&saveList[i], &mayflyList[i]);
 	}
 
 	for (i = 0;i < MAX_ENEMIES; i++)
 	{
-		if (saveList[i].alive == -1) break;
+		if (saveList[i + MAX_MAYFLIES].alive == -1) break;
 		loadEnemy(&saveList[i + MAX_MAYFLIES], &enemyList[i]);
+	}
+}
+
+void save_my_data(char *filepath)
+{
+	int i;
+	FILE *savefile;
+	printf("SAVING!!!\n");
+	savefile = fopen(filepath, "wb");
+	fwrite(saveList,sizeof(saveList),1,savefile);
+	fclose(savefile);
+	for (i = 0;i < MAX_MAYFLIES;i++)
+	{
+		fprintf(stdout,"mayfly name: %s\n",saveList[i].className);
 	}
 }
 
