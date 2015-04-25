@@ -198,6 +198,7 @@ void loadFromList()
 		if (saveList[i + MAX_MAYFLIES].alive == -1) break;
 		loadEnemy(&saveList[i + MAX_MAYFLIES], &enemyList[i]);
 	}
+
 }
 
 void save_my_data(char *filepath)

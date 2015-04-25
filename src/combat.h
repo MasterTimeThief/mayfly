@@ -46,6 +46,7 @@ void enemyThinkAll(Room *r);
 void enemyThink();
 void mayflyAttack();
 void enemyAttack();
+void mayflyFightChoose(Mayfly *m);
 
 void chooseFighters();
 

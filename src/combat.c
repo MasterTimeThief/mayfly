@@ -16,6 +16,9 @@ extern Room *gameRoom;
 extern char *mainBack;
 extern char *combatBack;
 
+Mayfly *myFighter;
+Enemy *enemyFighter;
+
 void initEnemyList()
 {
 	int i;
@@ -232,8 +235,10 @@ void resetFighters()
 {
 	Event *nextFight = newEvent();
 
-	mayflyFighters[currentCombat]->fighting = 0;
-	enemyFighters[currentCombat]->fighting = 0;
+	myFighter->fighting = 0;
+	enemyFighter->fighting = 0;
+	myFighter = NULL;
+	enemyFighter = NULL;
 
 	currentCombat++;
 	
@@ -257,19 +262,19 @@ void mayflyAttack()
 	int myCrit = 0;
 	int myAdv = 0;
 
-	if		(mayflyFighters[currentCombat]->currClass == BELIEVER && enemyFighters[currentCombat]->currClass == "soldier") myAdv = rand() % 4;
-	else if (mayflyFighters[currentCombat]->currClass == SOLDIER && enemyFighters[currentCombat]->currClass == "archer")	 myAdv = rand() % 4;
-	else if (mayflyFighters[currentCombat]->currClass == ARCHER && enemyFighters[currentCombat]->currClass == "believer")  myAdv = rand() % 4;
+	if		(myFighter->currClass == BELIEVER && enemyFighter->currClass == "soldier") myAdv = rand() % 4;
+	else if (myFighter->currClass == SOLDIER && enemyFighter->currClass == "archer")	 myAdv = rand() % 4;
+	else if (myFighter->currClass == ARCHER && enemyFighter->currClass == "believer")  myAdv = rand() % 4;
 	
 	tempCrit = rand() % 30;
-	if (tempCrit < mayflyFighters[currentCombat]->luck) myCrit = rand() % 5;
+	if (tempCrit < myFighter->luck) myCrit = rand() % 5;
 
-	enemyFighters[currentCombat]->health -= ( mayflyFighters[currentCombat]->strength + myAdv + myCrit);
-	if (enemyFighters[currentCombat]->health <= 0)
+	enemyFighter->health -= ( myFighter->strength + myAdv + myCrit);
+	if (enemyFighter->health <= 0)
 	{
-		freeEnemy(enemyFighters[currentCombat]);
+		freeEnemy(enemyFighter);
 		numKilled++;
-		mayflyExperience(mayflyFighters[currentCombat]);
+		mayflyExperience(myFighter);
 		nextAction->end = resetFighters;
 	}
 	else
@@ -295,17 +300,17 @@ void enemyAttack()
 	int enemyCrit = 0;
 	int enemyAdv = 0;
 
-	if		(enemyFighters[currentCombat]->currClass == "believer" && mayflyFighters[currentCombat]->currClass == SOLDIER) enemyAdv = rand() % 4;
-	else if (enemyFighters[currentCombat]->currClass == "soldier" && mayflyFighters[currentCombat]->currClass == ARCHER)	 enemyAdv = rand() % 4;
-	else if (enemyFighters[currentCombat]->currClass == "archer" && mayflyFighters[currentCombat]->currClass == BELIEVER)  enemyAdv = rand() % 4;
+	if		(enemyFighter->currClass == "believer" && myFighter->currClass == SOLDIER) enemyAdv = rand() % 4;
+	else if (enemyFighter->currClass == "soldier" && myFighter->currClass == ARCHER)	 enemyAdv = rand() % 4;
+	else if (enemyFighter->currClass == "archer" && myFighter->currClass == BELIEVER)  enemyAdv = rand() % 4;
 	
 	tempCrit = rand() % 30;
-	if (tempCrit < enemyFighters[currentCombat]->luck) enemyCrit = rand() % 5;
+	if (tempCrit < enemyFighter->luck) enemyCrit = rand() % 5;
 
-	mayflyFighters[currentCombat]->health -= ( enemyFighters[currentCombat]->strength + enemyAdv + enemyCrit );
-	if (mayflyFighters[currentCombat]->health <= 0)
+	myFighter->health -= ( enemyFighter->strength + enemyAdv + enemyCrit );
+	if (myFighter->health <= 0)
 	{
-		freeMayfly(mayflyFighters[currentCombat]);
+		freeMayfly(myFighter);
 		numLost++;
 		nextAction->end = resetFighters;
 	}
@@ -342,6 +347,15 @@ void displayResults()
 	SDL_FreeSurface(temp);
 }
 
+void mayflyFightChoose(Mayfly *m)
+{
+	if (myFighter == NULL)
+	{
+		myFighter = m;
+		myFighter->fighting = 1;
+	}
+}
+
 void chooseFighters()
 {
 	Event *fightResult = newEvent();
@@ -355,10 +369,20 @@ void chooseFighters()
 		return;
 	}
 
-	mayflyFighters[currentCombat]->fighting = 1;
-	enemyFighters[currentCombat]->fighting = 1;
+	enemyFighter = enemyFighters[currentCombat];
+	//enemyFighter->fighting = 1;
 
-	fightResult->timer = 300; //Time in combat
-	if		(mayflyFighters[currentCombat]->speed >= enemyFighters[currentCombat]->speed) fightResult->end = mayflyAttack;
-	else if (enemyFighters[currentCombat]->speed >  mayflyFighters[currentCombat]->speed) fightResult->end = enemyAttack;
+	if (myFighter == NULL)
+	{
+		fightResult->timer = 10;
+		fightResult->end = chooseFighters;
+	}
+	else
+	{
+		enemyFighter->fighting = 1;
+		fightResult->timer = 300; //Time in combat
+		if		(myFighter->speed >= enemyFighter->speed) fightResult->end = mayflyAttack;
+		else if (enemyFighter->speed >  myFighter->speed) fightResult->end = enemyAttack;
+	}
+	
 }

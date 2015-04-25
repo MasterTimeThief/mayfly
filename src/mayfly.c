@@ -179,7 +179,7 @@ void setupMayfly(Mayfly *m)
 	m->entity->ex = tempX;
 	m->entity->ey = tempY;
 	m->entity->image->currSpeed = 0;
-	m->entity->image->maxSpeed = 405; //Bigger number means slower animation
+	m->entity->image->maxSpeed = 500; //Bigger number means slower animation
 	m->entity->image->frame = rand() % 4;
 }
 
@@ -618,6 +618,14 @@ void mayflyThink(Mayfly *m)
 		else if (!m->action)
 		{
 			m->selected = 0;
+		}
+	}
+
+	if(mouseHover(m->cx,  m->cy,  m->entity->image->w,  m->entity->image->h) && gameRoom->roomName == COMBAT)
+	{
+		if (clickLeft)
+		{
+			mayflyFightChoose(m);
 		}
 	}
 
