@@ -10,6 +10,7 @@
 #include "button.h"
 #include "combat.h"
 #include "event.h"
+#include "audio.h"
 
 int STARTING_MAYFLY = 20;
 
@@ -47,6 +48,12 @@ int init()
     {
         return -1;    
     }
+
+	//Initialize SDL_mixer
+    if( Mix_OpenAudio( 22050, MIX_DEFAULT_FORMAT, 2, 4096 ) == -1 )
+    {
+        return -1;    
+    }
     
     //Set the window caption
     SDL_WM_SetCaption( "Mayfly Wars", NULL );
@@ -56,6 +63,7 @@ int init()
 	initMayflyList();
 	initEnemyList();
 	mouseInit();
+	initAudio();
     fclose(stdout);
     //If everything initialized fine
     return 1;
@@ -85,15 +93,6 @@ void clean_up()
 	SDL_Quit();
 }
 
-/*void modeChange(Room *r)
-{
-	if (r->mode == BREED)		r->mode = DRAFT;
-	else if (r->mode == DRAFT)	r->mode = HEAL;
-	else if (r->mode == HEAL)	r->mode = TRAIN;
-	else if (r->mode == TRAIN)	r->mode = SCOUT;
-	else if (r->mode == SCOUT)	r->mode = BREED;
-}*/
-
 int main( int argc, char* args[] )
 {
 	int done = 0;
@@ -108,24 +107,26 @@ int main( int argc, char* args[] )
 	gameRoom = createRoom();
 
     //Load image
-	updateBackground(gameRoom, screen);
+	updateBackground(screen);
 
 	//Menu buttons
 	createButton(768, 320, 192, 64, "images/newButton.png", (*menuButtonThink), menuNew);
 	createButton(768, 384, 192, 64, "images/loadButton.png", (*menuButtonThink), menuLoad);
 	createButton(768, 448, 192, 64, "images/exitButton.png", (*menuButtonThink), menuExit);
 
+	changeBackgroundMusic();
+
     //Game Loop
 	while(!done)
 	{
 		if (gameRoom->roomName == MAIN)
 		{
-			updateBackground(gameRoom, screen);
+			updateBackground(screen);
 			displayMayflies();
 		}
 		else if (gameRoom->roomName == COMBAT)
 		{
-			updateBackground(gameRoom, screen);
+			updateBackground(screen);
 			displayMayflies();
 			displayEnemies();
 		}

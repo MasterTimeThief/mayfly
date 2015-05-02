@@ -17,8 +17,8 @@ Mayfly *trainee;
 extern	SDL_Surface *screen;
 extern Room *gameRoom;
 
-int mayflyTotal;
-static int maxMayflies = 0;
+int mayflyTotal;			//Always has current number in game
+int maxMayflies = 0; //Goes up as number of mayflies exceed initial count
 
 static Mayfly *mouseMayfly = NULL;
 extern int mx;
@@ -250,7 +250,7 @@ void mayflyAfterCombat()
 		mayflyList[i].visible = 1;
 		mayflyList[i].action = 1;
 		mayflyList[i].age++;
-		if (mayflyList[i].age == 3) freeMayfly(&mayflyList[i]);
+		if (mayflyList[i].age == 7) freeMayfly(&mayflyList[i]); //Kill Function
 	}
 }
 

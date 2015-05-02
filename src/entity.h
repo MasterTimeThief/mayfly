@@ -15,7 +15,7 @@ typedef struct Entity_T
 	//int frame,currSpeed,maxSpeed;				/*animation*/
 }Entity;
 
-extern Entity entityList[MAX_ENTITIES];
+//extern Entity entityList[MAX_ENTITIES];
 
 void initEntityList();
 Entity *newEntity();

@@ -4,6 +4,7 @@
 #include "combat.h"
 #include "event.h"
 #include "save.h"
+#include "audio.h"
 
 Button buttonList[MAX_BUTTONS];
 extern	SDL_Surface *screen;
@@ -96,6 +97,7 @@ void combatButtonThink(int index)
 		else
 		{
 			gameRoom->mode = DRAFT;
+			changeBackgroundMusic();
 			clearMayflySelection();
 		}
 	}
@@ -111,31 +113,33 @@ void mainButtonThink(int index)
 	if (checkClick(&buttonList[index]))
 	{
 		(*buttonList[index].effect)();
+		changeBackgroundMusic();
+		clearMayflySelection();
 	}
 }
 
 void toHeal()
 {
 	gameRoom->mode = HEAL;
-	clearMayflySelection();
+	//clearMayflySelection();
 }
 
 void toTrain()
 {
 	gameRoom->mode = TRAIN;
-	clearMayflySelection();
+	//clearMayflySelection();
 }
 
 void toBreed()
 {
 	gameRoom->mode = BREED;
-	clearMayflySelection();
+	//clearMayflySelection();
 }
 
 void toScout()
 {
 	gameRoom->mode = SCOUT;
-	clearMayflySelection();
+	//clearMayflySelection();
 }
 
 /**********************************************************************************************//**
@@ -149,7 +153,7 @@ void toScout()
  * @param	index	Zero-based index of the.
  **************************************************************************************************/
 
-void modeButtonThink(int index)
+/*void modeButtonThink(int index)
 {
 	if (gameRoom->roomName != MAIN)
 	{
@@ -167,7 +171,7 @@ void modeButtonThink(int index)
 		}
 		else gameRoom->mode = DRAFT;
 	}
-}
+}*/
 
 void menuButtonThink(int index)
 {

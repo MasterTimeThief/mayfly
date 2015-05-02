@@ -32,11 +32,11 @@ typedef struct Room_T
 	//TTF_Font *font; //Optional
 }Room;
 
-extern Room *gameRoom;
+Room *gameRoom;
 
 Room *createRoom();
-void updateBackground(Room *r, SDL_Surface* final);
-void changeBackground(Room *r, char *imageFile);
+void updateBackground(SDL_Surface* final);
+void changeBackground(char *imageFile);
 void roomThink(Room *r);
 
 #endif

@@ -1,16 +1,16 @@
 #include "combat.h"
 #include "event.h"
 #include "button.h"
+#include "audio.h"
 
-Enemy enemyList[MAX_ENEMIES];
-int enemyTotal;
+//Enemy enemyList[MAX_ENEMIES];
+//int enemyTotal;
 
 int currFighters;
 int currentCombat;
 int numKilled, numLost;
 
-//Mayfly *mayflyFighters[15];
-//Enemy *enemyFighters[15];
+
 extern	SDL_Surface *screen;
 extern Room *gameRoom;
 extern char *mainBack;
@@ -22,11 +22,11 @@ Enemy *enemyFighter;
 void initEnemyList()
 {
 	int i;
-	enemyTotal = MAX_ENEMIES;
+	enemyTotal = 0;
 	memset(enemyList,0,sizeof(Enemy) * MAX_ENEMIES);
 	for(i = 0; i < MAX_ENEMIES; i++)
 	{ 
-		createEnemy();
+		enemyList[i].alive = 0;
 	}
 	for (i = 0; i < 15; i++)
 	{
@@ -172,10 +172,12 @@ void setupEnemyCombat()
 void enemyThinkAll(Room *r)
 {
 	int i;
+	enemyTotal = 0;
 	for (i = 0;i < MAX_ENEMIES; i++)
 	{
 		if (enemyList[i].entity != NULL)
 		{
+			if (enemyList[i].alive) enemyTotal++;
 			enemyThink(&enemyList[i]);
 		}
 	}
@@ -194,7 +196,8 @@ void toCombat()
 		gameRoom->roomName = COMBAT;
 		setupEnemyCombat();
 		setupMayflyCombat();
-		changeBackground(gameRoom, combatBack);
+		changeBackground(combatBack);
+		changeBackgroundMusic();
 
 		currentCombat = 0;
 		numKilled = 0;
@@ -226,9 +229,10 @@ void endCombat()
 	}
 	mayflyAfterCombat();
 	gameRoom->roomName = MAIN;
+	changeBackgroundMusic();
 	//createButton(64, 416, 128, 64, "images/button.png", (*combatButtonThink), toCombat);
 	mainButtons();
-	changeBackground(gameRoom, mainBack);
+	changeBackground(mainBack);
 }
 
 void resetFighters()
@@ -384,5 +388,4 @@ void chooseFighters()
 		if		(myFighter->speed >= enemyFighter->speed) fightResult->end = mayflyAttack;
 		else if (enemyFighter->speed >  myFighter->speed) fightResult->end = enemyAttack;
 	}
-	
 }

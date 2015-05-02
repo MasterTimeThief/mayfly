@@ -7,7 +7,7 @@ extern int enemyTotal;
 
 int spacePressed;
 
-Room *gameRoom = NULL;
+//Room *gameRoom = NULL;
 
 extern	SDL_Color c_Black;
 extern SDL_Surface *screen;
@@ -25,22 +25,22 @@ Room *createRoom()
 	return temp;
 }
 
-void updateBackground(Room *r, SDL_Surface* final)
+void updateBackground(SDL_Surface* final)
 {
-	apply_surface(0, 0, r->background, final, NULL);
+	apply_surface(0, 0, gameRoom->background, final, NULL);
 }
 
-void changeBackground(Room *r, char *imageFile)
+void changeBackground(char *imageFile)
 {
-	if (r->background != NULL)
+	if (gameRoom->background != NULL)
 	{
-		SDL_FreeSurface(r->background);
+		SDL_FreeSurface(gameRoom->background);
 	}
-	strncpy(r->filename,imageFile,30);
-	r->background = load_image(r->filename);
+	strncpy(gameRoom->filename,imageFile,30);
+	gameRoom->background = load_image(gameRoom->filename);
 }
 
-void displayRoomInfo(Room *r)
+void displayRoomInfo()
 {
 	//Display Stat Names
 	printString("Mayflies: ",	c_Black, screen, 700, 100);
@@ -51,27 +51,27 @@ void displayRoomInfo(Room *r)
 	printInt(mayflyTotal,	c_Black, screen, 825, 100);
 	printInt(enemyTotal,	c_Black, screen, 825, 200);
 
-	if (r->mode == DRAFT)
+	if (gameRoom->mode == DRAFT)
 	{
 		printString("Draft", c_Black, screen, 825, 150);
 		printString("Select Mayflies to fight for your cause!", c_White, screen, 256, 20);
 	}
-	else if (r->mode == HEAL)	
+	else if (gameRoom->mode == HEAL)	
 	{
 		printString("Heal",  c_Black, screen, 825, 150);
 		printString("Replenish your Mayfly's health! (uses daily action)", c_White, screen, 256, 20);
 	}
-	else if (r->mode == TRAIN)	
+	else if (gameRoom->mode == TRAIN)	
 	{
 		printString("Train", c_Black, screen, 825, 150);
 		printString("Train up your Mayfly in class of your choice! (uses daily action)", c_White, screen, 256, 20);
 	}
-	else if (r->mode == SCOUT)	
+	else if (gameRoom->mode == SCOUT)	
 	{
 		printString("Scout", c_Black, screen, 825, 150);
 		printString("Send out Mayfly to return with enemy information! (uses daily action)", c_White, screen, 256, 20);
 	}
-	else if (r->mode == BREED)	
+	else if (gameRoom->mode == BREED)	
 	{
 		printString("Breed", c_Black, screen, 825, 150);
 		printString("Increase your army by selecting the best traits! (uses daily action)", c_White, screen, 256, 20);

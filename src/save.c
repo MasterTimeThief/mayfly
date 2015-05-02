@@ -5,6 +5,8 @@
 
 static SaveData saveList[MAX_SAVE];
 
+extern int maxMayflies;
+
 void saveMayfly(SaveData *temp, Mayfly *m)
 {
 	if (m->currClass == BELIEVER)		strncpy(temp->className,"believer",10);
@@ -59,29 +61,35 @@ void saveToList()
 {
 	int i;
 	int count = 0;
-	for (i = 0;i < mayflyTotal; i++)
+	for (i = 0;i < maxMayflies; i++)
 	{
-		saveMayfly(&saveList[i], &mayflyList[i]);
-		count++;
+		if (mayflyList[i].alive) 
+		{
+			saveMayfly(&saveList[count], &mayflyList[i]);
+			count++;
+		}
 	}
 
-	/*if (count < MAX_MAYFLIES)
+	if (count < MAX_MAYFLIES - 1)
 	{
 		saveList[count].alive = -1;
-	}*/
+	}
 
 	count = 0;
 
-	for (i = 0;i < MAX_ENEMIES; i++)
+	for (i = 0; i < MAX_ENEMIES; i++)
 	{
-		saveEnemy(&saveList[i + MAX_MAYFLIES], &enemyList[i]);
-		count++;
+		if (enemyList[i].alive) 
+		{
+			saveEnemy(&saveList[count + MAX_MAYFLIES], &enemyList[i]);
+			count++;
+		}
 	}
 
-	/*if (count < MAX_ENEMIES)
+	if (count < MAX_ENEMIES - 1)
 	{
-		saveList[count].alive = -1;
-	}*/
+		saveList[count + MAX_MAYFLIES].alive = -1;
+	}
 
 	save_my_data("saves/savefile.dat");
 }
@@ -127,6 +135,7 @@ void loadMayfly(SaveData *temp, Mayfly *m)
 
 	m->alive = temp->alive;
 	m->visible = temp->alive;
+	m->action = 1;
 
 	//Sprite and position
 	m->entity = createEntity();
@@ -136,6 +145,8 @@ void loadMayfly(SaveData *temp, Mayfly *m)
 	m->entity->image->currSpeed = 0;
 	m->entity->image->maxSpeed = 45; //Bigger number means slower animation
 	m->entity->image->frame = rand() % 4;
+
+	maxMayflies++;
 }
 
 void loadEnemy(SaveData *temp, Enemy *e)

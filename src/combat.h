@@ -4,7 +4,7 @@
 #include "mayfly.h"
 #include "graphics.h"
 
-#define	MAX_ENEMIES	100
+#define	MAX_ENEMIES	30
 
 typedef struct Enemy_T
 {
@@ -24,12 +24,12 @@ typedef struct Enemy_T
 	//void (*think)(Entity *e);
 }Enemy;
 
+int enemyTotal;
 extern int currentCombat;
-//extern Mayfly *mayflyFighters[15];
-//extern Enemy *enemyFighters[15];
 Mayfly *mayflyFighters[15];
 Enemy *enemyFighters[15];
-extern Enemy enemyList[MAX_ENEMIES];
+Enemy enemyList[MAX_ENEMIES];
+
 void initEnemyList();
 Enemy *newEnemy();
 void setupEnemy(Enemy *m);
