@@ -68,6 +68,11 @@ void mainButtons()
 	createButton(128, 448, 64, 64,  "images/trainButton.png", (*mainButtonThink), toTrain);
 	createButton(64, 512, 64, 64,   "images/breedButton.png", (*mainButtonThink), toBreed);
 	createButton(128, 512, 64, 64,  "images/scoutButton.png", (*mainButtonThink), toScout);
+
+	//sort buttons
+	createButton(960, 64, 32, 32,  "images/sortButton.png", (*sortButtonThink), sortMayflyClass);
+	createButton(960, 128, 32, 32,  "images/sortButton.png", (*sortButtonThink), sortMayflyGender);
+	createButton(960, 196, 32, 32,  "images/sortButton.png", (*sortButtonThink), sortMayflyAge);
 }
 
 int checkClick(Button *b)
@@ -115,6 +120,19 @@ void mainButtonThink(int index)
 		(*buttonList[index].effect)();
 		changeBackgroundMusic();
 		clearMayflySelection();
+	}
+}
+
+void sortButtonThink(int index)
+{
+	if (gameRoom->roomName != MAIN)
+	{
+		freeButton(&buttonList[index]);
+	}
+
+	if (checkClick(&buttonList[index]))
+	{
+		(*buttonList[index].effect)();
 	}
 }
 

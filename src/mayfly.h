@@ -71,6 +71,10 @@ void clearMayflySelection();
 void checkSelected();
 void mayflyExperience(Mayfly *m);
 void setupMayflyOffspring(Mayfly *child);
+void sortMayflyClass();
+void sortMayflyGender();
+void sortMayflyAge();
+
 void mayflyAllThink(Room *r);
 void mayflyThink(Mayfly *m);
 

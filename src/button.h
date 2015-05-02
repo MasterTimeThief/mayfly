@@ -3,7 +3,7 @@
 
 #include "entity.h"
 
-#define MAX_BUTTONS	10
+#define MAX_BUTTONS	15
 
 typedef struct Button_T
 {
@@ -19,6 +19,7 @@ void combatButtonThink(int index);
 void menuButtonThink(int index);
 void trainButtonThink(int index);
 void mainButtonThink(int index);
+void sortButtonThink(int index);
 void toHeal();
 void toTrain();
 void toBreed();
