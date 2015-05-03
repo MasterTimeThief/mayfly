@@ -18,9 +18,11 @@ typedef struct SaveData_S
 	int	strength;
 	int	luck;
 
-	int	soldierExp;
+	int experience;
+
+	/*int	soldierExp;
 	int	archerExp;
-	int	believerExp;
+	int	believerExp;*/
 
 	int alive;
 }SaveData;

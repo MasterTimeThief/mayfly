@@ -23,9 +23,7 @@ void saveMayfly(SaveData *temp, Mayfly *m)
 	temp->strength = m->strength;
 	temp->luck = m->luck;
 
-	temp->soldierExp = m->soldierExp;
-	temp->archerExp = m->archerExp;
-	temp->believerExp = m->believerExp;
+	temp->experience = m->experience;
 
 	temp->alive = m->alive;
 
@@ -48,9 +46,7 @@ void saveEnemy(SaveData *temp, Enemy *e)
 	temp->strength = e->strength;
 	temp->luck = e->luck;
 
-	temp->soldierExp = 0;
-	temp->archerExp = 0;
-	temp->believerExp = 0;
+	temp->experience = 0;
 
 	temp->alive = e->alive;
 
@@ -129,9 +125,7 @@ void loadMayfly(SaveData *temp, Mayfly *m)
 	m->strength = temp->strength;
 	m->luck = temp->luck;
 
-	m->soldierExp = temp->soldierExp;
-	m->archerExp = temp->archerExp;
-	m->believerExp = temp->believerExp;
+	m->experience = temp->experience;
 
 	m->alive = temp->alive;
 	m->visible = temp->alive;

@@ -6,6 +6,7 @@
 #include "save.h"
 
 #define MAX_MAYFLIES	40
+#define LEVEL_UP		50
 
 typedef enum
 {
@@ -31,9 +32,11 @@ typedef struct Mayfly_T
 	int	strength;
 	int	luck;
 
-	int	soldierExp;
+	int experience;
+
+	/*int	soldierExp;
 	int	archerExp;
-	int	believerExp;
+	int	believerExp;*/
 
 	int	visible; //Turn invisible on combat
 	int alive;

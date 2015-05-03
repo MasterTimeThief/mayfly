@@ -161,9 +161,7 @@ void setupMayfly(Mayfly *m)
 	m->speed =		rand() % 10 + 1;
 	m->luck =		rand() % 10 + 1;
 
-	m->archerExp =	0;
-	m->believerExp = 0;
-	m->soldierExp =	0;
+	m->experience =	0;
 
 	m->fighting = 0;
 	m->visible	= 1;
@@ -318,9 +316,9 @@ void displayMayflyStats(Mayfly *m)
 	printString("Luck: ",		c_Black, screen, 50, 150);
 	printString("Age: ",		c_Black, screen, 50, 175);
 
-	printString("Believer: ",	c_Black, screen, 50, 225);
-	printString("Archer: ",		c_Black, screen, 50, 250);
-	printString("Soldier: ",	c_Black, screen, 50, 275);
+	printString("EXP: ",		c_Black, screen, 50, 225);
+	//printString("Archer: ",		c_Black, screen, 50, 250);
+	//printString("Soldier: ",	c_Black, screen, 50, 275);
 
 	//Display Stat values
 	if (m->health <= 5)		printInt(m->health,	c_Red, screen, 150, 75);
@@ -335,9 +333,9 @@ void displayMayflyStats(Mayfly *m)
 	if (m->age >= 5)		printInt(m->age,c_Red, screen, 150, 175);
 	else					printInt(m->age,c_Black, screen, 150, 175);
 
-	printInt(m->believerExp,c_Black, screen, 150, 225);
-	printInt(m->archerExp,	c_Black, screen, 150, 250);
-	printInt(m->soldierExp,	c_Black, screen, 150, 275);
+	printInt(m->experience, c_Black, screen, 150, 225);
+	//printInt(m->archerExp,	c_Black, screen, 150, 250);
+	//printInt(m->soldierExp,	c_Black, screen, 150, 275);
 }
 
 /**********************************************************************************************//**
@@ -363,9 +361,7 @@ void freeMayfly(Mayfly *m)
 	m->speed = 0;
 	m->luck = 0;
 
-	m->archerExp =	0;
-	m->believerExp = 0;
-	m->soldierExp =	0;
+	m->experience =	0;
 
 	m->fighting = 0;
 	m->visible	= 0;
@@ -415,6 +411,22 @@ void checkSelected()
 	}
 }
 
+void levelUp(Mayfly *m)
+{
+	m->health += rand() % 5 + 1;
+
+	if (m->currClass == BELIEVER)	m->luck += rand() % 10 + 1;
+	else							m->luck += rand() % 5 + 1;
+	
+	if (m->currClass == ARCHER)		m->speed += rand() % 10 + 1;
+	else							m->speed += rand() % 5 + 1;
+
+	if (m->currClass == SOLDIER)	m->strength += rand() % 10 + 1;
+	else							m->strength += rand() % 5 + 1;
+
+	m->experience -= LEVEL_UP;
+}
+
 /**********************************************************************************************//**
  * @fn	void trainBeliever()
  *
@@ -426,9 +438,11 @@ void checkSelected()
 
 void trainBeliever()
 {
-	trainee->believerExp += rand() % 10 + 1;
+	trainee->experience += rand() % 10 + 1;
+	trainee->luck += rand() % 5 + 1;
 	trainee->action = 0;
 	trainee->selected = 0;
+	if (trainee->experience >= LEVEL_UP) levelUp(trainee);
 	trainee = NULL;
 }
 
@@ -443,9 +457,11 @@ void trainBeliever()
 
 void trainArcher()
 {
-	trainee->archerExp += rand() % 10 + 1;
+	trainee->experience += rand() % 10 + 1;
+	trainee->speed += rand() % 5 + 1;
 	trainee->action = 0;
 	trainee->selected = 0;
+	if (trainee->experience >= LEVEL_UP) levelUp(trainee);
 	trainee = NULL;
 }
 
@@ -460,9 +476,11 @@ void trainArcher()
 
 void trainSoldier()
 {
-	trainee->soldierExp += rand() % 10 + 1;
+	trainee->experience += rand() % 10 + 1;
+	trainee->strength += rand() % 5 + 1;
 	trainee->action = 0;
 	trainee->selected = 0;
+	if (trainee->experience >= LEVEL_UP) levelUp(trainee);
 	trainee = NULL;
 }
 
@@ -490,9 +508,7 @@ void trainMayfly()
 
 void mayflyExperience(Mayfly *m)
 {
-	if (m->currClass == BELIEVER) m->believerExp += rand() % 10;
-	else if (m->currClass == ARCHER) m->archerExp += rand() % 10;
-	else if (m->currClass == SOLDIER) m->soldierExp += rand() % 10;
+	m->experience += rand() % 10;
 }
 
 void healMayfly(Mayfly *m)
@@ -539,9 +555,7 @@ void setupMayflyOffspring(Mayfly *child)
 
 	child->age = 0;
 
-	child->archerExp	=	p1->archerExp + p2->archerExp;
-	child->believerExp	=	p1->believerExp + p2->believerExp;
-	child->soldierExp	=	p1->soldierExp + p2->soldierExp;
+	child->experience	=	p1->experience + p2->experience;
 
 	p1->action = 0;
 	p2->action = 0;
@@ -648,6 +662,8 @@ void mayflyAllThink(Room *r)
 		if (trainee == NULL) trainMayfly();
 	}
 	else trainee = NULL;
+
+	if (trainee != NULL) displayMayflyStats(trainee);
 }
 
 void mayflyThink(Mayfly *m)
@@ -655,7 +671,7 @@ void mayflyThink(Mayfly *m)
 	//Check if mouse collides with Mayfly
 	if (mouseHover(m->entity->ex,  m->entity->ey,  m->entity->image->w,  m->entity->image->h))
 	{
-		if (gameRoom->roomName == MAIN && m->alive) displayMayflyStats(m);
+		if (gameRoom->roomName == MAIN && m->alive && trainee == NULL) displayMayflyStats(m);
 		if (clickLeft)
 		{
 			if (mouseMayfly == NULL) mouseMayfly = m;
