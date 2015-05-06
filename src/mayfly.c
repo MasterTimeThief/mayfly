@@ -228,8 +228,13 @@ void displayMayflies()
 				{
 					//change to fighting sprite, and fixed location
 					DrawSprite(mayflyList[i].entity->image, screen, 450, 200, mayflyList[i].entity->image->frame);
+					printInt(mayflyList[i].health,	c_Red, screen, 400, 200);
 				}
-				else if (mayflyList[i].selected) DrawSprite(mayflyList[i].entity->image, screen, mayflyList[i].cx, mayflyList[i].cy, mayflyList[i].entity->image->frame);
+				else if (mayflyList[i].selected)
+				{
+					DrawSprite(mayflyList[i].entity->image, screen, mayflyList[i].cx, mayflyList[i].cy, mayflyList[i].entity->image->frame);
+					printInt(mayflyList[i].health, c_Red, screen, mayflyList[i].cx - 50, mayflyList[i].cy);
+				}
 			}
 		}
 	}

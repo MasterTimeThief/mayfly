@@ -9,6 +9,7 @@
 int currFighters;
 int currentCombat;
 int numKilled, numLost;
+int currentDamage, currentFighter, currentCrit;
 
 
 extern	SDL_Surface *screen;
@@ -119,6 +120,7 @@ void displayEnemies()
 			{
 				//change to fighting sprite, and fixed location
 				DrawSprite(enemyList[i].entity->image, screen, 550, 200, enemyList[i].entity->image->frame);
+				printInt(enemyList[i].health, c_Red, screen, 615, 200);
 			}
 			else if (enemyList[i].combat)
 			{
@@ -186,6 +188,24 @@ void enemyThinkAll(Room *r)
 void enemyThink(Enemy *e)
 {
 	updateSprite(e->entity->image);
+}
+
+void displayAttack()
+{
+	if (currentCrit > 0) printString("CRITICAL HIT",	c_Red, screen, 400, 150);//print the word CRITICAL HIT
+
+	if (currentFighter == 1) //mayfly attack
+	{
+		printString("Mayfly attacked for    !",	c_Black, screen, 400, 250);
+		printInt(currentDamage, c_Red, screen, 615, 250);
+	}
+	else if (currentFighter == 2) //enemy attack
+	{
+		printString("Enemy attacked for     !",	c_Black, screen, 400, 250);
+		printInt(currentDamage, c_Red, screen, 615, 250);
+	}
+
+
 }
 
 void toCombat()
@@ -263,17 +283,21 @@ void mayflyAttack()
 {
 	Event *nextAction = newEvent();
 	int tempCrit;
-	int myCrit = 0;
 	int myAdv = 0;
 
+	currentFighter = 1;
 	if		(myFighter->currClass == BELIEVER && enemyFighter->currClass == "soldier") myAdv = rand() % 4;
 	else if (myFighter->currClass == SOLDIER && enemyFighter->currClass == "archer")	 myAdv = rand() % 4;
 	else if (myFighter->currClass == ARCHER && enemyFighter->currClass == "believer")  myAdv = rand() % 4;
 	
 	tempCrit = rand() % 30;
-	if (tempCrit < myFighter->luck) myCrit = rand() % 5;
+	currentCrit = 0;
+	if (tempCrit < myFighter->luck) currentCrit = rand() % 4 + 1;
 
-	enemyFighter->health -= ( myFighter->strength + myAdv + myCrit);
+	currentDamage = myFighter->strength + myAdv + currentCrit;
+	enemyFighter->health -= currentDamage;
+	nextAction->think = displayAttack;
+
 	if (enemyFighter->health <= 0)
 	{
 		freeEnemy(enemyFighter);
@@ -283,9 +307,10 @@ void mayflyAttack()
 	}
 	else
 	{
+		
 		nextAction->end = enemyAttack;
 	}
-	nextAction->timer = 1;
+	nextAction->timer = 300;
 }
 
 /**********************************************************************************************//**
@@ -301,17 +326,23 @@ void enemyAttack()
 {
 	Event *nextAction = newEvent();
 	int tempCrit;
-	int enemyCrit = 0;
+	//int enemyCrit = 0;
 	int enemyAdv = 0;
+	//int enemyDamage;
 
+	currentFighter = 2;
 	if		(enemyFighter->currClass == "believer" && myFighter->currClass == SOLDIER) enemyAdv = rand() % 4;
 	else if (enemyFighter->currClass == "soldier" && myFighter->currClass == ARCHER)	 enemyAdv = rand() % 4;
 	else if (enemyFighter->currClass == "archer" && myFighter->currClass == BELIEVER)  enemyAdv = rand() % 4;
 	
 	tempCrit = rand() % 30;
-	if (tempCrit < enemyFighter->luck) enemyCrit = rand() % 5;
+	currentCrit = 0;
+	if (tempCrit < enemyFighter->luck) currentCrit = rand() % 4 + 1;
 
-	myFighter->health -= ( enemyFighter->strength + enemyAdv + enemyCrit );
+	currentDamage = enemyFighter->strength + enemyAdv + currentCrit;
+	myFighter->health -= currentDamage;
+	nextAction->think = displayAttack;
+
 	if (myFighter->health <= 0)
 	{
 		freeMayfly(myFighter);
@@ -322,33 +353,16 @@ void enemyAttack()
 	{
 		nextAction->end = mayflyAttack; //changed the semicolon, greek question mark
 	}
-	nextAction->timer = 1;
+	nextAction->timer = 300;
 }
 
 void displayResults()
 {
-	SDL_Surface *temp;
-	char		tempString[3];
+	printString("Mayflies Lost: ",	c_Black, screen, 400, 200);
+	printString("Enemies Killed: ",	c_Black, screen, 400, 250);
 
-	//Display Stat Names
-	temp = renderText( mayFont, "Mayflies Lost: ", c_Black );
-	apply_surface(400,200,temp,screen,NULL);
-	SDL_FreeSurface(temp);
-
-	temp = renderText( mayFont, "Enemies Killed: ", c_Black );
-	apply_surface(400,250,temp,screen,NULL);
-	SDL_FreeSurface(temp);
-
-	//Display Stat values
-	sprintf(tempString, "%i", numLost);
-	temp = renderText( mayFont, tempString, c_Black );
-	apply_surface(580,200,temp,screen,NULL);
-	SDL_FreeSurface(temp);
-
-	sprintf(tempString, "%i", numKilled);
-	temp = renderText( mayFont, tempString, c_Black );
-	apply_surface(580,250,temp,screen,NULL);
-	SDL_FreeSurface(temp);
+	printInt(numLost,	c_Black, screen, 580, 200);
+	printInt(numKilled, c_Black, screen, 580, 250);
 }
 
 void mayflyFightChoose(Mayfly *m)
