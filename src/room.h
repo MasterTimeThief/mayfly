@@ -11,6 +11,7 @@ typedef enum
 	MENU,
 	MAIN,
 	COMBAT,
+	EDIT,
 	QUIT
 }RoomType;
 

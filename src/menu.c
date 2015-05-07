@@ -8,6 +8,7 @@
 extern	SDL_Surface *screen;
 extern int STARTING_MAYFLY;
 extern char *mainBack;
+extern char *editBack;
 
 void menuNew()
 {
@@ -15,7 +16,6 @@ void menuNew()
 	
 	gameRoom->roomName = MAIN;
 	changeBackgroundMusic();
-	//createButton(64, 416, 128, 64, "images/button.png", (*combatButtonThink), toCombat);
 	mainButtons();
 	changeBackground(mainBack);
 	//new game script
@@ -33,7 +33,6 @@ void menuLoad()
 {
 	gameRoom->roomName = MAIN;
 	changeBackgroundMusic();
-	//createButton(64, 416, 128, 64, "images/button.png", (*combatButtonThink), toCombat);
 	mainButtons();
 	changeBackground(mainBack);
 	//Load in saved mayflies
@@ -43,4 +42,13 @@ void menuLoad()
 void menuExit()
 {
 	gameRoom->roomName = QUIT;
+}
+
+void menuEdit()
+{
+	gameRoom->roomName = EDIT;
+	changeBackgroundMusic();
+	changeBackground(editBack);
+	loadFromList();
+	setupMayflyEdit();
 }

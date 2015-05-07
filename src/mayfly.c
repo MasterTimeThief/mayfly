@@ -119,7 +119,6 @@ void setupMayfly(Mayfly *m)
 	//Class and Gender
 	tempClass = rand() % 3;
 	m->isFemale = rand() % 2;
-	//m->think = mayflyDoNothing;
 	//Position
 	tempX = rand() % 700 + 256;
 	tempY = rand() % 220 + 288;
@@ -169,7 +168,6 @@ void setupMayfly(Mayfly *m)
 	m->action	= 1;
 	m->cx		= 0;
 	m->cy		= 0;
-	//mayflyTotal++;
 
 	//Sprite and position
 	m->entity = createEntity();
@@ -222,7 +220,7 @@ void displayMayflies()
 				if (mayflyList[i].selected) DrawSprite(selectSpr, screen, mayflyList[i].entity->ex, mayflyList[i].entity->ey, mayflyList[i].entity->image->frame);
 				else if (!mayflyList[i].action) DrawSprite(inactiveSpr, screen, mayflyList[i].entity->ex, mayflyList[i].entity->ey, mayflyList[i].entity->image->frame);
 			}
-			if (gameRoom->roomName == COMBAT)
+			else if (gameRoom->roomName == COMBAT)
 			{
 				if (mayflyList[i].fighting)
 				{
@@ -235,6 +233,11 @@ void displayMayflies()
 					DrawSprite(mayflyList[i].entity->image, screen, mayflyList[i].cx, mayflyList[i].cy, mayflyList[i].entity->image->frame);
 					printInt(mayflyList[i].health, c_Red, screen, mayflyList[i].cx - 50, mayflyList[i].cy);
 				}
+			}
+			else if (gameRoom->roomName == EDIT)
+			{
+				DrawSprite(mayflyList[i].entity->image, screen, mayflyList[i].cx, mayflyList[i].cy, mayflyList[i].entity->image->frame);
+				if (mayflyList[i].selected) DrawSprite(selectSpr, screen, mayflyList[i].cx, mayflyList[i].cy, mayflyList[i].entity->image->frame);
 			}
 		}
 	}
@@ -294,7 +297,6 @@ void setupMayflyCombat()
 			mayflyList[i].visible = 0;
 			continue;
 		}
-		//mayflyList[i].selected = 0;
 		mayflyCombatPosition(&mayflyList[i], j);
 		mayflyFighters[j] = &mayflyList[i];
 		j++;
@@ -322,8 +324,6 @@ void displayMayflyStats(Mayfly *m)
 	printString("Age: ",		c_Black, screen, 50, 175);
 
 	printString("EXP: ",		c_Black, screen, 50, 225);
-	//printString("Archer: ",		c_Black, screen, 50, 250);
-	//printString("Soldier: ",	c_Black, screen, 50, 275);
 
 	//Display Stat values
 	if (m->health <= 5)		printInt(m->health,	c_Red, screen, 150, 75);
@@ -339,8 +339,22 @@ void displayMayflyStats(Mayfly *m)
 	else					printInt(m->age,c_Black, screen, 150, 175);
 
 	printInt(m->experience, c_Black, screen, 150, 225);
-	//printInt(m->archerExp,	c_Black, screen, 150, 250);
-	//printInt(m->soldierExp,	c_Black, screen, 150, 275);
+}
+
+void setupMayflyEdit()
+{
+	int i,j,k;
+	for (i = 0;i < maxMayflies; i++)
+	{
+		for (j = 0;j < 8; j++)
+		{
+			for (k = 0;k < 5; k++)
+			{
+				mayflyList[i].cx = (k * 64) + 64;
+				mayflyList[i].cy = (j * 64) + 48;
+			}
+		}
+	}
 }
 
 /**********************************************************************************************//**
@@ -494,7 +508,6 @@ void trainMayfly()
 	int i, numkeys;
 
 	Uint8 *keys = SDL_GetKeyState(&numkeys);
-	//trainee = NULL;
 	for (i = 0;i < maxMayflies; i++)
 	{
 		if (mayflyList[i].selected == 1)

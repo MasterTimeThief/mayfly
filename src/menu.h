@@ -27,5 +27,6 @@ typedef struct Menu_T
 void menuNew();
 void menuLoad();
 void menuExit();
+void menuEdit();
 
 #endif

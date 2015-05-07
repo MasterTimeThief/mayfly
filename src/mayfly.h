@@ -77,6 +77,7 @@ void setupMayflyOffspring(Mayfly *child);
 void sortMayflyClass();
 void sortMayflyGender();
 void sortMayflyAge();
+void setupMayflyEdit();
 
 void mayflyAllThink(Room *r);
 void mayflyThink(Mayfly *m);

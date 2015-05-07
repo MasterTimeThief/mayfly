@@ -15,6 +15,7 @@
 int STARTING_MAYFLY = 20;
 
 char *menuBack = "images/menu2.png";
+char *editBack = "images/battle.png";
 char *mainBack = "images/main2.png";
 char *combatBack = "images/battle.png";
 
@@ -112,14 +113,14 @@ int main( int argc, char* args[] )
 	//Menu buttons
 	createButton(768, 320, 192, 64, "images/newButton.png", (*menuButtonThink), menuNew);
 	createButton(768, 384, 192, 64, "images/loadButton.png", (*menuButtonThink), menuLoad);
-	createButton(768, 448, 192, 64, "images/exitButton.png", (*menuButtonThink), menuExit);
+	createButton(768, 448, 192, 64, "images/editButton.png", (*menuButtonThink), menuEdit);
 
 	changeBackgroundMusic();
 
     //Game Loop
 	while(!done)
 	{
-		if (gameRoom->roomName == MAIN)
+		if (gameRoom->roomName == MAIN || gameRoom->roomName == EDIT)
 		{
 			updateBackground(screen);
 			displayMayflies();
