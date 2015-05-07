@@ -137,7 +137,7 @@ void loadMayfly(SaveData *temp, Mayfly *m)
 	m->entity->ex = temp->x;
 	m->entity->ey = temp->y;
 	m->entity->image->currSpeed = 0;
-	m->entity->image->maxSpeed = 45; //Bigger number means slower animation
+	m->entity->image->maxSpeed = 500; //Bigger number means slower animation
 	m->entity->image->frame = rand() % 4;
 
 	maxMayflies++;
@@ -183,7 +183,7 @@ void loadEnemy(SaveData *temp, Enemy *e)
 	e->entity->ex = temp->x;
 	e->entity->ey = temp->y;
 	e->entity->image->currSpeed = 0;
-	e->entity->image->maxSpeed = 45; //Bigger number means slower animation
+	e->entity->image->maxSpeed = 500; //Bigger number means slower animation
 	e->entity->image->frame = rand() % 4;
 }
 

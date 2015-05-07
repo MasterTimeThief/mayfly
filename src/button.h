@@ -16,6 +16,7 @@ typedef struct Button_T
 extern Button buttonList[MAX_BUTTONS];
 
 void combatButtonThink(int index);
+void draftButtonThink(int index);
 void menuButtonThink(int index);
 void trainButtonThink(int index);
 void mainButtonThink(int index);

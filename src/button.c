@@ -63,28 +63,54 @@ void freeButton(Button *b)
 
 void mainButtons()
 {
-	createButton(64, 384, 128, 64,  "images/button.png",	  (*combatButtonThink), toCombat);
+	createButton(64, 384, 128, 64,  "images/button.png",	  (*draftButtonThink), toCombat);
 	createButton(64, 448, 64, 64,   "images/healButton.png",  (*mainButtonThink), toHeal);
 	createButton(128, 448, 64, 64,  "images/trainButton.png", (*mainButtonThink), toTrain);
 	createButton(64, 512, 64, 64,   "images/breedButton.png", (*mainButtonThink), toBreed);
-	createButton(128, 512, 64, 64,  "images/scoutButton.png", (*mainButtonThink), toScout);
+	createButton(128, 512, 64, 64,  "images/saveButton.png", (*mainButtonThink), saveToList);
 
 	//sort buttons
-	createButton(960, 64, 32, 32,  "images/sortButton.png", (*sortButtonThink), sortMayflyClass);
-	createButton(960, 128, 32, 32,  "images/sortButton.png", (*sortButtonThink), sortMayflyGender);
-	createButton(960, 196, 32, 32,  "images/sortButton.png", (*sortButtonThink), sortMayflyAge);
+	createButton(955, 96, 32, 32,  "images/sortButton.png", (*sortButtonThink), sortMayflyClass);
+	createButton(955, 160, 32, 32,  "images/sortButton2.png", (*sortButtonThink), sortMayflyGender);
+	createButton(955, 224, 32, 32,  "images/sortButton3.png", (*sortButtonThink), sortMayflyAge);
 }
 
 int checkClick(Button *b)
 {
 	if (mouseHover(b->entity->ex,  b->entity->ey,  b->entity->image->w,  b->entity->image->h))
 	{
-		if (clickLeft)	return 1;
+		if (clickLeft && !stopClick)
+		{
+			stopClick = 1;
+			return 1;
+		}
+	}
+	return 0;
+}
+
+int checkClickHold(Button *b)
+{
+	if (mouseHover(b->entity->ex,  b->entity->ey,  b->entity->image->w,  b->entity->image->h))
+	{
+		if (clickLeft) return 1;
 	}
 	return 0;
 }
 
 void combatButtonThink(int index)
+{
+	if (gameRoom->roomName != COMBAT)
+	{
+		freeButton(&buttonList[index]);
+	}
+
+	if (checkClick(&buttonList[index]))
+	{
+		(*buttonList[index].effect)();
+	}
+}
+
+void draftButtonThink(int index)
 {
 	if (gameRoom->roomName != MAIN)
 	{
@@ -93,7 +119,7 @@ void combatButtonThink(int index)
 
 	if (checkClick(&buttonList[index]))
 	{
-		saveToList();
+		//saveToList();
 		if (gameRoom->mode == DRAFT && mayflySelected > 0)
 		{
 			(*buttonList[index].effect)();
@@ -218,7 +244,7 @@ void buttonThink()
 		{
 			DrawSprite(buttonList[x].entity->image, screen, buttonList[x].entity->ex, buttonList[x].entity->ey, buttonList[x].entity->image->frame);
 			if (buttonList[x].think != NULL) (*buttonList[x].think)(x);
-			if (checkClick(&buttonList[x]))
+			if (checkClickHold(&buttonList[x]))
 			{
 				buttonList[x].entity->image->frame = 1;
 			}

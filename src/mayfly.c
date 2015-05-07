@@ -356,7 +356,7 @@ void displayMayflyStats(Mayfly *m)
 
 void freeMayfly(Mayfly *m)
 {
-	FreeSprite(m->entity->image);
+	//FreeSprite(m->entity->image);
 	freeEntity(m->entity);
 	m->alive = 0;
 	m->age = 0;

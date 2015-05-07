@@ -95,7 +95,7 @@ void setupEnemy(Enemy *m)
 	m->entity->ex = 0;
 	m->entity->ey = 0;
 	m->entity->image->currSpeed = 0;
-	m->entity->image->maxSpeed = 60; //Bigger number means slower animation
+	m->entity->image->maxSpeed = 500; //Bigger number means slower animation
 	m->entity->image->frame = rand() % 4;
 }
 
@@ -132,7 +132,7 @@ void displayEnemies()
 
 void freeEnemy(Enemy *e)
 {
-	FreeSprite(e->entity->image);
+	//FreeSprite(e->entity->image);
 	freeEntity(e->entity);
 	e->alive = 0;
 	enemyTotal--;
@@ -214,6 +214,7 @@ void toCombat()
 	if (gameRoom->mode == DRAFT && mayflySelected >= 1)
 	{
 		gameRoom->roomName = COMBAT;
+		createButton(448, 32, 128, 64,  "images/button.png",(*combatButtonThink), clearMayflySelection);
 		setupEnemyCombat();
 		setupMayflyCombat();
 		changeBackground(combatBack);
@@ -223,7 +224,9 @@ void toCombat()
 		numKilled = 0;
 		numLost = 0;
 
-		combatStart->timer = 300; // Time before combat starts
+		enemyFighter = chooseNextEnemy();
+
+		combatStart->timer = 1; // Time before combat starts
 		combatStart->end = chooseFighters;
 	}
 }
@@ -250,7 +253,6 @@ void endCombat()
 	mayflyAfterCombat();
 	gameRoom->roomName = MAIN;
 	changeBackgroundMusic();
-	//createButton(64, 416, 128, 64, "images/button.png", (*combatButtonThink), toCombat);
 	mainButtons();
 	changeBackground(mainBack);
 }
@@ -262,11 +264,9 @@ void resetFighters()
 	myFighter->fighting = 0;
 	enemyFighter->fighting = 0;
 	myFighter = NULL;
-	enemyFighter = NULL;
-
-	currentCombat++;
+	enemyFighter = chooseNextEnemy();
 	
-	nextFight->timer = 400; // time between fights
+	nextFight->timer = 10; // time between fights
 	nextFight->end = chooseFighters;
 }
 
@@ -326,9 +326,7 @@ void enemyAttack()
 {
 	Event *nextAction = newEvent();
 	int tempCrit;
-	//int enemyCrit = 0;
 	int enemyAdv = 0;
-	//int enemyDamage;
 
 	currentFighter = 2;
 	if		(enemyFighter->currClass == "believer" && myFighter->currClass == SOLDIER) enemyAdv = rand() % 4;
@@ -374,21 +372,43 @@ void mayflyFightChoose(Mayfly *m)
 	}
 }
 
+Enemy *chooseNextEnemy()
+{
+	int i;
+	int whichEnemy;
+	int stillAlive = 0;
+	Enemy *fighter = NULL;
+
+	for (i = 0; i <= currFighters; i++)
+	{
+		if (enemyFighters[i]->alive) stillAlive = 1;
+	}
+
+	if (!stillAlive)
+	{
+		return NULL;
+	}
+
+	whichEnemy = rand() % (currFighters + 1);
+	while (fighter == NULL)
+	{
+		if (enemyFighters[whichEnemy]->alive)	fighter = enemyFighters[whichEnemy];
+		else									whichEnemy = rand() % (currFighters + 1);
+	}
+	return fighter;
+}
+
 void chooseFighters()
 {
 	Event *fightResult = newEvent();
-	
-	//currentCombat keeps track of who's fighting
-	if (currentCombat > 15 || mayflyFighters[currentCombat] == NULL || enemyFighters[currentCombat] == NULL)
+
+	if (enemyFighter == NULL || mayflySelected == 0)
 	{
 		fightResult->timer = 1500;
 		fightResult->think = displayResults;
 		fightResult->end = endCombat;
 		return;
 	}
-
-	enemyFighter = enemyFighters[currentCombat];
-	//enemyFighter->fighting = 1;
 
 	if (myFighter == NULL)
 	{
@@ -398,7 +418,7 @@ void chooseFighters()
 	else
 	{
 		enemyFighter->fighting = 1;
-		fightResult->timer = 300; //Time in combat
+		fightResult->timer = 300; //Time before combat
 		if		(myFighter->speed >= enemyFighter->speed) fightResult->end = mayflyAttack;
 		else if (enemyFighter->speed >  myFighter->speed) fightResult->end = enemyAttack;
 	}
