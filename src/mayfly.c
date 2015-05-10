@@ -28,6 +28,8 @@ Sprite *selectSpr;
 Sprite *inactiveSpr;
 Sprite *trainFrame;
 
+extern int mayflyPos;
+
 void initMayflyList()
 {
 	int x;
@@ -137,20 +139,20 @@ void setupMayfly(Mayfly *m)
 	if (tempClass == 0)
 	{
 		m->currClass = BELIEVER;
-		if (m->isFemale) tempSprite = LoadSprite("images/believer_f.png",32,32);
-		else				tempSprite = LoadSprite("images/believer_m.png",32,32);
+		if (m->isFemale) tempSprite = LoadSprite("images/people/believer_f.png",32,32);
+		else				tempSprite = LoadSprite("images/people/believer_m.png",32,32);
 	}
 	else if (tempClass == 1)
 	{
 		m->currClass = ARCHER;
-		if (m->isFemale) tempSprite = LoadSprite("images/archer_f.png",32,32);
-		else				tempSprite = LoadSprite("images/archer_m.png",32,32);
+		if (m->isFemale) tempSprite = LoadSprite("images/people/archer_f.png",32,32);
+		else				tempSprite = LoadSprite("images/people/archer_m.png",32,32);
 	}
 	else if (tempClass == 2)
 	{
 		m->currClass = SOLDIER;
-		if (m->isFemale) tempSprite = LoadSprite("images/soldier_f.png",32,32);
-		else				tempSprite =LoadSprite("images/soldier_m.png",32,32);
+		if (m->isFemale) tempSprite = LoadSprite("images/people/soldier_f.png",32,32);
+		else				tempSprite =LoadSprite("images/people/soldier_m.png",32,32);
 	}
 
 	m->age = 1;
@@ -175,7 +177,7 @@ void setupMayfly(Mayfly *m)
 	m->entity->ex = tempX;
 	m->entity->ey = tempY;
 	m->entity->image->currSpeed = 0;
-	m->entity->image->maxSpeed = 500; //Bigger number means slower animation
+	m->entity->image->maxSpeed = 300; //Bigger number means slower animation
 	m->entity->image->frame = rand() % 4;
 }
 
@@ -225,7 +227,7 @@ void displayMayflies()
 				if (mayflyList[i].fighting)
 				{
 					//change to fighting sprite, and fixed location
-					DrawSprite(mayflyList[i].entity->image, screen, 450, 200, mayflyList[i].entity->image->frame);
+					DrawSprite(mayflyList[i].entity->image, screen, 450 + mayflyPos, 200, mayflyList[i].entity->image->frame);
 					printInt(mayflyList[i].health,	c_Red, screen, 400, 200);
 				}
 				else if (mayflyList[i].selected)
@@ -243,8 +245,15 @@ void displayMayflies()
 	}
 	if (trainee != NULL)
 	{
-		DrawSprite(trainFrame, screen, 256, 64, 0);
-		DrawSprite(trainee->entity->image, screen, 432, 80, trainee->entity->image->frame);
+		if (gameRoom->roomName == MAIN)
+		{
+			DrawSprite(trainFrame, screen, 256, 64, 0);
+			DrawSprite(trainee->entity->image, screen, 432, 80, trainee->entity->image->frame);
+		}
+		else if (gameRoom->roomName == EDIT)
+		{
+			DrawSprite(trainee->entity->image, screen, 496, 272, trainee->entity->image->frame);
+		}
 	} 
 }
 
@@ -341,10 +350,52 @@ void displayMayflyStats(Mayfly *m)
 	printInt(m->experience, c_Black, screen, 150, 225);
 }
 
+void displayMayflyCombatStats(Mayfly *m)
+{
+	//Display Stat Names
+	printString(" H: ",	c_Black, screen, 475, 325);
+	printString("Sp: ",	c_Black, screen, 475, 350);
+	printString("St: ",	c_Black, screen, 475, 375);
+	printString(" L: ",	c_Black, screen, 475, 400);
+
+	//Display Stat values
+	if (m->health <= 5)		printInt(m->health,	c_Red, screen,	525, 325);
+	else					printInt(m->health,	c_Black, screen, 525, 325);
+	if (m->speed <= 3)		printInt(m->speed,	c_Red, screen, 525, 350);
+	else					printInt(m->speed,	c_Black, screen, 525, 350);
+	if (m->strength <= 3)	printInt(m->strength,c_Red, screen, 525, 375);
+	else					printInt(m->strength,c_Black, screen, 525, 375);
+	if (m->luck <= 3)		printInt(m->luck,	c_Red, screen, 525, 400);
+	else					printInt(m->luck,	c_Black, screen, 525, 400);
+}
+
+void displayMayflyEditStats(Mayfly *m)
+{
+	//Display Stat Names
+	printString("Health: ",		c_White, screen, 576, 64);
+	printString("Speed: ",		c_White, screen, 576, 160);
+	printString("Strength: ",	c_White, screen, 576, 256);
+	printString("Luck: ",		c_White, screen, 576, 352);
+	printString("Age: ",		c_White, screen, 576, 448);
+
+	//Display Stat values
+	if (m->health <= 5)		printInt(m->health,	c_Red,		screen, 800, 64);
+	else					printInt(m->health,	c_Black,	screen, 800, 64);
+	if (m->speed <= 3)		printInt(m->speed,	c_Red,		screen, 800, 160);
+	else					printInt(m->speed,	c_Black,	screen, 800, 160);
+	if (m->strength <= 3)	printInt(m->strength,c_Red,		screen, 800, 256);
+	else					printInt(m->strength,c_Black,	screen, 800, 256);
+	if (m->luck <= 3)		printInt(m->luck,	c_Red,		screen, 800, 352);
+	else					printInt(m->luck,	c_Black,	screen, 800, 352);
+
+	if (m->age >= 5)		printInt(m->age,c_Red,			screen, 800, 448);
+	else					printInt(m->age,c_Black,		screen, 800, 448);
+}
+
 void setupMayflyEdit()
 {
 	int i,j,k;
-	for (i = 0;i < maxMayflies; i++)
+	for (i = 0;i < maxMayflies;)
 	{
 		for (j = 0;j < 8; j++)
 		{
@@ -352,6 +403,7 @@ void setupMayflyEdit()
 			{
 				mayflyList[i].cx = (k * 64) + 64;
 				mayflyList[i].cy = (j * 64) + 48;
+				i++;
 			}
 		}
 	}
@@ -507,7 +559,6 @@ void trainMayfly()
 {
 	int i, numkeys;
 
-	Uint8 *keys = SDL_GetKeyState(&numkeys);
 	for (i = 0;i < maxMayflies; i++)
 	{
 		if (mayflyList[i].selected == 1)
@@ -517,11 +568,12 @@ void trainMayfly()
 		}
 	}
 
-	//if (keys[SDLK_s]) saveToList();
-
-	createButton(224, 160, 128, 64, "images/belButton.png", (*trainButtonThink), trainBeliever);
-	createButton(384, 192, 128, 64, "images/archButton.png", (*trainButtonThink), trainArcher);
-	createButton(544, 160, 128, 64, "images/solButton.png", (*trainButtonThink), trainSoldier);
+	if (gameRoom->roomName == MAIN)
+	{
+		createButton(224, 160, 128, 64, "images/belButton.png", (*trainButtonThink), trainBeliever);
+		createButton(384, 192, 128, 64, "images/archButton.png", (*trainButtonThink), trainArcher);
+		createButton(544, 160, 128, 64, "images/solButton.png", (*trainButtonThink), trainSoldier);
+	}
 }
 
 void mayflyExperience(Mayfly *m)
@@ -642,6 +694,14 @@ void sortMayflyAge()
 	}
 }
 
+void mayflyEditChoose(Mayfly *m)
+{
+	if (trainee == NULL)
+	{
+		trainee = m;
+	}
+}
+
 void mayflyAllThink(Room *r)
 {
 	int i;
@@ -658,30 +718,43 @@ void mayflyAllThink(Room *r)
 		}
 	}
 	
-	if (mouseMayfly != NULL)
+	if (r->roomName == MAIN)
 	{
-		if (mx-16 < 256)		mouseMayfly->entity->ex = 256;
-		else if (mx-16 > 956)	mouseMayfly->entity->ex = 956;
-		else					mouseMayfly->entity->ex = mx-16;
+		if (mouseMayfly != NULL)
+		{
+			if (mx-16 < 256)		mouseMayfly->entity->ex = 256;
+			else if (mx-16 > 956)	mouseMayfly->entity->ex = 956;
+			else					mouseMayfly->entity->ex = mx-16;
 
-		if (my-16 < 288)		mouseMayfly->entity->ey = 288;
-		else if (my-16 > 508)	mouseMayfly->entity->ey = 508;
-		else					mouseMayfly->entity->ey = my-16;
+			if (my-16 < 288)		mouseMayfly->entity->ey = 288;
+			else if (my-16 > 508)	mouseMayfly->entity->ey = 508;
+			else					mouseMayfly->entity->ey = my-16;
+		}
+
+		if (r->mode == BREED && mayflySelected == 2) 
+		{
+			createMayflyOffspring();
+			clearMayflySelection();
+		}
+
+		if (r->mode == TRAIN && mayflySelected == 1)
+		{
+			if (trainee == NULL) trainMayfly();
+		}
+		else trainee = NULL;
+
+		if (trainee != NULL) displayMayflyStats(trainee);
 	}
-
-	if (r->mode == BREED && mayflySelected == 2) 
+	else if (r->roomName == EDIT)
 	{
-		createMayflyOffspring();
-		clearMayflySelection();
-	}
+		if (mayflySelected == 1)
+		{
+			if (trainee == NULL) trainMayfly();
+		}
+		else trainee = NULL;
 
-	if (r->mode == TRAIN && mayflySelected == 1)
-	{
-		if (trainee == NULL) trainMayfly();
+		if (trainee != NULL) displayMayflyEditStats(trainee);
 	}
-	else trainee = NULL;
-
-	if (trainee != NULL) displayMayflyStats(trainee);
 }
 
 void mayflyThink(Mayfly *m)
@@ -690,10 +763,11 @@ void mayflyThink(Mayfly *m)
 	if (mouseHover(m->entity->ex,  m->entity->ey,  m->entity->image->w,  m->entity->image->h))
 	{
 		if (gameRoom->roomName == MAIN && m->alive && trainee == NULL) displayMayflyStats(m);
-		if (clickLeft)
+		if (clickLeft && !stopClick)
 		{
 			if (mouseMayfly == NULL) mouseMayfly = m;
-			else if (mouseMayfly == m) mouseMayfly = NULL;
+			//else if (mouseMayfly == m) mouseMayfly = NULL;
+			stopClick = 1;
 		}
 		else if (!clickLeft) mouseMayfly = NULL;
 
@@ -702,7 +776,6 @@ void mayflyThink(Mayfly *m)
 			if (gameRoom->mode == HEAL) healMayfly(m);
 			else
 			{
-				
 				if	(!m->selected && mayflySelected < 15)
 				{
 					if (gameRoom->mode != TRAIN || mayflySelected == 0) m->selected = 1;
@@ -717,11 +790,29 @@ void mayflyThink(Mayfly *m)
 		}
 	}
 
-	if(mouseHover(m->cx,  m->cy,  m->entity->image->w,  m->entity->image->h) && gameRoom->roomName == COMBAT)
+	if(mouseHover(m->cx,  m->cy,  m->entity->image->w,  m->entity->image->h))
 	{
-		if (clickLeft)
+		if (gameRoom->roomName == COMBAT)
 		{
-			mayflyFightChoose(m);
+			if (m->fighting == 0) displayMayflyCombatStats(m);
+			if (clickLeft)
+			{
+				mayflyFightChoose(m);
+			}
+		}
+		else if (gameRoom->roomName == EDIT)
+		{
+			if (clickLeft && !stopClick)
+			{
+				if	(!m->selected)
+				{
+					clearMayflySelection();
+					m->selected = 1;
+					trainMayfly();
+				}
+				else if (m->selected)	m->selected = 0;
+				stopClick = 1;
+			}
 		}
 	}
 

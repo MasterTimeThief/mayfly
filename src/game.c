@@ -14,10 +14,10 @@
 
 int STARTING_MAYFLY = 20;
 
-char *menuBack = "images/menu2.png";
-char *editBack = "images/battle.png";
-char *mainBack = "images/main2.png";
-char *combatBack = "images/battle.png";
+char *menuBack = "images/backs/menu.png";
+char *editBack = "images/backs/edit.png";
+char *mainBack = "images/backs/main.png";
+char *combatBack = "images/backs/battle.png";
 
 SDL_Surface *screen = NULL;
 SDL_Event eventCheck;
@@ -108,12 +108,15 @@ int main( int argc, char* args[] )
 	gameRoom = createRoom();
 
     //Load image
+	//flip_surface(gameRoom->background);
 	updateBackground(screen);
 
 	//Menu buttons
-	createButton(768, 320, 192, 64, "images/newButton.png", (*menuButtonThink), menuNew);
-	createButton(768, 384, 192, 64, "images/loadButton.png", (*menuButtonThink), menuLoad);
-	createButton(768, 448, 192, 64, "images/editButton.png", (*menuButtonThink), menuEdit);
+	createButton(768, 320, 192, 64, "images/buttons/newButton.png", (*menuButtonThink), menuNew);
+	createButton(768, 384, 192, 64, "images/buttons/loadButton.png", (*menuButtonThink), menuLoad);
+	createButton(768, 448, 192, 64, "images/buttons/editButton.png", (*menuButtonThink), menuEdit);
+
+	createButton(0, 0, 32, 32, "images/null.png", (*menuButtonThink), menuEdit);
 
 	changeBackgroundMusic();
 

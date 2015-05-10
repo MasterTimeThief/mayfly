@@ -20,6 +20,9 @@ extern char *combatBack;
 Mayfly *myFighter;
 Enemy *enemyFighter;
 
+int mayflyPos;
+int enemyPos;
+
 void initEnemyList()
 {
 	int i;
@@ -50,7 +53,7 @@ Enemy *newEnemy()
 	return NULL;
 }
 
-void setupEnemy(Enemy *m)
+void setupEnemy(Enemy *e)
 {
 	Sprite *tempSprite = (Sprite*)malloc(sizeof(Sprite));
 
@@ -58,45 +61,45 @@ void setupEnemy(Enemy *m)
 
 	//Class and Gender
 	tempClass = rand() % 3;
-	m->isFemale = rand() % 2;
-	//m->think = mayflyDoNothing;
+	e->isFemale = rand() % 2;
 
 	//Load proper sprite
 	if (tempClass == 0)
 	{
-		strncpy(m->currClass,"believer",10);
-		if (m->isFemale) tempSprite = LoadSprite("images/believer_f.png",32,32);
-		else				tempSprite = LoadSprite("images/believer_m.png",32,32);
+		strncpy(e->currClass,"believer",10);
+		if (e->isFemale) tempSprite = LoadSprite("images/people/believer_f_e.png",32,32);
+		else				tempSprite = LoadSprite("images/people/believer_m_e.png",32,32);
 	}
 	else if (tempClass == 1)
 	{
-		strncpy(m->currClass,"archer",10);
-		if (m->isFemale) tempSprite = LoadSprite("images/archer_f.png",32,32);
-		else				tempSprite = LoadSprite("images/archer_m.png",32,32);
+		strncpy(e->currClass,"archer",10);
+		if (e->isFemale) tempSprite = LoadSprite("images/people/archer_f_e.png",32,32);
+		else				tempSprite = LoadSprite("images/people/archer_m_e.png",32,32);
 	}
 	else if (tempClass == 2)
 	{
-		strncpy(m->currClass,"soldier",10);
-		if (m->isFemale) tempSprite = LoadSprite("images/soldier_f.png",32,32);
-		else				tempSprite =LoadSprite("images/soldier_m.png",32,32);
+		strncpy(e->currClass,"soldier",10);
+		if (e->isFemale) tempSprite = LoadSprite("images/people/soldier_f_e.png",32,32);
+		else				tempSprite =LoadSprite("images/people/soldier_m_e.png",32,32);
 	}
 
-	m->health =		rand() % 10 + 11;
-	m->strength =	rand() % 10 + 1;
-	m->speed =		rand() % 10 + 1;
-	m->luck =		rand() % 10 + 1;
+	e->health =		rand() % 10 + 11;
+	e->strength =	rand() % 10 + 1;
+	e->speed =		rand() % 10 + 1;
+	e->luck =		rand() % 10 + 1;
 
-	m->combat = 0;
-	m->fighting = 0;
+	e->combat = 0;
+	e->fighting = 0;
 
 	//Sprite and position
-	m->entity = createEntity();
-	m->entity->image = tempSprite;
-	m->entity->ex = 0;
-	m->entity->ey = 0;
-	m->entity->image->currSpeed = 0;
-	m->entity->image->maxSpeed = 500; //Bigger number means slower animation
-	m->entity->image->frame = rand() % 4;
+	e->entity = createEntity();
+	//flip_surface(tempSprite->image);
+	e->entity->image = tempSprite;
+	e->entity->ex = 0;
+	e->entity->ey = 0;
+	e->entity->image->currSpeed = 0;
+	e->entity->image->maxSpeed = 500; //Bigger number means slower animation
+	e->entity->image->frame = rand() % 4;
 }
 
 void createEnemy()
@@ -119,7 +122,7 @@ void displayEnemies()
 			if (enemyList[i].fighting)
 			{
 				//change to fighting sprite, and fixed location
-				DrawSprite(enemyList[i].entity->image, screen, 550, 200, enemyList[i].entity->image->frame);
+				DrawSprite(enemyList[i].entity->image, screen, 550 - enemyPos, 200, enemyList[i].entity->image->frame);
 				printInt(enemyList[i].health, c_Red, screen, 615, 200);
 			}
 			else if (enemyList[i].combat)
@@ -214,7 +217,7 @@ void toCombat()
 	if (gameRoom->mode == DRAFT && mayflySelected >= 1)
 	{
 		gameRoom->roomName = COMBAT;
-		createButton(448, 32, 128, 64,  "images/button.png",(*combatButtonThink), clearMayflySelection);
+		createButton(448, 32, 128, 64,  "images/buttons/button.png",(*combatButtonThink), clearMayflySelection);
 		setupEnemyCombat();
 		setupMayflyCombat();
 		changeBackground(combatBack);
@@ -223,6 +226,8 @@ void toCombat()
 		currentCombat = 0;
 		numKilled = 0;
 		numLost = 0;
+		mayflyPos = 0;
+		enemyPos = 0;
 
 		enemyFighter = chooseNextEnemy();
 
@@ -265,6 +270,8 @@ void resetFighters()
 	enemyFighter->fighting = 0;
 	myFighter = NULL;
 	enemyFighter = chooseNextEnemy();
+	mayflyPos = 0;
+	enemyPos = 0;
 	
 	nextFight->timer = 10; // time between fights
 	nextFight->end = chooseFighters;
@@ -286,6 +293,8 @@ void mayflyAttack()
 	int myAdv = 0;
 
 	currentFighter = 1;
+	mayflyPos = 20;
+	enemyPos = 0;
 	if		(myFighter->currClass == BELIEVER && enemyFighter->currClass == "soldier") myAdv = rand() % 4;
 	else if (myFighter->currClass == SOLDIER && enemyFighter->currClass == "archer")	 myAdv = rand() % 4;
 	else if (myFighter->currClass == ARCHER && enemyFighter->currClass == "believer")  myAdv = rand() % 4;
@@ -297,6 +306,7 @@ void mayflyAttack()
 	currentDamage = myFighter->strength + myAdv + currentCrit;
 	enemyFighter->health -= currentDamage;
 	nextAction->think = displayAttack;
+	
 
 	if (enemyFighter->health <= 0)
 	{
@@ -329,6 +339,8 @@ void enemyAttack()
 	int enemyAdv = 0;
 
 	currentFighter = 2;
+	mayflyPos = 0;
+	enemyPos = 20;
 	if		(enemyFighter->currClass == "believer" && myFighter->currClass == SOLDIER) enemyAdv = rand() % 4;
 	else if (enemyFighter->currClass == "soldier" && myFighter->currClass == ARCHER)	 enemyAdv = rand() % 4;
 	else if (enemyFighter->currClass == "archer" && myFighter->currClass == BELIEVER)  enemyAdv = rand() % 4;

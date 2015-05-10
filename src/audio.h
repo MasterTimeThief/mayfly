@@ -10,6 +10,7 @@ Mix_Music *healMusic;
 Mix_Music *breedMusic;
 Mix_Music *scoutMusic;
 Mix_Music *combatMusic;
+Mix_Music *editMusic;
 
 //The sound effects that will be used
 Mix_Chunk *scratch;

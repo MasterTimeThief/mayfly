@@ -101,20 +101,20 @@ void loadMayfly(SaveData *temp, Mayfly *m)
 	if (!strcmp(temp->className, "believer"))
 	{
 		m->currClass = BELIEVER;
-		if (m->isFemale) tempSprite = LoadSprite("images/believer_f.png",32,32);
-		else				tempSprite = LoadSprite("images/believer_m.png",32,32);
+		if (m->isFemale) tempSprite = LoadSprite("images/people/believer_f.png",32,32);
+		else				tempSprite = LoadSprite("images/people/believer_m.png",32,32);
 	}
 	else if (!strcmp(temp->className, "archer"))
 	{
 		m->currClass = ARCHER;
-		if (m->isFemale) tempSprite = LoadSprite("images/archer_f.png",32,32);
-		else				tempSprite = LoadSprite("images/archer_m.png",32,32);
+		if (m->isFemale) tempSprite = LoadSprite("images/people/archer_f.png",32,32);
+		else				tempSprite = LoadSprite("images/people/archer_m.png",32,32);
 	}
 	else if (!strcmp(temp->className, "soldier"))
 	{
 		m->currClass = SOLDIER;
-		if (m->isFemale) tempSprite = LoadSprite("images/soldier_f.png",32,32);
-		else				tempSprite = LoadSprite("images/soldier_m.png",32,32);
+		if (m->isFemale) tempSprite = LoadSprite("images/people/soldier_f.png",32,32);
+		else				tempSprite = LoadSprite("images/people/soldier_m.png",32,32);
 	}
 
 	m->isFemale = temp->isFemale;
@@ -152,20 +152,20 @@ void loadEnemy(SaveData *temp, Enemy *e)
 	if (!strcmp(temp->className, "believer"))
 	{
 		strncpy(e->currClass,"believer",10);
-		if (e->isFemale) tempSprite = LoadSprite("images/believer_f.png",32,32);
-		else				tempSprite = LoadSprite("images/believer_m.png",32,32);
+		if (e->isFemale) tempSprite = LoadSprite("images/people/believer_f_e.png",32,32);
+		else				tempSprite = LoadSprite("images/people/believer_m_e.png",32,32);
 	}
 	else if (!strcmp(temp->className, "archer"))
 	{
 		strncpy(e->currClass,"archer",10);
-		if (e->isFemale) tempSprite = LoadSprite("images/archer_f.png",32,32);
-		else				tempSprite = LoadSprite("images/archer_m.png",32,32);
+		if (e->isFemale) tempSprite = LoadSprite("images/people/archer_f_e.png",32,32);
+		else				tempSprite = LoadSprite("images/people/archer_m_e.png",32,32);
 	}
 	else if (!strcmp(temp->className, "soldier"))
 	{
 		strncpy(e->currClass,"soldier",10);
-		if (e->isFemale) tempSprite = LoadSprite("images/soldier_f.png",32,32);
-		else				tempSprite = LoadSprite("images/soldier_m.png",32,32);
+		if (e->isFemale) tempSprite = LoadSprite("images/people/soldier_f_e.png",32,32);
+		else				tempSprite = LoadSprite("images/people/soldier_m_e.png",32,32);
 	}
 
 	e->isFemale = temp->isFemale;

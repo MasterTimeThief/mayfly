@@ -29,7 +29,7 @@ Sprite *LoadSprite(char* filename,int sizex, int sizey)
   /*first search to see if the requested sprite image is alreday loaded*/
   for(i = 0; i < NumSprites; i++)
   {
-    if(strncmp(filename,SpriteList[i].filename,20)==0)
+    if(strncmp(filename,SpriteList[i].filename,40)==0)
     {
       SpriteList[i].used++;
       return &SpriteList[i];

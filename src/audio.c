@@ -24,6 +24,7 @@ void initAudio()
 	breedMusic = Mix_LoadMUS("sounds/breedMusic.wav");
 	scoutMusic = Mix_LoadMUS("sounds/scoutMusic.wav");
 	combatMusic = Mix_LoadMUS("sounds/combatMusic.wav");
+	editMusic = Mix_LoadMUS("sounds/editMusic.wav");
 
 	//The sound effects that will be used
 	scratch = Mix_LoadWAV("sounds/sfx.wav");;
@@ -64,5 +65,9 @@ void changeBackgroundMusic()
 	else if (gameRoom->roomName == COMBAT)
 	{
 		Mix_PlayMusic( combatMusic, -1 );
+	}
+	else if (gameRoom->roomName == EDIT)
+	{
+		Mix_PlayMusic( editMusic, -1 );
 	}
 }

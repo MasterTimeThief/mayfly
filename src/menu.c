@@ -49,6 +49,7 @@ void menuEdit()
 	gameRoom->roomName = EDIT;
 	changeBackgroundMusic();
 	changeBackground(editBack);
+	editButtons();
 	loadFromList();
 	setupMayflyEdit();
 }

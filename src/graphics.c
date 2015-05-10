@@ -74,3 +74,46 @@ void apply_surface(int x, int y, SDL_Surface* source, SDL_Surface* destination, 
 	//Blit the surface
     SDL_BlitSurface( source, clip, destination, &offset );
 }
+
+Uint32 get_pixel32( SDL_Surface *surface, int x, int y )
+{
+    //Convert the pixels to 32 bit
+    Uint32 *pixels = (Uint32 *)surface->pixels;
+
+    //Get the requested pixel
+    return pixels[ ( y * surface->w ) + x ];
+}
+
+void put_pixel32( SDL_Surface *surface, int x, int y, Uint32 pixel )
+{
+    //Convert the pixels to 32 bit
+    Uint32 *pixels = (Uint32 *)surface->pixels;
+
+    //Set the pixel
+    pixels[ ( y * surface->w ) + x ] = pixel;
+}
+
+void flip_surface( SDL_Surface *surface)
+{
+	//Pointer to the soon to be flipped surface
+	SDL_Surface *flipped = NULL;
+	int rx, x, y;
+	Uint32 pixel;
+
+	flipped = SDL_CreateRGBSurface( SDL_SWSURFACE, surface->w, surface->h, surface->format->BitsPerPixel, surface->format->Rmask, surface->format->Gmask, surface->format->Bmask, surface->format->Amask );
+
+    //Go through columns
+    for( x = 0, rx = flipped->w - 1; x < flipped->w; x++, rx-- )
+    {
+        //Go through rows
+        for( y = 0; y < flipped->h; y++)
+        {
+			pixel = get_pixel32( surface, x, y );
+			put_pixel32( flipped, rx, y, pixel );
+        }
+    }
+
+    //Return flipped surface
+    apply_surface(0, 0, flipped, surface, NULL);
+	SDL_FreeSurface(flipped);
+}

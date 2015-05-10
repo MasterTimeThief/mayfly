@@ -63,16 +63,42 @@ void freeButton(Button *b)
 
 void mainButtons()
 {
-	createButton(64, 384, 128, 64,  "images/button.png",	  (*draftButtonThink), toCombat);
-	createButton(64, 448, 64, 64,   "images/healButton.png",  (*mainButtonThink), toHeal);
-	createButton(128, 448, 64, 64,  "images/trainButton.png", (*mainButtonThink), toTrain);
-	createButton(64, 512, 64, 64,   "images/breedButton.png", (*mainButtonThink), toBreed);
-	createButton(128, 512, 64, 64,  "images/saveButton.png", (*mainButtonThink), saveToList);
+	createButton(64, 384, 128, 64,  "images/buttons/button.png",	  (*draftButtonThink), toCombat);
+	createButton(64, 448, 64, 64,   "images/buttons/healButton.png",  (*mainButtonThink), toHeal);
+	createButton(128, 448, 64, 64,  "images/buttons/trainButton.png", (*mainButtonThink), toTrain);
+	createButton(64, 512, 64, 64,   "images/buttons/breedButton.png", (*mainButtonThink), toBreed);
+	createButton(128, 512, 64, 64,  "images/buttons/saveButton.png", (*mainButtonThink), saveToList);
 
 	//sort buttons
-	createButton(955, 96, 32, 32,  "images/sortButton.png", (*sortButtonThink), sortMayflyClass);
-	createButton(955, 160, 32, 32,  "images/sortButton2.png", (*sortButtonThink), sortMayflyGender);
-	createButton(955, 224, 32, 32,  "images/sortButton3.png", (*sortButtonThink), sortMayflyAge);
+	createButton(955, 96, 32, 32,  "images/buttons/sortButton.png", (*sortButtonThink), sortMayflyClass);
+	createButton(955, 160, 32, 32,  "images/buttons/sortButton.png", (*sortButtonThink), sortMayflyGender);
+	createButton(955, 224, 32, 32,  "images/buttons/sortButton.png", (*sortButtonThink), sortMayflyAge);
+}
+
+void editButtons()
+{
+	//Health
+	createButton(928, 64, 64, 64,  "images/buttons/plusButton2.png",	(*editButtonThink), healthUp);
+	createButton(672, 64, 64, 64,   "images/buttons/minusButton2.png",  (*editButtonThink), healthDown);
+
+	//Speed
+	createButton(928, 160, 64, 64,  "images/buttons/plusButton2.png",	(*editButtonThink), speedUp);
+	createButton(672, 160, 64, 64,   "images/buttons/minusButton2.png",  (*editButtonThink), speedDown);
+
+	//Stength
+	createButton(928, 256, 64, 64,  "images/buttons/plusButton2.png",	(*editButtonThink), strengthUp);
+	createButton(672, 256, 64, 64,   "images/buttons/minusButton2.png",  (*editButtonThink), strengthDown);
+
+	//Luck
+	createButton(928, 352, 64, 64,  "images/buttons/plusButton2.png",	(*editButtonThink), luckUp);
+	createButton(672, 352, 64, 64,   "images/buttons/minusButton2.png",  (*editButtonThink), luckDown);
+
+	//Age
+	createButton(928, 448, 64, 64,  "images/buttons/plusButton2.png",	(*editButtonThink), ageUp);
+	createButton(672, 448, 64, 64,   "images/buttons/minusButton2.png",  (*editButtonThink), ageDown);
+
+	//Save
+	createButton(480, 0, 64, 64,  "images/buttons/saveButton.png",	(*editButtonThink), saveToList);
 }
 
 int checkClick(Button *b)
@@ -186,36 +212,64 @@ void toScout()
 	//clearMayflySelection();
 }
 
-/**********************************************************************************************//**
- * @fn	void modeButtonThink(int index)
- *
- * @brief	Mode button think.
- *
- * @author	Camilo
- * @date	3/24/2015
- *
- * @param	index	Zero-based index of the.
- **************************************************************************************************/
-
-/*void modeButtonThink(int index)
+void editButtonThink(int index)
 {
-	if (gameRoom->roomName != MAIN)
-	{
-		buttonList[index].visible = 0;
-		freeButton(&buttonList[index]);
-	}
-	else buttonList[index].visible = 1;
-
+	if (gameRoom->roomName != EDIT)	freeButton(&buttonList[index]);
 	if (checkClick(&buttonList[index]))
 	{
-		if (gameRoom->mode == DRAFT && mayflySelected > 0)
-		{
-			(*buttonList[index].effect)();
-			freeButton(&buttonList[index]);
-		}
-		else gameRoom->mode = DRAFT;
+		if (buttonList[index].effect != NULL) (*buttonList[index].effect)();
 	}
-}*/
+}
+
+void healthUp()
+{
+	trainee->health++;
+}
+
+void healthDown()
+{
+	trainee->health--;
+}
+
+void speedUp()
+{
+	trainee->speed++;
+}
+
+void speedDown()
+{
+	trainee->speed--;
+}
+
+void strengthUp()
+{
+	trainee->strength++;
+}
+
+void strengthDown()
+{
+	trainee->strength--;
+}
+
+void luckUp()
+{
+	trainee->luck++;
+}
+
+void luckDown()
+{
+	trainee->luck--;
+}
+
+void ageUp()
+{
+	trainee->age++;
+}
+
+void ageDown()
+{
+	trainee->age--;
+}
 
 void menuButtonThink(int index)
 {
@@ -242,13 +296,13 @@ void buttonThink()
 	{
 		if (buttonList[x].visible)
 		{
-			DrawSprite(buttonList[x].entity->image, screen, buttonList[x].entity->ex, buttonList[x].entity->ey, buttonList[x].entity->image->frame);
 			if (buttonList[x].think != NULL) (*buttonList[x].think)(x);
 			if (checkClickHold(&buttonList[x]))
 			{
 				buttonList[x].entity->image->frame = 1;
 			}
 			else buttonList[x].entity->image->frame = 0;
+			DrawSprite(buttonList[x].entity->image, screen, buttonList[x].entity->ex, buttonList[x].entity->ey, buttonList[x].entity->image->frame);
 		}
 	}
 }
