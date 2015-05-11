@@ -4,6 +4,7 @@
 #include "mayfly.h"
 #include "combat.h"
 #include "audio.h"
+#include "multi.h"
 
 extern	SDL_Surface *screen;
 extern int STARTING_MAYFLY;
@@ -31,17 +32,18 @@ void menuNew()
 
 void menuLoad()
 {
+	if (gameRoom->roomName == MENU)loadFromList();
+
 	gameRoom->roomName = MAIN;
 	changeBackgroundMusic();
 	mainButtons();
 	changeBackground(mainBack);
-	//Load in saved mayflies
-	loadFromList();
 }
 
-void menuExit()
+void menuMulti()
 {
-	gameRoom->roomName = QUIT;
+	gameRoom->roomName = MULTI;
+	beginMultiplayer();
 }
 
 void menuEdit()
@@ -52,4 +54,9 @@ void menuEdit()
 	editButtons();
 	loadFromList();
 	setupMayflyEdit();
+}
+
+void menuExit()
+{
+	gameRoom->roomName = QUIT;
 }

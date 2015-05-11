@@ -265,7 +265,7 @@ void mayflyAfterCombat()
 		mayflyList[i].visible = 1;
 		mayflyList[i].action = 1;
 		mayflyList[i].age++;
-		if (mayflyList[i].age == 7) freeMayfly(&mayflyList[i]); //Kill Function
+		if (mayflyList[i].age >= 7) freeMayfly(&mayflyList[i]); //Kill Function
 	}
 }
 
@@ -372,11 +372,11 @@ void displayMayflyCombatStats(Mayfly *m)
 void displayMayflyEditStats(Mayfly *m)
 {
 	//Display Stat Names
-	printString("Health: ",		c_White, screen, 576, 64);
-	printString("Speed: ",		c_White, screen, 576, 160);
-	printString("Strength: ",	c_White, screen, 576, 256);
-	printString("Luck: ",		c_White, screen, 576, 352);
-	printString("Age: ",		c_White, screen, 576, 448);
+	printString("  Health: ",		c_White, screen, 556, 64);
+	printString("   Speed: ",		c_White, screen, 556, 160);
+	printString("Strength: ",	c_White, screen, 556, 256);
+	printString("    Luck: ",		c_White, screen, 556, 352);
+	printString("     Age: ",		c_White, screen, 556, 448);
 
 	//Display Stat values
 	if (m->health <= 5)		printInt(m->health,	c_Red,		screen, 800, 64);

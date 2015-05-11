@@ -3,7 +3,7 @@
 
 #include "entity.h"
 
-#define MAX_BUTTONS	15
+#define MAX_BUTTONS	20
 
 typedef struct Button_T
 {

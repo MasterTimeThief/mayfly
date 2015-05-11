@@ -12,6 +12,9 @@ typedef enum
 	MAIN,
 	COMBAT,
 	EDIT,
+	MULTI,
+	WIN,
+	LOSE,
 	QUIT
 }RoomType;
 

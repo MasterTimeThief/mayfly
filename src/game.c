@@ -11,6 +11,7 @@
 #include "combat.h"
 #include "event.h"
 #include "audio.h"
+#include "multi.h"
 
 int STARTING_MAYFLY = 20;
 
@@ -18,6 +19,8 @@ char *menuBack = "images/backs/menu.png";
 char *editBack = "images/backs/edit.png";
 char *mainBack = "images/backs/main.png";
 char *combatBack = "images/backs/battle.png";
+char *winBack = "images/backs/win.png";
+char *loseBack = "images/backs/lose.png";
 
 SDL_Surface *screen = NULL;
 SDL_Event eventCheck;
@@ -78,6 +81,7 @@ void allThink()
 	roomThink(gameRoom);
 	buttonThink();
 	runEvents();
+	if (gameRoom->roomName == MULTI) multiplayerThink();
 }
 
 void clean_up()
@@ -114,7 +118,7 @@ int main( int argc, char* args[] )
 	//Menu buttons
 	createButton(768, 320, 192, 64, "images/buttons/newButton.png", (*menuButtonThink), menuNew);
 	createButton(768, 384, 192, 64, "images/buttons/loadButton.png", (*menuButtonThink), menuLoad);
-	createButton(768, 448, 192, 64, "images/buttons/editButton.png", (*menuButtonThink), menuEdit);
+	createButton(768, 448, 192, 64, "images/buttons/editButton.png", (*menuButtonThink), menuMulti);
 
 	createButton(0, 0, 32, 32, "images/null.png", (*menuButtonThink), menuEdit);
 
@@ -123,14 +127,13 @@ int main( int argc, char* args[] )
     //Game Loop
 	while(!done)
 	{
+		updateBackground(screen);
 		if (gameRoom->roomName == MAIN || gameRoom->roomName == EDIT)
 		{
-			updateBackground(screen);
 			displayMayflies();
 		}
 		else if (gameRoom->roomName == COMBAT)
 		{
-			updateBackground(screen);
 			displayMayflies();
 			displayEnemies();
 		}

@@ -1,4 +1,4 @@
-#include "combat.h"
+﻿#include "combat.h"
 #include "event.h"
 #include "button.h"
 #include "audio.h"
@@ -16,6 +16,8 @@ extern	SDL_Surface *screen;
 extern Room *gameRoom;
 extern char *mainBack;
 extern char *combatBack;
+extern char *winBack;
+extern char *loseBack;
 
 Mayfly *myFighter;
 Enemy *enemyFighter;
@@ -159,6 +161,8 @@ void setupEnemyCombat()
 
 	currFighters = rand() % 10 + 5;
 
+	if (currFighters > enemyTotal - 1) currFighters = enemyTotal - 1;
+
 	for (i = 0, j = 0; j <= currFighters; i++)
 	{
 		if (!enemyList[i].alive)
@@ -207,8 +211,6 @@ void displayAttack()
 		printString("Enemy attacked for     !",	c_Black, screen, 400, 250);
 		printInt(currentDamage, c_Red, screen, 615, 250);
 	}
-
-
 }
 
 void toCombat()
@@ -256,10 +258,23 @@ void endCombat()
 		}
 	}
 	mayflyAfterCombat();
-	gameRoom->roomName = MAIN;
+	if (enemyTotal == 0)
+	{
+		gameRoom->roomName = WIN;
+		changeBackground(winBack);
+	}
+	else if (mayflyTotal < 10)
+	{
+		gameRoom->roomName = LOSE;
+		changeBackground(loseBack);
+	}
+	else
+	{
+		gameRoom->roomName = MAIN;
+		mainButtons();
+		changeBackground(mainBack);
+	}
 	changeBackgroundMusic();
-	mainButtons();
-	changeBackground(mainBack);
 }
 
 void resetFighters()
@@ -317,7 +332,6 @@ void mayflyAttack()
 	}
 	else
 	{
-		
 		nextAction->end = enemyAttack;
 	}
 	nextAction->timer = 300;

@@ -28,5 +28,6 @@ void menuNew();
 void menuLoad();
 void menuExit();
 void menuEdit();
+void menuMulti();
 
 #endif

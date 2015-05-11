@@ -5,6 +5,7 @@
 #include "event.h"
 #include "save.h"
 #include "audio.h"
+#include "menu.h"
 
 Button buttonList[MAX_BUTTONS];
 extern	SDL_Surface *screen;
@@ -99,6 +100,7 @@ void editButtons()
 
 	//Save
 	createButton(480, 0, 64, 64,  "images/buttons/saveButton.png",	(*editButtonThink), saveToList);
+	createButton(448, 512, 128, 64,  "images/buttons/button.png",	(*editButtonThink), menuLoad);
 }
 
 int checkClick(Button *b)
@@ -223,52 +225,52 @@ void editButtonThink(int index)
 
 void healthUp()
 {
-	trainee->health++;
+	if (trainee != NULL) trainee->health++;
 }
 
 void healthDown()
 {
-	trainee->health--;
+	if (trainee != NULL) trainee->health--;
 }
 
 void speedUp()
 {
-	trainee->speed++;
+	if (trainee != NULL) trainee->speed++;
 }
 
 void speedDown()
 {
-	trainee->speed--;
+	if (trainee != NULL) trainee->speed--;
 }
 
 void strengthUp()
 {
-	trainee->strength++;
+	if (trainee != NULL) trainee->strength++;
 }
 
 void strengthDown()
 {
-	trainee->strength--;
+	if (trainee != NULL) trainee->strength--;
 }
 
 void luckUp()
 {
-	trainee->luck++;
+	if (trainee != NULL) trainee->luck++;
 }
 
 void luckDown()
 {
-	trainee->luck--;
+	if (trainee != NULL) trainee->luck--;
 }
 
 void ageUp()
 {
-	trainee->age++;
+	if (trainee != NULL) trainee->age++;
 }
 
 void ageDown()
 {
-	trainee->age--;
+	if (trainee != NULL) trainee->age--;
 }
 
 void menuButtonThink(int index)
