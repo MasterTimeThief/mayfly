@@ -4,6 +4,8 @@
 #include "mayfly.h"
 #include "combat.h"
 
+#define MAX_MULTIPLAYER		10
+
 Mayfly player1List[10];
 Mayfly player2List[10];
 int player1Positions[10][2];

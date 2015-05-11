@@ -1,12 +1,14 @@
 #include "multi.h"
 #include "event.h"
 #include "audio.h"
+#include "mouse.h"
 
 int p1Alive;
 int p2Alive;
 
 extern	SDL_Surface *screen;
 extern char *combatBack;
+extern char *winBack;
 
 Mayfly *player1Fighter;
 Mayfly *player2Fighter;
@@ -16,8 +18,8 @@ int p1Pos, p2Pos;
 
 void beginMultiplayer()
 {
-	memset(player1List,0,sizeof(Mayfly) * 10);
-	memset(player2List,0,sizeof(Mayfly) * 10);
+	memset(player1List,0,sizeof(Mayfly) * MAX_MULTIPLAYER);
+	memset(player2List,0,sizeof(Mayfly) * MAX_MULTIPLAYER);
 	setupMayflyMultiplayerPositions();
 
 	initPlayerList(player1List, 1);
@@ -34,19 +36,21 @@ void beginMultiplayer()
 void setupMayflyMultiplayerPositions()
 {
 	int i;
-	for (i = 0;i < 10; i++)
+	for (i = 0;i < MAX_MULTIPLAYER; i++)
 	{
 		//X coordinates
 		if		(i < 5)		
 		{
 			player1Positions[i][0] = 96;
-			player2Positions[i][0] = 396;
+			player2Positions[i][0] = 896;
 		}
 		else if (i < 10)	
 		{
 			player1Positions[i][0] = 288;
-			player2Positions[i][0] = 588;
+			player2Positions[i][0] = 704;
 		}
+
+
 
 		//Y coordinates
 		if		(i % 5 == 0)
@@ -81,7 +85,7 @@ void setupMayflyMultiplayerPositions()
 void initPlayerList(Mayfly list[], int player)
 {
 	int i;
-	for (i = 0; i < 10; i++)
+	for (i = 0; i < MAX_MULTIPLAYER; i++)
 	{
 		createMultiplayerMayfly(list);
 		//define position here
@@ -92,7 +96,7 @@ void initPlayerList(Mayfly list[], int player)
 Mayfly *newMultiplayerMayfly(Mayfly list[])
 {
 	int i;
-	for (i = 0;i < 10; i++)
+	for (i = 0;i < MAX_MULTIPLAYER; i++)
 	{
 		if (!list[i].alive)
 		{
@@ -180,7 +184,7 @@ void multiplayerPositions(Mayfly *m, int index, int player)
 void changePlayer2Sprites()
 {
 	int i;
-	for (i = 0;i < 10; i++)
+	for (i = 0;i < MAX_MULTIPLAYER; i++)
 	{
 		if (player2List[i].currClass == BELIEVER)
 		{
@@ -197,7 +201,54 @@ void changePlayer2Sprites()
 			if (player2List[i].isFemale) player2List[i].entity->image = LoadSprite("images/people/soldier_f_e.png",32,32);
 			else						 player2List[i].entity->image = LoadSprite("images/people/soldier_m_e.png",32,32);
 		}
+		player2List[i].entity->image->currSpeed = 0;
+		player2List[i].entity->image->maxSpeed = 300; //Bigger number means slower animation
+		player2List[i].entity->image->frame = rand() % 4;
 	}
+}
+
+void displayP1()
+{
+	int i;
+	for (i = 0;i < MAX_MULTIPLAYER; i++)
+	{
+		if (player1List[i].alive && player1List[i].visible)
+		{
+			if (player1List[i].fighting)
+			{
+				//change to fighting sprite, and fixed location
+				DrawSprite(player1List[i].entity->image, screen, 450 + p1Pos, 200, player1List[i].entity->image->frame);
+				printInt(player1List[i].health,	c_Red, screen, 400, 200);
+			}
+			else
+			{
+				DrawSprite(player1List[i].entity->image, screen, player1List[i].entity->ex, player1List[i].entity->ey, player1List[i].entity->image->frame);
+				printInt(player1List[i].health,	c_Red, screen, player1List[i].entity->ex - 50, player1List[i].entity->ey);
+			}
+		}
+	} 
+}
+
+void displayP2()
+{
+	int i;
+	for (i = 0;i < MAX_MULTIPLAYER; i++)
+	{
+		if (player2List[i].alive && player2List[i].visible)
+		{
+			if (player2List[i].fighting)
+			{
+				//change to fighting sprite, and fixed location
+				DrawSprite(player2List[i].entity->image, screen, 550 - p2Pos, 200, player2List[i].entity->image->frame);
+				printInt(player2List[i].health,	c_Red, screen, 615, 200);
+			}
+			else
+			{
+				DrawSprite(player2List[i].entity->image, screen, player2List[i].entity->ex, player2List[i].entity->ey, player2List[i].entity->image->frame);
+				printInt(player2List[i].health,	c_Red, screen, player2List[i].entity->ex + 82, player2List[i].entity->ey);
+			}
+		}
+	} 
 }
 
 void toMultiCombat()
@@ -219,60 +270,24 @@ void toMultiCombat()
 void endMultiCombat()
 {
 	//CHANGE EVERYTHING
-	
-	
-	
-	/*int i;
-	for (i = 0; i < 15; i++)
-	{
-		if (mayflyFighters[i] != NULL)
-		{
-			mayflyFighters[i]->fighting = 0;
-			mayflyFighters[i]->selected = 0;
-			mayflyFighters[i] = NULL;
-		}
-
-		if (enemyFighters[i] != NULL)
-		{
-			enemyFighters[i]->combat = 0;
-			enemyFighters[i]->fighting = 0;
-			enemyFighters[i]  = NULL;
-		}
-	}
-	mayflyAfterCombat();
-	if (enemyTotal == 0)
-	{
-		gameRoom->roomName = WIN;
-		changeBackground(winBack);
-	}
-	else if (mayflyTotal < 10)
-	{
-		gameRoom->roomName = LOSE;
-		changeBackground(loseBack);
-	}
-	else
-	{
-		gameRoom->roomName = MAIN;
-		mainButtons();
-		changeBackground(mainBack);
-	}
-	changeBackgroundMusic();*/
+	gameRoom->roomName = WIN;
+	changeBackground(winBack);
+	changeBackgroundMusic();
 }
 
 void displayMultiAttack()
 {
 	if (currentMultiCrit > 0) printString("CRITICAL HIT",	c_Red, screen, 400, 150);//print the word CRITICAL HIT
 
-	if (currentMultiFighter == 1) //mayfly attack
+	if (currentMultiFighter == 1)
 	{
 		printString("Player 1 attacked for    !",	c_Black, screen, 400, 250);
-		printInt(currentMultiDamage, c_Red, screen, 645, 250);
 	}
-	else if (currentMultiFighter == 2) //enemy attack
+	else if (currentMultiFighter == 2)
 	{
 		printString("Player 2 attacked for     !",	c_Black, screen, 400, 250);
-		printInt(currentMultiDamage, c_Red, screen, 645, 250);
 	}
+	printInt(currentMultiDamage, c_Red, screen, 635, 250);
 }
 
 void displayMultiResults()
@@ -321,7 +336,7 @@ void resetMultiFighters()
 	p2Pos = 0;
 	
 	nextFight->timer = 10; // time between fights
-	nextFight->end = chooseFighters;
+	nextFight->end = chooseMultiplayerFighters;
 }
 
 void p1Attack()
@@ -392,23 +407,93 @@ void p2Attack()
 	nextAction->timer = 300;
 }
 
+void displayP1Stats(Mayfly *m)
+{
+	//Display Stat Names
+	printString(" H: ",	c_Black, screen, 400, 325);
+	printString("Sp: ",	c_Black, screen, 400, 350);
+	printString("St: ",	c_Black, screen, 400, 375);
+	printString(" L: ",	c_Black, screen, 400, 400);
+
+	//Display Stat values
+	if (m->health <= 5)		printInt(m->health,	c_Red, screen,	450, 325);
+	else					printInt(m->health,	c_Black, screen, 450, 325);
+	if (m->speed <= 3)		printInt(m->speed,	c_Red, screen, 450, 350);
+	else					printInt(m->speed,	c_Black, screen, 450, 350);
+	if (m->strength <= 3)	printInt(m->strength,c_Red, screen, 450, 375);
+	else					printInt(m->strength,c_Black, screen, 450, 375);
+	if (m->luck <= 3)		printInt(m->luck,	c_Red, screen, 450, 400);
+	else					printInt(m->luck,	c_Black, screen, 450, 400);
+}
+
+void displayP2Stats(Mayfly *m)
+{
+	//Display Stat Names
+	printString(" H: ",	c_Black, screen, 550, 325);
+	printString("Sp: ",	c_Black, screen, 550, 350);
+	printString("St: ",	c_Black, screen, 550, 375);
+	printString(" L: ",	c_Black, screen, 550, 400);
+
+	//Display Stat values
+	if (m->health <= 5)		printInt(m->health,	c_Red, screen,	600, 325);
+	else					printInt(m->health,	c_Black, screen, 600, 325);
+	if (m->speed <= 3)		printInt(m->speed,	c_Red, screen, 600, 350);
+	else					printInt(m->speed,	c_Black, screen, 600, 350);
+	if (m->strength <= 3)	printInt(m->strength,c_Red, screen, 600, 375);
+	else					printInt(m->strength,c_Black, screen, 600, 375);
+	if (m->luck <= 3)		printInt(m->luck,	c_Red, screen, 600, 400);
+	else					printInt(m->luck,	c_Black, screen, 600, 400);
+}
+
 void player1Think()
 {
 	int i;
+
+	displayP1();
 	p1Alive = 0;
-	for (i = 0;i < 10; i++)
+	for (i = 0;i < MAX_MULTIPLAYER; i++)
 	{
 		if (player1List[i].alive) p1Alive = 1;
+		updateSprite(player1List[i].entity->image);
+
+		if(mouseHover(player1List[i].entity->ex,  player1List[i].entity->ey,  player1List[i].entity->image->w,  player1List[i].entity->image->h))
+		{
+			if (player1List[i].fighting == 0) displayP1Stats(&player1List[i]);
+			if (clickLeft)
+			{
+				if (player1Fighter == NULL)
+				{
+					player1Fighter = &player1List[i];
+					player1Fighter->fighting = 1;
+				}
+			}
+		}
 	}
 }
 
 void player2Think()
 {
 	int i;
+
+	displayP2();
 	p2Alive = 0;
-	for (i = 0;i < 10; i++)
+	for (i = 0;i < MAX_MULTIPLAYER; i++)
 	{
 		if (player2List[i].alive) p2Alive = 1;
+		updateSprite(player2List[i].entity->image);
+
+		if(mouseHover(player2List[i].entity->ex,  player2List[i].entity->ey,  player2List[i].entity->image->w,  player2List[i].entity->image->h))
+		{
+			if (player2List[i].fighting == 0) displayP1Stats(&player2List[i]);
+			if (clickLeft)
+			{
+				if (player2Fighter == NULL)
+				{
+					player2Fighter = &player2List[i];
+					player2Fighter->fighting = 1;
+				}
+			}
+		}
 	}
 }
 

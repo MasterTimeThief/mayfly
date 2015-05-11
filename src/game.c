@@ -118,7 +118,7 @@ int main( int argc, char* args[] )
 	//Menu buttons
 	createButton(768, 320, 192, 64, "images/buttons/newButton.png", (*menuButtonThink), menuNew);
 	createButton(768, 384, 192, 64, "images/buttons/loadButton.png", (*menuButtonThink), menuLoad);
-	createButton(768, 448, 192, 64, "images/buttons/editButton.png", (*menuButtonThink), menuMulti);
+	createButton(768, 448, 192, 64, "images/buttons/multiButton.png", (*menuButtonThink), menuMulti);
 
 	createButton(0, 0, 32, 32, "images/null.png", (*menuButtonThink), menuEdit);
 
