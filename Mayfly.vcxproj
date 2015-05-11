@@ -1,0 +1,118 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{7EB39DB2-34DB-4871-A52B-0219E55B6039}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <RootNamespace>Mayfly</RootNamespace>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+    <IncludePath>C:\Libraries\SDL-1.2.15\include;C:\Libraries\SDL_ttf-2.0.11\include;C:\Libraries\SDL_net-1.2.8\include;C:\Libraries\SDL_mixer-1.2.12\include;C:\Libraries\SDL_image-1.2.12\include;C:\Libraries\Jansson\include;$(IncludePath)</IncludePath>
+    <ReferencePath>C:\Libraries\SDL_net-1.2.8\lib\x86;C:\Libraries\SDL_mixer-1.2.12\lib\x86;C:\Libraries\SDL_image-1.2.12\lib\x86;C:\Libraries\SDL_ttf-2.0.11\lib\x86;C:\Libraries\SDL-1.2.15\lib\x86;C:\Libraries\Jansson\lib;$(ReferencePath)</ReferencePath>
+    <LibraryPath>C:\Libraries\SDL-1.2.15\lib\x86;C:\Libraries\SDL_ttf-2.0.11\lib\x86;C:\Libraries\SDL_image-1.2.12\lib\x86;C:\Libraries\SDL_net-1.2.8\lib\x86;C:\Libraries\SDL_mixer-1.2.12\lib\x86;C:\Libraries\Jansson\lib\Release;$(LibraryPath)</LibraryPath>
+    <OutDir>$(SolutionDir)\</OutDir>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>SDL.lib;SDLmain.lib;SDL_ttf.lib;SDL_mixer.lib;SDL_image.lib;SDL_net.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <Optimization>Disabled</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalDependencies>SDL.lib;SDLmain.lib;SDL_ttf.lib;SDL_mixer.lib;SDL_image.lib;SDL_net.lib;jansson.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="src\audio.c" />
+    <ClCompile Include="src\button.c" />
+    <ClCompile Include="src\combat.c" />
+    <ClCompile Include="src\entity.c" />
+    <ClCompile Include="src\event.c" />
+    <ClCompile Include="src\game.c" />
+    <ClCompile Include="src\graphics.c" />
+    <ClCompile Include="src\level.c" />
+    <ClCompile Include="src\mayfly.c" />
+    <ClCompile Include="src\menu.c" />
+    <ClCompile Include="src\mouse.c" />
+    <ClCompile Include="src\multi.c" />
+    <ClCompile Include="src\room.c" />
+    <ClCompile Include="src\save.c" />
+    <ClCompile Include="src\sprite.c" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\audio.h" />
+    <ClInclude Include="src\button.h" />
+    <ClInclude Include="src\combat.h" />
+    <ClInclude Include="src\entity.h" />
+    <ClInclude Include="src\event.h" />
+    <ClInclude Include="src\graphics.h" />
+    <ClInclude Include="src\level.h" />
+    <ClInclude Include="src\mayfly.h" />
+    <ClInclude Include="src\menu.h" />
+    <ClInclude Include="src\mouse.h" />
+    <ClInclude Include="src\multi.h" />
+    <ClInclude Include="src\room.h" />
+    <ClInclude Include="src\save.h" />
+    <ClInclude Include="src\sprite.h" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
