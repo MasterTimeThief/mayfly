@@ -9,6 +9,7 @@
 extern	SDL_Surface *screen;
 extern int STARTING_MAYFLY;
 extern char *mainBack;
+extern char *menuBack;
 extern char *editBack;
 
 void menuNew()

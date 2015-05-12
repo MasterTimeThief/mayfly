@@ -21,6 +21,7 @@ extern char *loseBack;
 
 Mayfly *myFighter;
 Enemy *enemyFighter;
+Sprite *deathSprite;
 
 int mayflyPos;
 int enemyPos;
@@ -39,6 +40,7 @@ void initEnemyList()
 		mayflyFighters[i] = NULL;
 		enemyFighters[i]  = NULL;
 	}
+	deathSprite = LoadSprite("images/death.png",32,32);
 }
 
 Enemy *newEnemy()
@@ -131,7 +133,11 @@ void displayEnemies()
 			{
 				DrawSprite(enemyList[i].entity->image, screen, enemyList[i].entity->ex, enemyList[i].entity->ey, enemyList[i].entity->image->frame);
 			}
-		} 
+		}
+		else if (!enemyList[i].alive && enemyList[i].fighting)
+		{
+			DrawSprite(deathSprite, screen, 550, 200, 0);
+		}
 	}
 }
 

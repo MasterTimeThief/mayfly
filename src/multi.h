@@ -27,6 +27,7 @@ void displayMultiAttack();
 void displayMultiResults();
 void chooseMultiplayerFighters();
 void resetMultiFighters();
+void changeTurn();
 void p1Attack();
 void p2Attack();
 void multiplayerThink();

@@ -74,6 +74,7 @@ void mainButtons()
 	createButton(955, 96, 32, 32,  "images/buttons/sortButton.png", (*sortButtonThink), sortMayflyClass);
 	createButton(955, 160, 32, 32,  "images/buttons/sortButton2.png", (*sortButtonThink), sortMayflyGender);
 	createButton(955, 224, 32, 32,  "images/buttons/sortButton3.png", (*sortButtonThink), sortMayflyAge);
+	
 }
 
 void editButtons()

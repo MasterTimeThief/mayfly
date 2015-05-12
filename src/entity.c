@@ -17,12 +17,12 @@ void initEntityList()
 Entity *newEntity()
 {
 	int i;
-	if (entityTotal + 1 > MAX_ENTITIES)
+	if (entityTotal > MAX_ENTITIES)
 	{
 		fprintf(stderr, "Maximum Entities Reached.\n");
         exit(1);	
 	}
-	for (i = 0;i < entityTotal; i++)
+	for (i = 0;i <= entityTotal; i++)
 	{
 		if (!entityList[i].inUse)
 		{
@@ -30,8 +30,9 @@ Entity *newEntity()
 			return &entityList[i];	
 		}
 	}
+	entityTotal++;
 	entityList[entityTotal].inUse = 1;
-	return &entityList[entityTotal++];
+	return &entityList[entityTotal];
 }
 
 void setupEntity(Entity *e)
@@ -56,7 +57,7 @@ void freeEntity(Entity *e)
 {
 	if (e->image != NULL)	FreeSprite(e->image);
 	e->inUse = 0;
-	entityTotal--;
+	//entityTotal--;
 }
 
 void closeEntities()

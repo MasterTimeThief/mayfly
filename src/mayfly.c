@@ -27,6 +27,8 @@ extern int my;
 Sprite *selectSpr;
 Sprite *inactiveSpr;
 Sprite *trainFrame;
+extern Sprite *deathSprite;
+extern char *loseBack;
 
 extern int mayflyPos;
 
@@ -242,6 +244,13 @@ void displayMayflies()
 				if (mayflyList[i].selected) DrawSprite(selectSpr, screen, mayflyList[i].cx, mayflyList[i].cy, mayflyList[i].entity->image->frame);
 			}
 		}
+		else if (!mayflyList[i].alive)
+		{
+			if (gameRoom->roomName == COMBAT && mayflyList[i].fighting)
+			{
+				DrawSprite(deathSprite, screen, 450, 200, 0);
+			}
+		}
 	}
 	if (trainee != NULL)
 	{
@@ -424,6 +433,7 @@ void freeMayfly(Mayfly *m)
 {
 	//FreeSprite(m->entity->image);
 	freeEntity(m->entity);
+	m->entity = NULL;
 	m->alive = 0;
 	m->age = 0;
 
@@ -434,7 +444,7 @@ void freeMayfly(Mayfly *m)
 
 	m->experience =	0;
 
-	m->fighting = 0;
+	//m->fighting = 0;
 	m->visible	= 0;
 	m->selected = 0;
 	m->action	= 0;
@@ -570,9 +580,9 @@ void trainMayfly()
 
 	if (gameRoom->roomName == MAIN)
 	{
-		createButton(224, 160, 128, 64, "images/belButton.png", (*trainButtonThink), trainBeliever);
-		createButton(384, 192, 128, 64, "images/archButton.png", (*trainButtonThink), trainArcher);
-		createButton(544, 160, 128, 64, "images/solButton.png", (*trainButtonThink), trainSoldier);
+		createButton(224, 160, 128, 64, "images/buttons/belButton.png", (*trainButtonThink), trainBeliever);
+		createButton(384, 192, 128, 64, "images/buttons/archButton.png", (*trainButtonThink), trainArcher);
+		createButton(544, 160, 128, 64, "images/buttons/solButton.png", (*trainButtonThink), trainSoldier);
 	}
 }
 
@@ -744,6 +754,12 @@ void mayflyAllThink(Room *r)
 		else trainee = NULL;
 
 		if (trainee != NULL) displayMayflyStats(trainee);
+
+		if (mayflyTotal < 10)
+		{
+			gameRoom->roomName = LOSE;
+			changeBackground(loseBack);
+		}
 	}
 	else if (r->roomName == EDIT)
 	{
@@ -815,6 +831,9 @@ void mayflyThink(Mayfly *m)
 			}
 		}
 	}
+
+	if (m->age >= 7) freeMayfly(m); //Kill Function
+	if (m->experience >= 50) levelUp(m);
 
 	updateSprite(m->entity->image);
 }

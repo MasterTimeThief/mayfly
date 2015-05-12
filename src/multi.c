@@ -9,12 +9,14 @@ int p2Alive;
 extern	SDL_Surface *screen;
 extern char *combatBack;
 extern char *winBack;
+extern Sprite *deathSprite;
 
 Mayfly *player1Fighter;
 Mayfly *player2Fighter;
 
 int currentMultiDamage, currentMultiFighter, currentMultiCrit;
 int p1Pos, p2Pos;
+int whoseTurn;
 
 void beginMultiplayer()
 {
@@ -212,18 +214,25 @@ void displayP1()
 	int i;
 	for (i = 0;i < MAX_MULTIPLAYER; i++)
 	{
-		if (player1List[i].alive && player1List[i].visible)
+		if (whoseTurn == 1 || whoseTurn == 3)
 		{
-			if (player1List[i].fighting)
+			if (player1List[i].alive && player1List[i].visible)
 			{
-				//change to fighting sprite, and fixed location
-				DrawSprite(player1List[i].entity->image, screen, 450 + p1Pos, 200, player1List[i].entity->image->frame);
-				printInt(player1List[i].health,	c_Red, screen, 400, 200);
+				if (player1List[i].fighting)
+				{
+					//change to fighting sprite, and fixed location
+					DrawSprite(player1List[i].entity->image, screen, 450 + p1Pos, 200, player1List[i].entity->image->frame);
+					printInt(player1List[i].health,	c_Red, screen, 400, 200);
+				}
+				else if (whoseTurn == 1)
+				{
+					DrawSprite(player1List[i].entity->image, screen, player1List[i].entity->ex, player1List[i].entity->ey, player1List[i].entity->image->frame);
+					printInt(player1List[i].health,	c_Red, screen, player1List[i].entity->ex - 50, player1List[i].entity->ey);
+				}
 			}
-			else
+			else if (!player1List[i].alive && player1List[i].fighting)
 			{
-				DrawSprite(player1List[i].entity->image, screen, player1List[i].entity->ex, player1List[i].entity->ey, player1List[i].entity->image->frame);
-				printInt(player1List[i].health,	c_Red, screen, player1List[i].entity->ex - 50, player1List[i].entity->ey);
+				DrawSprite(deathSprite, screen, 450, 200, 0);
 			}
 		}
 	} 
@@ -234,18 +243,25 @@ void displayP2()
 	int i;
 	for (i = 0;i < MAX_MULTIPLAYER; i++)
 	{
-		if (player2List[i].alive && player2List[i].visible)
+		if (whoseTurn == 2 || whoseTurn == 3)
 		{
-			if (player2List[i].fighting)
+			if (player2List[i].alive && player2List[i].visible)
 			{
-				//change to fighting sprite, and fixed location
-				DrawSprite(player2List[i].entity->image, screen, 550 - p2Pos, 200, player2List[i].entity->image->frame);
-				printInt(player2List[i].health,	c_Red, screen, 615, 200);
+				if (player2List[i].fighting)
+				{
+					//change to fighting sprite, and fixed location
+					DrawSprite(player2List[i].entity->image, screen, 550 - p2Pos, 200, player2List[i].entity->image->frame);
+					printInt(player2List[i].health,	c_Red, screen, 615, 200);
+				}
+				else if (whoseTurn == 2)
+				{
+					DrawSprite(player2List[i].entity->image, screen, player2List[i].entity->ex, player2List[i].entity->ey, player2List[i].entity->image->frame);
+					printInt(player2List[i].health,	c_Red, screen, player2List[i].entity->ex + 82, player2List[i].entity->ey);
+				}
 			}
-			else
+			else if (!player2List[i].alive && player2List[i].fighting)
 			{
-				DrawSprite(player2List[i].entity->image, screen, player2List[i].entity->ex, player2List[i].entity->ey, player2List[i].entity->image->frame);
-				printInt(player2List[i].health,	c_Red, screen, player2List[i].entity->ex + 82, player2List[i].entity->ey);
+				DrawSprite(deathSprite, screen, 550, 200, 0);
 			}
 		}
 	} 
@@ -257,11 +273,7 @@ void toMultiCombat()
 	changeBackground(combatBack);
 	changeBackgroundMusic();
 
-	/*currentCombat = 0;
-	numKilled = 0;
-	numLost = 0;
-	mayflyPos = 0;
-	enemyPos = 0;*/
+	whoseTurn = 1;
 
 	combatStart->timer = 1; // Time before combat starts
 	combatStart->end = chooseMultiplayerFighters;
@@ -318,7 +330,7 @@ void chooseMultiplayerFighters()
 		player1Fighter->fighting = 1;
 		player2Fighter->fighting = 1;
 
-		fightResult->timer = 300; //Time before combat
+		fightResult->timer = 1000; //Time before combat
 		if		(player1Fighter->speed >= player2Fighter->speed) fightResult->end = p1Attack;
 		else if (player2Fighter->speed >= player1Fighter->speed) fightResult->end = p2Attack;
 	}
@@ -333,10 +345,11 @@ void resetMultiFighters()
 	player1Fighter = NULL;
 	player2Fighter = NULL;
 	p1Pos = 0;
-	p2Pos = 0;
+	p2Pos = 0;	
 	
 	nextFight->timer = 10; // time between fights
 	nextFight->end = chooseMultiplayerFighters;
+	changeTurn();
 }
 
 void p1Attack()
@@ -370,7 +383,7 @@ void p1Attack()
 	{
 		nextAction->end = p2Attack;
 	}
-	nextAction->timer = 300;
+	nextAction->timer = 500;
 }
 
 void p2Attack()
@@ -404,7 +417,7 @@ void p2Attack()
 	{
 		nextAction->end = p1Attack;
 	}
-	nextAction->timer = 300;
+	nextAction->timer = 500;
 }
 
 void displayP1Stats(Mayfly *m)
@@ -445,6 +458,27 @@ void displayP2Stats(Mayfly *m)
 	else					printInt(m->luck,	c_Black, screen, 600, 400);
 }
 
+void displayNextTurn()
+{
+	printString("TURN AROUND NOW",	c_Red, screen, 360, 150);
+}
+
+void updateTurn()
+{
+	whoseTurn *= -1;
+	whoseTurn++;
+	if (whoseTurn == 4) whoseTurn = 1;
+}
+
+void changeTurn()
+{
+	Event *nextTurn = newEvent();
+	whoseTurn *= -1;
+	nextTurn->timer = 800;
+	nextTurn->think = displayNextTurn;
+	nextTurn->end = updateTurn;
+}
+
 void player1Think()
 {
 	int i;
@@ -456,15 +490,20 @@ void player1Think()
 		if (player1List[i].alive) p1Alive = 1;
 		updateSprite(player1List[i].entity->image);
 
-		if(mouseHover(player1List[i].entity->ex,  player1List[i].entity->ey,  player1List[i].entity->image->w,  player1List[i].entity->image->h))
+		if (whoseTurn == 1)
 		{
-			if (player1List[i].fighting == 0) displayP1Stats(&player1List[i]);
-			if (clickLeft)
+			if(mouseHover(player1List[i].entity->ex,  player1List[i].entity->ey,  player1List[i].entity->image->w,  player1List[i].entity->image->h))
 			{
-				if (player1Fighter == NULL)
+				if (player1List[i].fighting == 0) displayP1Stats(&player1List[i]);
+				if (clickLeft)
 				{
-					player1Fighter = &player1List[i];
-					player1Fighter->fighting = 1;
+					if (player1Fighter == NULL)
+					{
+						player1Fighter = &player1List[i];
+						player1Fighter->fighting = 1;
+						//whoseTurn = 2;
+						changeTurn();
+					}
 				}
 			}
 		}
@@ -482,15 +521,20 @@ void player2Think()
 		if (player2List[i].alive) p2Alive = 1;
 		updateSprite(player2List[i].entity->image);
 
-		if(mouseHover(player2List[i].entity->ex,  player2List[i].entity->ey,  player2List[i].entity->image->w,  player2List[i].entity->image->h))
+		if (whoseTurn == 2)
 		{
-			if (player2List[i].fighting == 0) displayP1Stats(&player2List[i]);
-			if (clickLeft)
+			if(mouseHover(player2List[i].entity->ex,  player2List[i].entity->ey,  player2List[i].entity->image->w,  player2List[i].entity->image->h))
 			{
-				if (player2Fighter == NULL)
+				if (player2List[i].fighting == 0) displayP1Stats(&player2List[i]);
+				if (clickLeft)
 				{
-					player2Fighter = &player2List[i];
-					player2Fighter->fighting = 1;
+					if (player2Fighter == NULL)
+					{
+						player2Fighter = &player2List[i];
+						player2Fighter->fighting = 1;
+						//whoseTurn = 3;
+						changeTurn();
+					}
 				}
 			}
 		}
