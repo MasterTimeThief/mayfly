@@ -340,7 +340,7 @@ void mayflyAttack()
 	{
 		nextAction->end = enemyAttack;
 	}
-	nextAction->timer = 300;
+	nextAction->timer = COMBAT_LENGTH;
 }
 
 /**********************************************************************************************//**
@@ -383,7 +383,7 @@ void enemyAttack()
 	{
 		nextAction->end = mayflyAttack; //changed the semicolon, greek question mark
 	}
-	nextAction->timer = 300;
+	nextAction->timer = COMBAT_LENGTH;
 }
 
 void displayResults()

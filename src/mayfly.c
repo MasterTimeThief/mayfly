@@ -648,20 +648,23 @@ void sortMayflyClass()
 
 	for (i = 0;i < maxMayflies; i++)
 	{
-		if (mayflyList[i].currClass == BELIEVER)
+		if (mayflyList[i].alive)
 		{
-			mayflyList[i].entity->ex = rand() % 200 + 256;
-			mayflyList[i].entity->ey = rand() % 220 + 288;
-		}
-		else if (mayflyList[i].currClass == ARCHER)
-		{
-			mayflyList[i].entity->ex = rand() % 200 + 506;
-			mayflyList[i].entity->ey = rand() % 220 + 288;
-		}
-		else if (mayflyList[i].currClass == SOLDIER)
-		{
-			mayflyList[i].entity->ex = rand() % 200 + 756;
-			mayflyList[i].entity->ey = rand() % 220 + 288;
+			if (mayflyList[i].currClass == BELIEVER)
+			{
+				mayflyList[i].entity->ex = rand() % 200 + 256;
+				mayflyList[i].entity->ey = rand() % 220 + 288;
+			}
+			else if (mayflyList[i].currClass == ARCHER)
+			{
+				mayflyList[i].entity->ex = rand() % 200 + 506;
+				mayflyList[i].entity->ey = rand() % 220 + 288;
+			}
+			else if (mayflyList[i].currClass == SOLDIER)
+			{
+				mayflyList[i].entity->ex = rand() % 200 + 756;
+				mayflyList[i].entity->ey = rand() % 220 + 288;
+			}
 		}
 	}
 }
@@ -672,15 +675,18 @@ void sortMayflyGender()
 
 	for (i = 0;i < maxMayflies; i++)
 	{
-		if (mayflyList[i].isFemale)
+		if (mayflyList[i].alive)
 		{
-			mayflyList[i].entity->ex = rand() % 300 + 256;
-			mayflyList[i].entity->ey = rand() % 220 + 288;
-		}
-		else
-		{
-			mayflyList[i].entity->ex = rand() % 300 + 656;
-			mayflyList[i].entity->ey = rand() % 220 + 288;
+			if (mayflyList[i].isFemale)
+			{
+				mayflyList[i].entity->ex = rand() % 300 + 256;
+				mayflyList[i].entity->ey = rand() % 220 + 288;
+			}
+			else
+			{
+				mayflyList[i].entity->ex = rand() % 300 + 656;
+				mayflyList[i].entity->ey = rand() % 220 + 288;
+			}
 		}
 	}
 }
@@ -691,15 +697,18 @@ void sortMayflyAge()
 
 	for (i = 0;i < maxMayflies; i++)
 	{
-		if (mayflyList[i].age < 4)
+		if (mayflyList[i].alive)
 		{
-			mayflyList[i].entity->ex = rand() % 300 + 256;
-			mayflyList[i].entity->ey = rand() % 220 + 288;
-		}
-		else
-		{
-			mayflyList[i].entity->ex = rand() % 300 + 656;
-			mayflyList[i].entity->ey = rand() % 220 + 288;
+			if (mayflyList[i].age < 4)
+			{
+				mayflyList[i].entity->ex = rand() % 300 + 256;
+				mayflyList[i].entity->ey = rand() % 220 + 288;
+			}
+			else
+			{
+				mayflyList[i].entity->ex = rand() % 300 + 656;
+				mayflyList[i].entity->ey = rand() % 220 + 288;
+			}
 		}
 	}
 }

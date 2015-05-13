@@ -383,7 +383,7 @@ void p1Attack()
 	{
 		nextAction->end = p2Attack;
 	}
-	nextAction->timer = 500;
+	nextAction->timer = COMBAT_LENGTH;
 }
 
 void p2Attack()
@@ -417,7 +417,7 @@ void p2Attack()
 	{
 		nextAction->end = p1Attack;
 	}
-	nextAction->timer = 500;
+	nextAction->timer = COMBAT_LENGTH;
 }
 
 void displayP1Stats(Mayfly *m)
@@ -487,22 +487,25 @@ void player1Think()
 	p1Alive = 0;
 	for (i = 0;i < MAX_MULTIPLAYER; i++)
 	{
-		if (player1List[i].alive) p1Alive = 1;
-		updateSprite(player1List[i].entity->image);
-
-		if (whoseTurn == 1)
+		if (player1List[i].alive)
 		{
-			if(mouseHover(player1List[i].entity->ex,  player1List[i].entity->ey,  player1List[i].entity->image->w,  player1List[i].entity->image->h))
+			p1Alive = 1;
+			updateSprite(player1List[i].entity->image);
+
+			if (whoseTurn == 1)
 			{
-				if (player1List[i].fighting == 0) displayP1Stats(&player1List[i]);
-				if (clickLeft)
+				if(mouseHover(player1List[i].entity->ex,  player1List[i].entity->ey,  player1List[i].entity->image->w,  player1List[i].entity->image->h))
 				{
-					if (player1Fighter == NULL)
+					if (player1List[i].fighting == 0) displayP1Stats(&player1List[i]);
+					if (clickLeft)
 					{
-						player1Fighter = &player1List[i];
-						player1Fighter->fighting = 1;
-						//whoseTurn = 2;
-						changeTurn();
+						if (player1Fighter == NULL)
+						{
+							player1Fighter = &player1List[i];
+							player1Fighter->fighting = 1;
+							//whoseTurn = 2;
+							changeTurn();
+						}
 					}
 				}
 			}
@@ -518,22 +521,25 @@ void player2Think()
 	p2Alive = 0;
 	for (i = 0;i < MAX_MULTIPLAYER; i++)
 	{
-		if (player2List[i].alive) p2Alive = 1;
-		updateSprite(player2List[i].entity->image);
-
-		if (whoseTurn == 2)
+		if (player2List[i].alive)
 		{
-			if(mouseHover(player2List[i].entity->ex,  player2List[i].entity->ey,  player2List[i].entity->image->w,  player2List[i].entity->image->h))
+			p2Alive = 1;
+			updateSprite(player2List[i].entity->image);
+
+			if (whoseTurn == 2)
 			{
-				if (player2List[i].fighting == 0) displayP1Stats(&player2List[i]);
-				if (clickLeft)
+				if(mouseHover(player2List[i].entity->ex,  player2List[i].entity->ey,  player2List[i].entity->image->w,  player2List[i].entity->image->h))
 				{
-					if (player2Fighter == NULL)
+					if (player2List[i].fighting == 0) displayP1Stats(&player2List[i]);
+					if (clickLeft)
 					{
-						player2Fighter = &player2List[i];
-						player2Fighter->fighting = 1;
-						//whoseTurn = 3;
-						changeTurn();
+						if (player2Fighter == NULL)
+						{
+							player2Fighter = &player2List[i];
+							player2Fighter->fighting = 1;
+							//whoseTurn = 3;
+							changeTurn();
+						}
 					}
 				}
 			}

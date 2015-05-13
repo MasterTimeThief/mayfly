@@ -4,7 +4,8 @@
 #include "mayfly.h"
 #include "graphics.h"
 
-#define	MAX_ENEMIES	30
+#define	MAX_ENEMIES		30
+#define	COMBAT_LENGTH	500
 
 typedef struct Enemy_T
 {
