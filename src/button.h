@@ -15,6 +15,7 @@ typedef struct Button_T
 
 extern Button buttonList[MAX_BUTTONS];
 
+/*njc24: most of these seem pretty self-explanatory, but you should probably comment these functions - explaining what they do*/
 void combatButtonThink(int index);
 void draftButtonThink(int index);
 void menuButtonThink(int index);
