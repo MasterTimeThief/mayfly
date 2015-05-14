@@ -98,8 +98,13 @@ void clean_up()
 	SDL_Quit();
 }
 
+/*njc24: consider using prototype functions so that all the functions can be placed below main.
+ Doesn't really affect anything but may be better for organizational purposes.*/
+ 
 int main( int argc, char* args[] )
 {
+	/*njc24: should move most of this out of main and into other files or functions - just to keep the area clean*/
+	
 	int done = 0;
 		printf("got here!\n");
 
