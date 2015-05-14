@@ -45,6 +45,7 @@ void runEvents()
 	}
 }
 
+/*njc24: is this for anything or did you just forget about it?*/
 void placeholderFunction()
 {
 	return;
