@@ -31,6 +31,8 @@ Mayfly *mayflyFighters[15];
 Enemy *enemyFighters[15];
 Enemy enemyList[MAX_ENEMIES];
 
+/*njc24: yep. definitely need more commenting in your header files :P */
+
 void initEnemyList();
 Enemy *newEnemy();
 void setupEnemy(Enemy *m);
